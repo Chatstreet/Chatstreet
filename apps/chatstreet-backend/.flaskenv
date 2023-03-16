@@ -1,0 +1,2 @@
+FLASK_APP="app:create_app('DEV')"
+FLASK_RUN_PORT=7331
