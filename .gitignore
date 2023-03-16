@@ -71,7 +71,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+apps/chatstreet-backend/.env
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)
@@ -308,7 +308,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+apps/chatstreet-backend/.env
 .venv
 env/
 venv/
