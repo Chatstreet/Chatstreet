@@ -1,6 +1,7 @@
 name: "Pull Request Labeler"
 on:
-- development
+  check_suite:
+    types: [completed]
 
 jobs:
   triage:
