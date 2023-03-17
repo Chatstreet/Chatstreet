@@ -2,10 +2,8 @@ import sys
 import hashlib
 import os
 
-FILE_PATH_LIST: list = os.path.dirname(os.path.abspath(__file__)).split("\\")
-FILE_PATH_LIST.pop()
-FILE_PATH_LIST.pop()
-ROOT_PATH = "\\".join(FILE_PATH_LIST)
+ROOT_PATH_LIST: list = os.path.dirname(os.path.abspath(__file__)).split("\\")
+ROOT_PATH = "\\".join(ROOT_PATH_LIST[:len(ROOT_PATH_LIST) - 2])
 os.chdir(ROOT_PATH)
 
 print("""
