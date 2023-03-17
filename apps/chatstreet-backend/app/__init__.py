@@ -2,6 +2,8 @@ import os
 import sys
 
 from flask import Flask
+from flask_jwt_extended import JWTManager
+
 from .controller.chatstreet_controller import blueprint
 from dotenv import load_dotenv
 from .config import config
@@ -24,7 +26,8 @@ def create_app(env: str = 'PROD'):
         case _:
             sys.exit(0)
 
-    print(app.config['ENV'])  # TODO: Remove this line
+    jwt = JWTManager(app)
+    print(app.config['ENV'])  # TODO: Remove this line.
 
     # ensure the instance folder exists
     try:
