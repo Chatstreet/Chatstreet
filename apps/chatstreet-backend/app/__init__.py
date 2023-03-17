@@ -27,7 +27,7 @@ def create_app(env: str = 'PROD'):
             sys.exit(0)
 
     jwt = JWTManager(app)
-    print(app.config['ENV'])  # TODO: Remove this line
+    print(app.config['ENV'])  # TODO: Remove this line.
 
     # ensure the instance folder exists
     try:
