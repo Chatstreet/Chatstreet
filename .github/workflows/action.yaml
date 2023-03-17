@@ -1,4 +1,6 @@
-name: "Pull Request Labeler"
+name: 'Labeler'
+description: 'Automatically label new pull requests based on the paths of files being changed'
+author: 'GitHub'
 inputs:
   repo-token:
     description: 'The GitHub token used to manage labels'
@@ -12,20 +14,6 @@ inputs:
     description: 'Whether or not to remove labels when matching files are reverted'
     default: false
     required: false
-on:
-  pull_request:
-    types: [opened, reopened]
-    branches:
-      - development
-
-jobs:
-  triage:
-    permissions:
-      contents: read
-      pull-requests: write
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/labeler@v4
 
 runs:
   using: 'node16'
