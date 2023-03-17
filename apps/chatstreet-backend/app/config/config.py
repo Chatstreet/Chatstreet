@@ -7,6 +7,7 @@ class Config(object):
     # CSRF_ENABLED = True
     # SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI: str = os.environ.get("DATABASE_URL")
+    JWT_SECRET_KEY: str = os.environ.get("JWT_SECRET_KEY")
     # TWITTER_OAUTH_CLIENT_KEY = os.environ.get("TWITTER_OAUTH_CLIENT_KEY")
     # TWITTER_OAUTH_CLIENT_SECRET = os.environ.get("TWITTER_OAUTH_CLIENT_SECRET")
     # SESSION_COOKIE_SECURE = True
