@@ -1,7 +1,21 @@
 name: "Pull Request Labeler"
 on:
-- pull_request_target
-
+  pull_request:
+    types: [opened, reopened]
+    branches:
+      - 'development'
+    inputs:
+      configuration-path:
+        description: 'The path for the label configurations'
+        default: '.github/labeler.yml'
+        required: false
+      sync-labels:
+        description: 'Whether or not to remove labels when matching files are reverted'
+        default: false
+        required: false
+    runs:
+      using: 'node16'
+      main: 'dist/index.js'
 jobs:
   triage:
     permissions:
