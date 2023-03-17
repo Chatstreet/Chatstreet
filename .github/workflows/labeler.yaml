@@ -1,6 +1,4 @@
 name: "Pull Request Labeler"
-description: 'Automatically label new pull requests based on the paths of files being changed'
-author: 'GitHub'
 inputs:
   repo-token:
     description: 'The GitHub token used to manage labels'
