@@ -4,17 +4,23 @@ import sys
 from flask import Flask
 from flask_jwt_extended import JWTManager
 
-from .controller.chatstreet_controller import blueprint
+from app.controller.api_controller import api_controller
+from app.controller.token_controller import token_controller
 from dotenv import load_dotenv
-from .config import config
-from .enums.EnvironmentEnum import EnvironmentEnum
+from app.config import config
+from app.enums.EnvironmentEnum import EnvironmentEnum
+
+jwt: JWTManager
 
 
 def create_app(env: str = 'PROD'):
+    global jwt
+
     load_dotenv()
     # create, register and configure the app
     app = Flask(__name__, instance_relative_config=True)
-    app.register_blueprint(blueprint)
+    app.register_blueprint(api_controller)
+    app.register_blueprint(token_controller)
 
     match EnvironmentEnum[env]:
         case EnvironmentEnum.DEV:
