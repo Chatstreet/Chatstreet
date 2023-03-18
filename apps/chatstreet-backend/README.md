@@ -27,7 +27,7 @@ docker build -t chatstreet-backend:latest .
 Once the image is created, use this command to start the container:
 
 ```shell
-docker run -d -p 5000:5000 chatstreet-backend:latest
+docker run --env-file .env -d -p 5000:5000 chatstreet-backend:latest
 ```
 
 The container should be reachable at `localhost:5000`
