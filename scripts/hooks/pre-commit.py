@@ -13,7 +13,10 @@ BUF_SIZE: int = 65536
 BLOODY_CONTRACT_PATH: str = "./contract/bloody-contract"
 FILES_IN_BLOODY_CONTRACT: dict = {
     "wsgi": "./apps/chatstreet-backend/app/wsgi/__init__.py",
-    "package_lock": "./apps/chatstreet-frontend/package-lock.json"
+    "package_lock": "./apps/chatstreet-frontend/package-lock.json",
+	"backend_dockerfile": "./apps/chatstreet-backend/Dockerfile",
+	"frontend_dockerfile": "./apps/chatstreet-frontend/Dockerfile",
+	"requirements": "./apps/chatstreet-backend/requirements.txt"
 }
 
 BLOODY_CONTRACT_TEMPLATE: str = """꒷꒦꒷꒷꒦꒦꒷꒦꒷꒷꒦꒦꒷꒦꒷꒷꒷꒦꒷꒷꒦꒦꒷꒦꒷꒷꒦꒷꒷꒷꒦꒦꒷

@@ -11,5 +11,8 @@
       HASH CODES OF FILES THAT SHOULD
              NOT BE MODIFIED:
 ==============================================
-wsgi: 645f0d59b3cf4a13cbda228ab2f1c10ba9dd9f05
+wsgi: 12bb3905890678fea6044aee91857621c1e17687
 package_lock: da39a3ee5e6b4b0d3255bfef95601890afd80709
+backend_dockerfile: 41477cadacb0fd1ebe0030776bd7b4ada69278f2
+frontend_dockerfile: da39a3ee5e6b4b0d3255bfef95601890afd80709
+requirements: 23023e598d8299286a9ef22a30efb40b5f1c173d
