@@ -1,0 +1,18 @@
+꒷꒦꒷꒷꒦꒦꒷꒦꒷꒷꒦꒦꒷꒦꒷꒷꒷꒦꒷꒷꒦꒦꒷꒦꒷꒷꒦꒷꒷꒷꒦꒦꒷
+       -----  BLOODY CONTRACT  ------
+
+       DO NOT TOUCH THIS FILE. IF THIS
+       FILE GETS MODIFIED DURING YOUR
+       DEVELOPMENT PROCESS YOU EITHER 
+       REALLY KNOW WHAT YOU ARE DOING
+       OR CHANGED A FILE YOU SHOULDN'T
+                  HAVE!
+
+      HASH CODES OF FILES THAT SHOULD
+             NOT BE MODIFIED:
+==============================================
+wsgi: ba8ab5a0280b953aa97435ff8946cbcbb2755a27
+package_lock: 3c6da9dd2dfc24b6bafd10af92ac10dd82ece972
+backend_dockerfile: add85f3fb949c5c18af2d6f17ed39a03dd725833
+frontend_dockerfile: da39a3ee5e6b4b0d3255bfef95601890afd80709
+requirements: c1791c807a7c1ad1de5a4722fb334e2c4d73c584

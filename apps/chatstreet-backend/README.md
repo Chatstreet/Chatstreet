@@ -24,10 +24,16 @@ In order to start the docker container you will first need to create a docker im
 docker build -t chatstreet-backend:latest .
 ```
 
-Once the image is created, use this command to start the container:
+Once the image is created, use this command to start the development container:
 
 ```shell
-docker run --env-file .env -d -p 5000:5000 chatstreet-backend:latest
+docker run -d -p 5000:5000 -e APP_ENV=DEV chatstreet-backend:latest
 ```
 
+_Make sure to also run the database in development mode, else the connection won't be able to establish._
+
 The container should be reachable at `localhost:5000`
+
+## Environment Variables
+
+The flask application uses certain environment variables like secret database urls etc. The most convenient way to set up these variables is to create a `.env` file in the chatstreet-backend. For the configuration of said file please contact [David Abderhalden](mailto:david.abderhalden@edu.tbz.ch).

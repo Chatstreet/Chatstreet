@@ -1,2 +1,2 @@
-FLASK_APP="app:create_app('DEV')"
+FLASK_APP="app:create_app('LOCAL')"
 FLASK_RUN_PORT=7331

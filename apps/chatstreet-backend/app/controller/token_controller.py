@@ -1,6 +1,8 @@
 from flask import request, jsonify, Blueprint
-from app.db.validation import is_valid_user
-from app.exceptions.invalid_user_exception import InvalidUserException
+
+from app.db.methods import isValidUser, register_response
+from app.db.methods import registerUser
+from app.exceptions.InvalidUserException import InvalidUserException
 
 from flask_jwt_extended import (
     create_access_token,
@@ -16,17 +18,53 @@ BASE_ROUTE: str = "/token/"
 token_controller = Blueprint('token', __name__)
 
 
+@token_controller.route(BASE_ROUTE + 'register', methods=['POST'])
+def register():
+    params: dict = {
+        "first_name": request.json.get('first_name', None),
+        "last_name": request.json.get('last_name', None),
+        "email": request.json.get('email', None),
+        "username": request.json.get('username', None),
+        "password": request.json.get('password', None),
+        "description": 'Hey there I\'m using ChatStreet'
+    }
+    unset_params: dict = dict(filter(lambda param: param[1] is None, params.items()))
+    register_result: register_response = registerUser(params['first_name'], params['last_name'], params['password'], params['email'], params['username'], params['description'])
+
+    if len(unset_params) > 0:
+        msg = jsonify({
+            "register": False,
+            "unset_params": unset_params,
+            "msg": "Some mandatory payload was missing, see unset_params."
+        }, 401)
+
+    elif register_result["success"]:
+        msg = jsonify({
+            "register": True,
+            "user_tag": register_result['user_tag']
+        }, 200)
+
+    else:
+        print(register_result)
+        msg = jsonify({
+            "register": False,
+            "msg": "The user already exists."
+        }, 401)
+
+    return msg
+
+
 @token_controller.route(BASE_ROUTE + 'auth', methods=['POST'])
 def login():
     username = request.json.get('username', None)
     password = request.json.get('password', None)
+    user_tag = request.json.get('user_tag', None)
     try:
-        if not is_valid_user(username, password):
-            print(InvalidUserException)  # TODO: Outsource to logger
+        if not isValidUser(username, user_tag, password):
             raise InvalidUserException(username)
 
-        access_token = create_access_token(identity=username)
-        refresh_token = create_refresh_token(identity=username)
+        access_token = create_access_token(identity=f'{username}#{user_tag}')
+        refresh_token = create_refresh_token(identity=f'{username}#{user_tag}')
         response = jsonify({
             "login": True
         }, 200)
