@@ -1,5 +1,7 @@
 FROM ubuntu:latest
 
+ENV APP_ENV "PROD"
+
 RUN apt-get update -y
 RUN apt-get upgrade -y
 
@@ -21,10 +23,12 @@ ADD /app /chatstreet-backend/app
 
 ADD requirements.txt /chatstreet-backend
 
+ADD .env /chatstreet-backend
+
 WORKDIR /chatstreet-backend
 
 RUN python3 -m venv venv
 
 RUN pip install -r requirements.txt
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app.wsgi:app"]
+CMD gunicorn --bind 0.0.0.0:5000 app.wsgi.${APP_ENV}:app

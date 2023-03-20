@@ -6,6 +6,19 @@ Chatstreet is a chating web application written with [Flask](https://flask.palle
 - #### [David Abderhalden](https://github.com/DavidAbderhalden)
 - #### [Loris Syla](https://github.com/lorissyla)
 
+## Deployment
+
+### DEV-Environment
+```shell
+docker compose -f docker-compose.dev.yaml build --no-cache
+docker compose -f docker-compose.dev.yaml -p chatstreet-dev up -d
+```
+### PROD-Environment
+```shell
+docker compose -f docker-compose.prod.yaml build --no-cache
+docker compose -f docker-compose.prod.yaml -p chatstreet-prod up -d
+```
+_Make sure to continuously delete the old docker compose images if you are developing on the application._
 
 ## Code Contributor Guide
 
