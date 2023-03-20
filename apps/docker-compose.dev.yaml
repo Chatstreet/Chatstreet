@@ -1,0 +1,24 @@
+version: '3.4'
+
+services:
+  chatstreet-backend:
+    environment:
+      - APP_ENV=DEV
+    build:
+      context: ./chatstreet-backend
+    ports:
+      - "5000:5000"
+    # env_file: ./chatstreet-backend/.env
+    depends_on:
+      chatstreet-database:
+        condition: service_healthy
+  chatstreet-database:
+    build: ./chatstreet-database
+    restart: always
+    ports:
+      - "3306:3306"
+    env_file: ./chatstreet-database/dev.env
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 10s
+      retries: 10
