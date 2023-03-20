@@ -55,6 +55,6 @@ def user_invite_respond():
 
 @api_controller.route('/user/block', methods=['POST'])
 @jwt_required()
-def user_invite_respond():
+def user_block():
     # block a user
     return jsonify({})
