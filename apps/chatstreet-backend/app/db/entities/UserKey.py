@@ -5,8 +5,8 @@ class UserKey(db.Model):
     __tablename__ = 'user_key'
 
     id = db.Column('id', db.Integer, primary_key=True)
-    private_key = db.Column(db.String(100))
-    public_key = db.Column(db.String(100))
+    private_key = db.Column(db.Text)
+    public_key = db.Column(db.Text)
 
     user = db.relationship('User', backref='keys')
 
