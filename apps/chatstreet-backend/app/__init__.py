@@ -4,6 +4,7 @@ import sys
 # flask
 from flask import Flask
 from flask_jwt_extended import JWTManager
+from flask_mail import Mail
 # controller
 from app.controller.api_controller import api_controller
 from app.controller.token_controller import token_controller
@@ -23,17 +24,17 @@ from app.enums.EnvironmentEnum import EnvironmentEnum
 from app.exceptions.NoDatabaseConnectionExeption import NoDatabaseConnectionException
 
 jwt: JWTManager
+mail: Mail
 
 
 def create_app(env: str):
-    global jwt
+    global jwt, mail, csrf
 
     app = Flask(__name__, instance_relative_config=True)
     app.register_blueprint(api_controller)
     app.register_blueprint(token_controller)
 
     environment = EnvironmentEnum[env]
-    print(f'environment: {env}')
 
     match environment:
         case EnvironmentEnum.DEV:
@@ -45,9 +46,8 @@ def create_app(env: str):
         case _:
             sys.exit(0)
 
-    print(app.config['SQLALCHEMY_DATABASE_URI'])
-
     jwt = JWTManager(app)
+    mail = Mail(app)
     db.init_app(app)
 
     try:
@@ -57,7 +57,8 @@ def create_app(env: str):
     except Exception as exception:
         if environment == EnvironmentEnum.LOCAL:
             raise NoDatabaseConnectionException(
-                'Connection to database could not be established! Check your environment file or database server status.')
+                'Connection to database could not be established! Check your environment file or database server '
+                'status.')
         else:
             raise exception
 

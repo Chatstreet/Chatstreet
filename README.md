@@ -41,6 +41,20 @@ exec git commit --amend
 ```
 _This will allow you to use the GitHub actions_
 
+To push images to GitHub first you will need an access token. Next upset an environment variable with the value of your token and log into GitHub.
+```shell
+export CR_PAT=<token>
+echo $CR_PAT | docker login ghcr.io -u <username> --password-stdin
+```
+
+Next you need to build an image with the name `ghcr.io/chatstreet/<image_name>:<image_tag>`.
+
+Then you can push it to GitHub via this command:
+
+```shell
+docker push <image>
+```
+
 ### VCS Guidelines
 
 Give the branch a reasonable name separated with hyphens. Locally you can commit as much as you want. If you are finished coding make sure to use the `fetch --prune` command to get all the changes from remote. Then you will need to rebase your branch with development and squash all of your commits into one `git rebase -i origin/development`. Make sure to choose a descriptive commit message. Create a pull-request to development in the GitHub GUI. Add a short description of what you have changed. Follow the Merge Rules.

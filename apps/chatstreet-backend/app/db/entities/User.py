@@ -13,6 +13,8 @@ class User(db.Model):
     email = db.Column('email', db.String(100), nullable=False, unique=True)
     username = db.Column('username', db.String(100), nullable=False)
     user_tag = db.Column('user_tag', db.Integer, nullable=False)
+    account_verification_code = db.Column('account_verification_code', db.String(100), nullable=True)
+    password_reset_code = db.Column('password_reset_code', db.String(100), nullable=True)
 
     user_contact = db.relationship('UserContactsLookup', backref='user_contact', foreign_keys='UserContactsLookup.user_fk')
     user_friend = db.relationship('UserContactsLookup', backref='user_friend', foreign_keys='UserContactsLookup.friend_fk')
@@ -27,7 +29,9 @@ class User(db.Model):
                  password: str,
                  email: str,
                  username: str,
-                 user_tag: int):
+                 user_tag: int,
+                 verification_code: str
+                 ):
         self.user_key_fk = user_key
         self.user_setting_fk = user_setting,
         self.first_name = first_name,
@@ -35,4 +39,5 @@ class User(db.Model):
         self.password = password,
         self.email = email,
         self.username = username,
-        self.user_tag = user_tag
+        self.user_tag = user_tag,
+        self.account_verification_code = verification_code
