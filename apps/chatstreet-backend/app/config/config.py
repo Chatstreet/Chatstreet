@@ -20,6 +20,7 @@ class Config(object):
     MAIL_USE_TLS: bool = False
     MAIL_USE_SSL: bool = True
     MAIL_DEFAULT_SENDER: str = os.environ.get("EMAIL_SENDER")
+    BINARY_FERNET_KEY: str = os.environ.get("BINARY_FERNET_KEY")
 
 
 class ProductionConfig(Config):

@@ -8,6 +8,7 @@ services:
       context: ./chatstreet-backend
     ports:
       - "5000:5000"
+    # env_file: ./chatstreet-backend/.env
     depends_on:
       chatstreet-database:
         condition: service_healthy

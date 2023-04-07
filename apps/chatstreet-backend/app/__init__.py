@@ -28,7 +28,7 @@ mail: Mail
 
 
 def create_app(env: str):
-    global jwt, mail, csrf
+    global jwt, mail
 
     app = Flask(__name__, instance_relative_config=True)
     app.register_blueprint(api_controller)

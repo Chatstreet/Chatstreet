@@ -21,9 +21,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 if (process.env.NODE_ENV === 'development') {
-  console.log(
-    'dev',
-  );
+  console.log('dev');
 }
 
 const router = createRouter({
