@@ -78,9 +78,7 @@ def login():
     except InvalidUserException:
         return jsonify({
             "login": False,
-            "error": {
-                "msg": "The username or password is invalid or you haven't verified your email address yet"
-            }
+            "msg": "The username or password is invalid or you haven't verified your email address yet"
         }, 401)
 
 

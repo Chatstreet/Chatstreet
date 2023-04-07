@@ -66,8 +66,9 @@ def user_chat():
             # POST to send a message
             friend_username = request.json.get('contact_username', None)
             friend_user_tag = request.json.get('contact_user_tag', None)
-            message = request.json.get('message', None)
-            if friend_username is None or friend_user_tag is None or message is None:
+            sender_message = request.json.get('sender_message', None)
+            reciever_message = request.json.get('reciever_message', None)
+            if friend_username is None or friend_user_tag is None or sender_message is None or reciever_message is None:
                 response = jsonify({
                     "status": False,
                     "msg": "A contact_username, contact_user_tag and message need to be provided"
@@ -75,7 +76,7 @@ def user_chat():
             else:
                 user_friend: UserType = UserType(friend_username, friend_user_tag)
                 if are_friends(UserType.from_user(user), user_friend):
-                    if send_message(UserType.from_user(user), user_friend, message):
+                    if send_message(UserType.from_user(user), user_friend, sender_message, reciever_message):
                         response = jsonify({
                             "status": True
                         }, 200)
@@ -146,10 +147,12 @@ def user_invites():
             # retrieve list of users that invited user
             invites: list[UserType] = get_user_contact(user, UserContactStatusEnum.INVITED, FriendOrUserEnum.FRIEND)
             response = jsonify({
+                "invite": True,
                 "invites": [invite.to_dict() for invite in invites]
             }, 200)
         case _:
             response = jsonify({
+                "invite": False,
                 "msg": f"Bad request '{request.method}' is not allowed here."
             }, 400)
     return response
@@ -173,7 +176,7 @@ def user_invite_respond():
             "invite_response": True
         }, 200)
     return jsonify({
-        "invite respond": False,
+        "invite_response": False,
         "msg": f"'{contact.user}' couldn't be found in '{user}' invite list"
     }, 400)
 

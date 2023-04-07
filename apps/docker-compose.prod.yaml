@@ -4,16 +4,14 @@ services:
   chatstreet-backend:
     environment:
       - APP_ENV=PROD
-    build:
-      context: ./chatstreet-backend
+    image: ghcr.io/chatstreet/chatstreet-backend:latest
     ports:
       - "5000:5000"
-    # env_file: ./chatstreet-backend/.env
     depends_on:
       chatstreet-database:
         condition: service_healthy
   chatstreet-database:
-    build: ./chatstreet-database
+    image: ghcr.io/chatstreet/chatstreet-database:latest
     restart: always
     ports:
       - "3306:3306"

@@ -1,5 +1,9 @@
 # Frontend
 # ========
+# Testing
+**/Test.vue
+**/Test.scss
+**/vetur.config.js
 # Logs
 logs
 *.log

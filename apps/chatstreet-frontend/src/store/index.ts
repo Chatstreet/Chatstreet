@@ -1,27 +1,14 @@
 import { createStore } from 'vuex';
+import AccountStoreModule, { AccountState } from './modules/account.module';
+import UserStoreModule, { UserState } from './modules/user.module';
 
-export interface State {
-    test: string;
+export interface State extends AccountState, UserState {
+  app: string;
 }
 
 export default createStore<State>({
-  getters: {
-    test: (state) => state.test,
-  },
-
-  state: {
-    test: 'wer',
-  },
-
-  mutations: {
-    test(state) {
-      state.test = 'weret';
-    },
-  },
-
-  actions: {
-    test({ commit }, input) {
-      this.dispatch('test');
-    },
+  modules: {
+    account: AccountStoreModule,
+    user: UserStoreModule,
   },
 });
