@@ -6,7 +6,7 @@ class UserSetting(db.Model):
 
     id = db.Column('id', db.Integer, primary_key=True)
     description = db.Column('description', db.String(300))
-    profile = db.Column('profile', db.String(8192))
+    profile = db.Column('profile', db.Text)
 
     user = db.relationship('User', backref='setting')
 

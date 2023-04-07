@@ -1,7 +1,7 @@
 import string
 import random
 
-from app.encription.methods import genKey, encrypt, decrypt
+from app.encription.methods import Encryption
 from app.enums.FriendOrUserEnum import FriendOrUserEnum
 from app.enums.InvitationResponseEnum import InvitationResponseEnum
 from app.enums.UserContactStatusEnum import UserContactStatusEnum
@@ -41,7 +41,8 @@ get_user_data_response: dict = {
 }
 
 message_type: dict = {
-    "content": str,
+    "sender_content": str,
+    "reciever_content": str,
     "user": str,
     "timestamp": float
 }
@@ -53,6 +54,8 @@ get_messages_response: dict = {
     "public_key": str
 }
 
+encryption: Encryption = Encryption()
+
 
 def registerUser(first_name: str, last_name: str, password: str, email: str, username: str,
                  description: str) -> register_response:
@@ -60,9 +63,9 @@ def registerUser(first_name: str, last_name: str, password: str, email: str, use
         return {"success": False, "msg": "The username can't contain the character: '#'"}
     try:
         verification_code: str = generate_code()
-        key_pair: KeyType = genKey()
-        salty_private_key: str = encrypt(key_pair.private_key)
-        salty_public_key: str = encrypt(key_pair.public_key)
+        key_pair: KeyType = encryption.genKey()
+        salty_private_key: str = encryption.encrypt(key_pair.private_key)
+        salty_public_key: str = encryption.encrypt(key_pair.public_key)
         keys: UserKey = UserKey(salty_private_key, salty_public_key)
         settings: UserSetting = UserSetting(description)
         user_tag: int = get_available_user_tag(username)
@@ -79,6 +82,7 @@ def registerUser(first_name: str, last_name: str, password: str, email: str, use
         db.session.commit()
 
     except Exception as e:
+        raise e
         return {"success": False, "user_tag": 0, "verification_code": "", "msg": "The user already exists."}
     return {"success": True, "user_tag": user_tag, "verification_code": verification_code}
 
@@ -141,8 +145,8 @@ def get_user_data(user: UserType) -> get_user_data_response:
         return {}
     user_setting_tuple = UserSetting.query.filter_by(id=user_tuple.user_setting_fk).first()
     user_key_tuple = UserKey.query.filter_by(id=user_tuple.user_key_fk).first()
-    sweet_private_key: str = decrypt(user_key_tuple.private_key)
-    sweet_public_key: str = decrypt(user_key_tuple.public_key)
+    sweet_private_key: str = encryption.decrypt(user_key_tuple.private_key)
+    sweet_public_key: str = encryption.decrypt(user_key_tuple.public_key)
     return {
         "username": user.username,
         "user_tag": user.tag,
@@ -271,9 +275,13 @@ def parse_invite_response(user: UserType, invite: UserType, invite_response: Inv
         user_contact_lookup_tuple.status = UserContactStatusEnum.FRIENDS
         db.session.commit()
         return True
-    db.session.delete(user_contact_lookup_tuple)
-    db.session.commit()
-    return True
+    if invite_response == InvitationResponseEnum.DECLINE:
+        if user_contact_lookup_tuple.status != UserContactStatusEnum.INVITED.INVITED:
+            return False
+        db.session.delete(user_contact_lookup_tuple)
+        db.session.commit()
+        return True
+    return False
 
 
 def are_friends(user: UserType, other: UserType) -> bool:
@@ -295,12 +303,12 @@ def are_friends(user: UserType, other: UserType) -> bool:
     return result
 
 
-def send_message(user: UserType, friend: UserType, message: str):
+def send_message(user: UserType, friend: UserType, sender_message: str, reciever_message: str):
     user_tuple: User = User.query.filter_by(username=user.username, user_tag=user.tag).first()
     friend_tuple: User = User.query.filter_by(username=friend.username, user_tag=friend.tag).first()
     if user_tuple is None or friend_tuple is None:
         return False
-    user_message: UserMessage = UserMessage(user_tuple.id, friend_tuple.id, message)
+    user_message: UserMessage = UserMessage(user_tuple.id, friend_tuple.id, sender_message, reciever_message)
     db.session.add(user_message)
     db.session.commit()
     return True
@@ -315,16 +323,18 @@ def get_messages(user: UserType, friend: UserType) -> get_messages_response:
     user_messages: [UserMessage] = UserMessage.query.filter_by(sender_fk=user_tuple.id, reciever_fk=friend_tuple.id).all()
     friend_messages: [UserMessage] = UserMessage.query.filter_by(sender_fk=friend_tuple.id, reciever_fk=user_tuple.id).all()
     friend_key_tuple = UserKey.query.filter_by(id=friend_tuple.user_key_fk).first()
-    sweet_friend_public_key: str = decrypt(friend_key_tuple.public_key)
+    sweet_friend_public_key: str = encryption.decrypt(friend_key_tuple.public_key)
     for user_message in user_messages:
         messages.append({
-            "content": user_message.content,
+            "sender_content": user_message.sender_content,
+            "reciever_content": user_message.reciever_content,
             "user": user.user,
             "timestamp": float(user_message.timestamp)
         })
     for friend_message in friend_messages:
         messages.append({
-            "content": friend_message.content,
+            "sender_content": friend_message.sender_content,
+            "reciever_content": friend_message.reciever_content,
             "user": friend.user,
             "timestamp": float(friend_message.timestamp)
         })
