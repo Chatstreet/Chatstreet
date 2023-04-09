@@ -12,7 +12,7 @@
              NOT BE MODIFIED:
 ==============================================
 wsgi: ba8ab5a0280b953aa97435ff8946cbcbb2755a27
-package_lock: 828c6718735e21edacdc135874d21a9a57e8985b
+package_lock: 2664a849c6ea2ee7aca48a96ba959cc4f3def883
 backend_dockerfile: add85f3fb949c5c18af2d6f17ed39a03dd725833
 frontend_dockerfile: da39a3ee5e6b4b0d3255bfef95601890afd80709
 requirements: f498011ef65a736cdbc3256fc19691a8f97bc97d
