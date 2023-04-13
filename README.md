@@ -48,7 +48,6 @@ echo $CR_PAT | docker login ghcr.io -u <username> --password-stdin
 ```
 
 Next you need to build an image with the name `ghcr.io/chatstreet/<image_name>:<image_tag>`.
->>>>>>> b705dcc... Endpoint setup (user/data) POST
 
 Then you can push it to GitHub via this command:
 
