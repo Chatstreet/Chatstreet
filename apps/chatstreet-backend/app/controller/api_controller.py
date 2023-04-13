@@ -18,14 +18,6 @@ BASE_ROUTE: str = "/api/"
 api_controller = Blueprint('api', __name__)
 
 
-@api_controller.route(BASE_ROUTE + 'hello', methods=['GET'])
-@jwt_required()
-def hello_world():
-    user = get_jwt_identity()
-    print(user)
-    return jsonify(f"Hello World: {user}", 200)
-
-
 @api_controller.route(BASE_ROUTE + '/user/data', methods=['GET', 'POST'])
 @jwt_required()
 def user_data():

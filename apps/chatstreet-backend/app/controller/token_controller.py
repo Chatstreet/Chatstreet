@@ -21,6 +21,13 @@ BASE_ROUTE: str = "/token/"
 token_controller = Blueprint('token', __name__)
 
 
+@token_controller.route('/health', methods=['GET'])
+def health():
+    return jsonify({
+        "status": "ok",
+    }, 200)
+
+
 @token_controller.route(BASE_ROUTE + 'register', methods=['POST'])
 def register():
     params: dict = {
