@@ -1,22 +1,32 @@
 version: '3.4'
 
 services:
+  chatstreet-frontend:
+    image: ghcr.io/chatstreet/chatstreet-frontend:latest
+    ports:
+      - "80:80"
+    depends_on:
+      chatstreet-backend:
+        condition: service_healthy
   chatstreet-backend:
     environment:
       - APP_ENV=DEV
     image: ghcr.io/chatstreet/chatstreet-backend:latest
-    ports:
-      - "5000:5000"
+    healthcheck:
+      test: curl --fail http://localhost/health || exit 1
+      interval: 10s
+      retries: 10
+      start_period: 20s
+      timeout: 10s
     depends_on:
       chatstreet-database:
         condition: service_healthy
   chatstreet-database:
     image: ghcr.io/chatstreet/chatstreet-database:latest
     restart: always
-    ports:
-      - "3306:3306"
-    env_file: ./chatstreet-database/dev.env
+    env_file: ./chatstreet-database/DEV.env
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      interval: 10s
       timeout: 10s
       retries: 10
