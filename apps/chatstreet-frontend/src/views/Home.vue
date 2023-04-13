@@ -16,8 +16,9 @@
 
 <script lang="ts">
 import {
-  computed, defineComponent, PropType, ref, watch,
+  computed, defineComponent, onMounted, PropType, ref, watch,
 } from 'vue';
+import store from '@/store';
 
 export default defineComponent({
   name: 'Home',

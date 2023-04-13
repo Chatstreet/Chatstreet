@@ -6,6 +6,7 @@ RUN apt-get update -y
 RUN apt-get upgrade -y
 
 RUN apt-get install \
+    curl -y \
     python3 -y \
     python3-pip -y \
     python3-dev -y \
@@ -17,7 +18,7 @@ RUN apt-get install \
     nginx -y \
     gunicorn
 
-EXPOSE 5000
+EXPOSE 80
 
 ADD /app /chatstreet-backend/app
 
@@ -31,4 +32,4 @@ RUN python3 -m venv venv
 
 RUN pip install -r requirements.txt
 
-CMD gunicorn --bind 0.0.0.0:5000 app.wsgi.${APP_ENV}:app
+CMD gunicorn --bind 0.0.0.0:80 app.wsgi.${APP_ENV}:app

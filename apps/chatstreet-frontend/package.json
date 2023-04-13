@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service build",
     "lint": "vue-cli-service lint",
     "format": "prettier --write \"src/**/*.{vue,ts,js}\" && npm run lint"
   },
@@ -12,6 +12,7 @@
     "axios": "^0.24.0",
     "buffer": "^6.0.3",
     "core-js": "^3.6.5",
+    "cors": "^2.8.5",
     "encrypt-rsa": "^2.1.5",
     "jsencrypt": "^3.3.2",
     "node-rsa": "^1.1.1",

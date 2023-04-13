@@ -5,6 +5,7 @@ import sys
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
+from flask_cors import CORS
 # controller
 from app.controller.api_controller import api_controller
 from app.controller.token_controller import token_controller
@@ -39,8 +40,10 @@ def create_app(env: str):
     match environment:
         case EnvironmentEnum.DEV:
             app.config.from_object(config.DevelopmentConfig)
+            CORS(app)
         case EnvironmentEnum.LOCAL:
             app.config.from_object(config.LocalConfig)
+            CORS(app)
         case EnvironmentEnum.PROD:
             app.config.from_object(config.ProductionConfig)
         case _:
