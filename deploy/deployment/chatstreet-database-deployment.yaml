@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: chatstreet-database
+  name: chatstreet-database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chatstreet-database
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: chatstreet-database
+    spec:
+      containers:
+        - env:
+            - name: MARIADB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: MARIADB_DATABASE
+                  name: chatstreet-database-secret
+            - name: MARIADB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MARIADB_PASSWORD
+                  name: chatstreet-database-secret
+            - name: MARIADB_RANDOM_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MARIADB_RANDOM_ROOT_PASSWORD
+                  name: chatstreet-database-secret
+            - name: MARIADB_ROOT_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: MARIADB_ROOT_HOST
+                  name: chatstreet-database-secret
+            - name: MARIADB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: MARIADB_USER
+                  name: chatstreet-database-secret
+          image: ghcr.io/chatstreet/chatstreet-database:latest
+          imagePullPolicy: Always
+          livenessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - -h
+                - localhost
+            periodSeconds: 10
+            timeoutSeconds: 10
+          name: chatstreet-database
+          ports:
+            - containerPort: 3306
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "512Mi"
+            limits:
+              cpu: "100m"
+              memory: "512Mi"
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: chatstreet-database-volume
+      imagePullSecrets:
+        - name: dockerconfigjson-github-com
+      restartPolicy: Always
+      volumes:
+        - name: chatstreet-database-volume
+          persistentVolumeClaim:
+            claimName: chatstreet-database-volume
+status: {}
