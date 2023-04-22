@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    service: chatstreet-frontend
+  name: chatstreet-frontend
+spec:
+  ports:
+    - name: "30050"
+      nodePort: 30050
+      port: 30050
+      targetPort: 80
+  type: NodePort
+  selector:
+    app: chatstreet-frontend
+status:
+  loadBalancer: {}

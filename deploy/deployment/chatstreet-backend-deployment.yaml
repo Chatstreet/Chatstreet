@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: chatstreet-backend
+  name: chatstreet-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: chatstreet-backend
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: chatstreet-backend
+    spec:
+      containers:
+        - env:
+            - name: APP_ENV
+              value: PROD
+          image: ghcr.io/chatstreet/chatstreet-backend:latest
+          imagePullPolicy: Always
+          # livenessProbe:
+            # exec:
+              # command:
+                # - sh
+                # - -c
+                # - curl http://localhost:80/health | grep --quiet -e '^{\"status\"\:\"ok\".*}$'
+            # initialDelaySeconds: 20
+            # periodSeconds: 10
+            # timeoutSeconds: 10
+          name: chatstreet-backend
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+      imagePullSecrets:
+        - name: dockerconfigjson-github-com
+      restartPolicy: Always
+status: {}
