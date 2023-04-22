@@ -11,13 +11,9 @@ from app.controller.api_controller import api_controller
 from app.controller.token_controller import token_controller
 # database
 from app.db import db
-from app.db.entities.User import User
-from app.db.entities.UserKey import UserKey
-from app.db.entities.UserSetting import UserSetting
-from app.db.entities.UserMessage import UserMessage
-from app.db.entities.UserContactsLookup import UserContactsLookup
 # configuration
 from app.config import config
+from app.config.config import Config
 # enumeration
 from app.enums.EnvironmentEnum import EnvironmentEnum
 from app.enums.EnvironmentEnum import EnvironmentEnum
@@ -26,10 +22,11 @@ from app.exceptions.NoDatabaseConnectionExeption import NoDatabaseConnectionExce
 
 jwt: JWTManager
 mail: Mail
+conf: Config
 
 
 def create_app(env: str):
-    global jwt, mail
+    global jwt, mail, conf
 
     app = Flask(__name__, instance_relative_config=True)
     app.register_blueprint(api_controller)
@@ -39,15 +36,16 @@ def create_app(env: str):
 
     match environment:
         case EnvironmentEnum.DEV:
-            app.config.from_object(config.DevelopmentConfig)
-            CORS(app)
+            conf = config.DevelopmentConfig
         case EnvironmentEnum.LOCAL:
-            app.config.from_object(config.LocalConfig)
-            CORS(app)
+            conf = config.LocalConfig
         case EnvironmentEnum.PROD:
-            app.config.from_object(config.ProductionConfig)
+            conf = config.ProductionConfig
         case _:
             sys.exit(0)
+
+    app.config.from_object(conf)
+    CORS(app)
 
     jwt = JWTManager(app)
     mail = Mail(app)
