@@ -1,6 +1,8 @@
 import string
 import random
 
+from sqlalchemy.exc import IntegrityError
+
 from app.encription.methods import Encryption
 from app.enums.FriendOrUserEnum import FriendOrUserEnum
 from app.enums.InvitationResponseEnum import InvitationResponseEnum
@@ -81,8 +83,7 @@ def registerUser(first_name: str, last_name: str, password: str, email: str, use
         db.session.add(user)
         db.session.commit()
 
-    except Exception as e:
-        raise e
+    except IntegrityError:
         return {"success": False, "user_tag": 0, "verification_code": "", "msg": "The user already exists."}
     return {"success": True, "user_tag": user_tag, "verification_code": verification_code}
 
