@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: chatstreet-frontend
+  name: chatstreet-frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: chatstreet-frontend
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 2
+      maxSurge: 2
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: chatstreet-frontend
+    spec:
+      containers:
+        - image: ghcr.io/chatstreet/chatstreet-frontend:latest
+          imagePullPolicy: Always
+          name: chatstreet-frontend
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "512Mi"
+            limits:
+              cpu: "100m"
+              memory: "512Mi"
+      imagePullSecrets:
+        - name: dockerconfigjson-github-com
+      restartPolicy: Always
+status: {}
