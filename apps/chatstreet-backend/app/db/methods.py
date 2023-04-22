@@ -198,8 +198,7 @@ def send_password_reset_code(user: UserType) -> bool:
     email: str = user_tuple.email
     user_tuple.password_reset_code = random_code
     db.session.commit()
-    send_password_reset_mail(email, user.user, random_code)
-    return True
+    return send_password_reset_mail(email, user.user, random_code)
 
 
 def reset_password(code: str, password: str) -> bool:
@@ -320,9 +319,9 @@ def get_messages(user: UserType, friend: UserType) -> get_messages_response:
     friend_tuple: User = User.query.filter_by(username=friend.username, user_tag=friend.tag).first()
     if user_tuple is None or friend_tuple is None:
         return {"status": False}
-    messages: [message_type] = []
-    user_messages: [UserMessage] = UserMessage.query.filter_by(sender_fk=user_tuple.id, reciever_fk=friend_tuple.id).all()
-    friend_messages: [UserMessage] = UserMessage.query.filter_by(sender_fk=friend_tuple.id, reciever_fk=user_tuple.id).all()
+    messages: list[message_type] = []
+    user_messages: list[UserMessage] = UserMessage.query.filter_by(sender_fk=user_tuple.id, reciever_fk=friend_tuple.id).all()
+    friend_messages: list[UserMessage] = UserMessage.query.filter_by(sender_fk=friend_tuple.id, reciever_fk=user_tuple.id).all()
     friend_key_tuple = UserKey.query.filter_by(id=friend_tuple.user_key_fk).first()
     sweet_friend_public_key: str = encryption.decrypt(friend_key_tuple.public_key)
     for user_message in user_messages:
