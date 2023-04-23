@@ -1,14 +1,14 @@
-<style lang="scss" src="../styles/views/Home.scss" scoped></style>
+<style lang="scss" src="@/styles/views/ResetPassword.scss" scoped></style>
 
 <template>
-  <main>Home</main>
+  <main>Reset Password {{ $route.params.code }}</main>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'Home',
+  name: 'ResetPassword',
   setup() {
     return {};
   },

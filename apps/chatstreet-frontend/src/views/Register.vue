@@ -1,14 +1,14 @@
-<style lang="scss" src="../styles/views/Home.scss" scoped></style>
+<style lang="scss" src="@/styles/views/Register.scss" scoped></style>
 
 <template>
-  <main>Home</main>
+  <main>Register</main>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'Home',
+  name: 'Register',
   setup() {
     return {};
   },
