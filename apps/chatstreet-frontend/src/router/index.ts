@@ -8,6 +8,7 @@ import EmailVerification from '@/views/EmailVerification.vue';
 import ResetPassword from '@/views/ResetPassword.vue';
 
 import Test from '@/views/Test.vue';
+import { kebabize } from '@/utlis/functions.util';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -62,6 +63,12 @@ if (process.env.NODE_ENV === 'development') {
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const pageName: string = kebabize(String(to.name));
+  document.title = `Chatstreet - ${pageName}`;
+  next();
 });
 
 export default router;
