@@ -1,0 +1,25 @@
+span[class*="icon-"] {
+    content: '';
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    display: block;
+}
+
+span.icon-profile {
+    background-image: url('assets/icons/user-no-profile.svg');
+}
+
+span.icon-arrow-right {
+    background-image: url('assets/icons/arrow-right.svg');
+}
+
+span.icon-eye-open {
+    background-image: url('assets/icons/eye-open.svg');
+}
+
+span.icon-eye-closed {
+    background-image: url('assets/icons/eye-closed.svg');
+}

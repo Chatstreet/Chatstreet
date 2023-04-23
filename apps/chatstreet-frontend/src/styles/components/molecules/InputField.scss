@@ -1,0 +1,80 @@
+.input-field {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 4rem;
+
+    &--default {
+        // TODO: Implement
+    }
+
+    &--sharp {
+        border-bottom: 1px solid var(--chatstreet-light-gray);
+        >.input-field-title {
+            left: 0 !important;
+            &--focus {
+                padding-left: 0 !important;
+                top: -10% !important;
+            }
+        }
+    }
+
+    &--error {
+        border-color: var(--chatstreet-red);
+        >.input-field-title {
+            color: var(--chatstreet-red) !important;
+        }
+    }
+
+    &--valid {
+        border-color: var(--chatstreet-green);
+        >.input-field-title {
+            color: var(--chatstreet-green) !important;
+        }
+    }
+
+    .input-field-title {
+        transition: all 0.1s;
+        transition-timing-function: ease-in;
+        position: absolute;
+        left: 1rem;
+        top: 0%;
+        transform: translate(0%, 25%);
+        font-size: 2rem;
+        pointer-events: none;
+        color: var(--chatstreet-light-gray);
+
+        &--focus {
+            transition: all 0.1s;
+            transition-timing-function: ease-in;
+            font-size: 1.5rem;
+            transform: translate(0%, -50%);
+            background-color: var(--chatstreet-white);
+            padding: 0rem 1rem;
+        }
+    }
+
+    .input-field-input {
+        width: 100%;
+        height: 100%;
+        border: none;
+        font-size: 2rem;
+        line-height: 4rem;
+        // padding: 0rem 1rem;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    .input-field-button {
+        height: 100%;
+        width: fit-content;
+
+        .button-content {
+            height: 100%;
+            width: 4rem;
+            padding: 0.5rem;
+        }
+    }
+}
