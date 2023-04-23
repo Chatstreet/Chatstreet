@@ -1,0 +1,19 @@
+.input-button {
+    width: 100%;
+    height: fit-content;
+    border: none;
+
+    &--default {
+        // TODO: Implement
+    }
+
+    &--confirm {
+        color: var(--chatstreet-white);
+        background-color: var(--chatstreet-green);
+        border-radius: 0.5rem;
+    }
+
+    &--plain {
+        background-color: transparent;
+    }
+}

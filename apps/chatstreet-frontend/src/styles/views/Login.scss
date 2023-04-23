@@ -1,0 +1,12 @@
+.login-main-container {
+    margin-top: 20%;
+}
+
+.login-main-button {
+    width: fit-content;
+    padding: 2rem;
+    .button-content {
+        font-size: 2rem;
+        color: var(--chatstreet-white);
+    }
+}
