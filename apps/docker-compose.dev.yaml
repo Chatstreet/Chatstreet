@@ -12,8 +12,6 @@ services:
     environment:
       - APP_ENV=DEV
     image: ghcr.io/chatstreet/chatstreet-backend:latest
-    ports:
-      - "80:80"
     healthcheck:
       test: curl --fail http://localhost/health || exit 1
       interval: 10s
