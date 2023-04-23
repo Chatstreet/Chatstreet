@@ -13,10 +13,8 @@ import {
   FetchUserChatResponseType,
   UserMessageResponseType,
   UserMessageType,
-  ResponseErrorType,
-  StatusCodeEnum,
-  Response,
-} from '@/services/response.type';
+  ErrorResponseType,
+} from '@/services/types/response.type';
 
 import {
   UpdateUserDataRequestType,
@@ -24,7 +22,7 @@ import {
   InviteResponseRequestType,
   UserChatRequestType,
   SendMessageRequestType,
-} from '@/services/request.type';
+} from '@/services/types/request.type';
 
 import {
   updateUserData,
@@ -109,7 +107,7 @@ const UserStoreModule: Module<UserState, any> = {
         result,
       };
     },
-    UPDATE_USER_DATA_REQUEST_ERROR(state: UserState, error: ResponseErrorType) {
+    UPDATE_USER_DATA_REQUEST_ERROR(state: UserState, error: ErrorResponseType) {
       state.updateUserDataRequest = {
         status: 'ERROR',
         error,
@@ -129,7 +127,7 @@ const UserStoreModule: Module<UserState, any> = {
         },
       };
     },
-    USER_DATA_REQUEST_ERROR(state: UserState, error: ResponseErrorType) {
+    USER_DATA_REQUEST_ERROR(state: UserState, error: ErrorResponseType) {
       state.userDataRequest = {
         status: 'ERROR',
         error,
@@ -146,7 +144,7 @@ const UserStoreModule: Module<UserState, any> = {
         result,
       };
     },
-    USER_INVITES_REQUEST_ERROR(state: UserState, error: ResponseErrorType) {
+    USER_INVITES_REQUEST_ERROR(state: UserState, error: ErrorResponseType) {
       state.userInvitesRequest = {
         status: 'ERROR',
         error,
@@ -163,7 +161,7 @@ const UserStoreModule: Module<UserState, any> = {
         result,
       };
     },
-    USER_INVITE_REQUEST_ERROR(state: UserState, error: ResponseErrorType) {
+    USER_INVITE_REQUEST_ERROR(state: UserState, error: ErrorResponseType) {
       state.userInviteRequest = {
         status: 'ERROR',
         error,
@@ -180,7 +178,7 @@ const UserStoreModule: Module<UserState, any> = {
         result,
       };
     },
-    INVITE_RESPONSE_REQUEST_ERROR(state: UserState, error: ResponseErrorType) {
+    INVITE_RESPONSE_REQUEST_ERROR(state: UserState, error: ErrorResponseType) {
       state.inviteResponseRequest = {
         status: 'ERROR',
         error,
@@ -197,7 +195,7 @@ const UserStoreModule: Module<UserState, any> = {
         result,
       };
     },
-    INVITED_USERS_REQUEST_ERROR(state: UserState, error: ResponseErrorType) {
+    INVITED_USERS_REQUEST_ERROR(state: UserState, error: ErrorResponseType) {
       state.invitedUsersRequest = {
         status: 'ERROR',
         error,
@@ -214,7 +212,7 @@ const UserStoreModule: Module<UserState, any> = {
         result,
       };
     },
-    USER_FRIENDS_REQUEST_ERROR(state: UserState, error: ResponseErrorType) {
+    USER_FRIENDS_REQUEST_ERROR(state: UserState, error: ErrorResponseType) {
       state.userFriendsRequest = {
         status: 'ERROR',
         error,
@@ -234,7 +232,7 @@ const UserStoreModule: Module<UserState, any> = {
         },
       };
     },
-    USER_CHAT_REQUEST_ERROR(state: UserState, error: ResponseErrorType) {
+    USER_CHAT_REQUEST_ERROR(state: UserState, error: ErrorResponseType) {
       state.userChatRequest = {
         status: 'ERROR',
         error,
@@ -251,7 +249,7 @@ const UserStoreModule: Module<UserState, any> = {
         result,
       };
     },
-    SEND_MESSAGE_REQUEST_ERROR(state: UserState, error: ResponseErrorType) {
+    SEND_MESSAGE_REQUEST_ERROR(state: UserState, error: ErrorResponseType) {
       state.sendMessageRequest = {
         status: 'ERROR',
         error,
@@ -262,16 +260,7 @@ const UserStoreModule: Module<UserState, any> = {
     postUpdateUserData({ commit }: CommitFunction, input: UpdateUserDataRequestType) {
       commit('UPDATE_USER_DATA_REQUEST_START');
       updateUserData(input)
-        .then((response: Response) => {
-          if (response.data[1] !== StatusCodeEnum.success) {
-            commit('UPDATE_USER_DATA_REQUEST_ERROR', {
-              code: response.data[1],
-              msg: response.data[0].msg,
-            });
-            return;
-          }
-          commit('UPDATE_USER_DATA_REQUEST_SUCCESS', response.data[0]);
-        })
+        .then((response: UpdateUserDataResponseType) => commit('UPDATE_USER_DATA_REQUEST_SUCCESS', response))
         .catch((error) => {
           commit('UPDATE_USER_DATA_REQUEST_ERROR', {
             code: error.toJSON().status,
@@ -282,16 +271,7 @@ const UserStoreModule: Module<UserState, any> = {
     fetchUserData({ commit }: CommitFunction) {
       commit('USER_DATA_REQUEST_START');
       userData()
-        .then((response: Response) => {
-          if (response.data[1] !== StatusCodeEnum.success) {
-            commit('USER_DATA_REQUEST_ERROR', {
-              code: response.data[1],
-              msg: response.data[0].msg,
-            });
-            return;
-          }
-          commit('USER_DATA_REQUEST_SUCCESS', response.data[0]);
-        })
+        .then((response: FetchUserDataResponseType) => commit('USER_DATA_REQUEST_SUCCESS', response))
         .catch((error) => {
           commit('USER_DATA_REQUEST_ERROR', {
             code: error.toJSON().status,
@@ -302,16 +282,7 @@ const UserStoreModule: Module<UserState, any> = {
     fetchUserInvites({ commit }: CommitFunction) {
       commit('USER_INVITES_REQUEST_START');
       userInvites()
-        .then((response: Response) => {
-          if (response.data[1] !== StatusCodeEnum.success) {
-            commit('USER_INVITES_REQUEST_ERROR', {
-              code: response.data[1],
-              msg: response.data[0].msg,
-            });
-            return;
-          }
-          commit('USER_INVITES_REQUEST_SUCCESS', response.data[0]);
-        })
+        .then((response: FetchUserInvitesResponseType) => commit('USER_INVITES_REQUEST_SUCCESS', response))
         .catch((error) => {
           commit('USER_INVITES_REQUEST_ERROR', {
             code: error.toJSON().status,
@@ -322,16 +293,7 @@ const UserStoreModule: Module<UserState, any> = {
     postUserInvite({ commit }: CommitFunction, input: InviteUserRequestType) {
       commit('USER_INVITE_REQUEST_START');
       inviteUser(input.username, input.userTag)
-        .then((response: Response) => {
-          if (response.data[1] !== StatusCodeEnum.success) {
-            commit('USER_INVITE_REQUEST_ERROR', {
-              code: response.data[1],
-              msg: response.data[0].msg,
-            });
-            return;
-          }
-          commit('USER_INVITE_REQUEST_SUCCESS', response.data[0]);
-        })
+        .then((response: UserInviteResponseType) => commit('USER_INVITE_REQUEST_SUCCESS', response))
         .catch((error) => {
           commit('USER_INVITE_REQUEST_ERROR', {
             code: error.toJSON().status,
@@ -342,16 +304,7 @@ const UserStoreModule: Module<UserState, any> = {
     postInviteResponse({ commit }: CommitFunction, input: InviteResponseRequestType) {
       commit('INVITE_RESPONSE_REQUEST_START');
       inviteResponse(input.username, input.userTag, input.response)
-        .then((response: Response) => {
-          if (response.data[1] !== StatusCodeEnum.success) {
-            commit('INVITE_RESPONSE_REQUEST_ERROR', {
-              code: response.data[1],
-              msg: response.data[0].msg,
-            });
-            return;
-          }
-          commit('INVITE_RESPONSE_REQUEST_SUCCESS', response.data[0]);
-        })
+        .then((response: InviteResponseResponseType) => commit('INVITE_RESPONSE_REQUEST_SUCCESS', response))
         .catch((error) => {
           commit('INVITE_RESPONSE_REQUEST_ERROR', {
             code: error.toJSON().status,
@@ -362,16 +315,7 @@ const UserStoreModule: Module<UserState, any> = {
     fetchInvitedUsers({ commit }: CommitFunction) {
       commit('INVITED_USERS_REQUEST_START');
       invitedUsers()
-        .then((response: Response) => {
-          if (response.data[1] !== StatusCodeEnum.success) {
-            commit('INVITED_USERS_REQUEST_ERROR', {
-              code: response.data[1],
-              msg: response.data[0].msg,
-            });
-            return;
-          }
-          commit('INVITED_USERS_REQUEST_SUCCESS', response.data[0]);
-        })
+        .then((response: FetchInvitedUsersResponseType) => commit('INVITED_USERS_REQUEST_SUCCESS', response))
         .catch((error) => {
           commit('INVITED_USERS_REQUEST_ERROR', {
             code: error.toJSON().status,
@@ -382,16 +326,7 @@ const UserStoreModule: Module<UserState, any> = {
     fetchUserFriends({ commit }: CommitFunction) {
       commit('USER_FRIENDS_REQUEST_START');
       userFriends()
-        .then((response: Response) => {
-          if (response.data[1] !== StatusCodeEnum.success) {
-            commit('USER_FRIENDS_REQUEST_ERROR', {
-              code: response.data[1],
-              msg: response.data[0].msg,
-            });
-            return;
-          }
-          commit('USER_FRIENDS_REQUEST_SUCCESS', response.data[0]);
-        })
+        .then((response: FetchUserFriendsResponseType) => commit('USER_FRIENDS_REQUEST_SUCCESS', response))
         .catch((error) => {
           commit('USER_FRIENDS_REQUEST_ERROR', {
             code: error.toJSON().status,
@@ -402,16 +337,7 @@ const UserStoreModule: Module<UserState, any> = {
     fetchUserChat({ commit }: CommitFunction, input: UserChatRequestType) {
       commit('USER_CHAT_REQUEST_START');
       userChat(input.username, input.userTag)
-        .then((response: Response) => {
-          if (response.data[1] !== StatusCodeEnum.success) {
-            commit('USER_CHAT_REQUEST_ERROR', {
-              code: response.data[1],
-              msg: response.data[0].msg,
-            });
-            return;
-          }
-          commit('USER_CHAT_REQUEST_SUCCESS', response.data[0]);
-        })
+        .then((response: FetchUserChatResponseType) => commit('USER_CHAT_REQUEST_SUCCESS', response))
         .catch((error) => {
           commit('USER_CHAT_REQUEST_ERROR', {
             code: error.toJSON().status,
@@ -441,16 +367,7 @@ const UserStoreModule: Module<UserState, any> = {
       if (!encryptedMessageReciever || !encryptedMessageSender) return;
       commit('SEND_MESSAGE_REQUEST_START');
       sendMessage(input.username, input.userTag, encryptedMessageSender, encryptedMessageReciever)
-        .then((response: Response) => {
-          if (response.data[1] !== StatusCodeEnum.success) {
-            commit('SEND_MESSAGE_REQUEST_ERROR', {
-              code: response.data[1],
-              msg: response.data[0].msg,
-            });
-            return;
-          }
-          commit('SEND_MESSAGE_REQUEST_SUCCESS', response.data[0]);
-        })
+        .then((response: UserMessageResponseType) => commit('SEND_MESSAGE_REQUEST_SUCCESS', response))
         .catch((error) => {
           commit('SEND_MESSAGE_REQUEST_ERROR', {
             code: error.toJSON().status,

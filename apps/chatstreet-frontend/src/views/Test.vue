@@ -105,7 +105,7 @@ import { computed, defineComponent, ref } from 'vue';
 
 import store from '../store/index';
 import { readImageFile, ReadImageFileCallbackType } from '../utlis/functions.util';
-import { InviteResponseEnumFromString, InviteResponseEnum } from '../services/request.type';
+import { InviteResponseEnumFromString, InviteResponseEnum } from '../services/types/request.type';
 
 export default defineComponent({
   name: 'Test',

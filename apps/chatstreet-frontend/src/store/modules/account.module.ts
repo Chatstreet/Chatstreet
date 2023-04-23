@@ -2,16 +2,14 @@ import { StoreRequestResultType, CommitFunction } from '@/store/types/store.type
 import { Module } from 'vuex';
 import {
   RegisterUserResponeType,
-  Response,
-  StatusCodeEnum,
+  ErrorResponseType,
   VerifyEmailResponseType,
   LoginResponseType,
   RefreshResponseType,
   LogoutResponseType,
   ResetPasswordResponseType,
   ChangePasswordResponseType,
-  ResponseErrorType,
-} from '@/services/response.type';
+} from '@/services/types/response.type';
 import {
   registerUser,
   verifyEmail,
@@ -27,7 +25,7 @@ import {
   LoginRequestType,
   ResetPasswordRequestType,
   ChangePasswordRequestType,
-} from '@/services/request.type';
+} from '@/services/types/request.type';
 
 export interface AccountState {
   registerUserRequest?: StoreRequestResultType;
@@ -63,7 +61,7 @@ const AccountStoreModule: Module<AccountState, any> = {
         result,
       };
     },
-    REGISTER_USER_REQUEST_ERROR(state: AccountState, error: ResponseErrorType) {
+    REGISTER_USER_REQUEST_ERROR(state: AccountState, error: ErrorResponseType) {
       state.registerUserRequest = {
         status: 'ERROR',
         error,
@@ -80,7 +78,7 @@ const AccountStoreModule: Module<AccountState, any> = {
         result,
       };
     },
-    VERIFY_EMAIL_REQUEST_ERROR(state: AccountState, error: ResponseErrorType) {
+    VERIFY_EMAIL_REQUEST_ERROR(state: AccountState, error: ErrorResponseType) {
       state.verifyEmailRequest = {
         status: 'ERROR',
         error,
@@ -97,7 +95,7 @@ const AccountStoreModule: Module<AccountState, any> = {
         result,
       };
     },
-    LOGIN_REQUEST_ERROR(state: AccountState, error: ResponseErrorType) {
+    LOGIN_REQUEST_ERROR(state: AccountState, error: ErrorResponseType) {
       state.loginRequest = {
         status: 'ERROR',
         error,
@@ -114,7 +112,7 @@ const AccountStoreModule: Module<AccountState, any> = {
         result,
       };
     },
-    REFRESH_REQUEST_ERROR(state: AccountState, error: ResponseErrorType) {
+    REFRESH_REQUEST_ERROR(state: AccountState, error: ErrorResponseType) {
       state.refreshRequest = {
         status: 'ERROR',
         error,
@@ -131,7 +129,7 @@ const AccountStoreModule: Module<AccountState, any> = {
         result,
       };
     },
-    LOGOUT_REQUEST_ERROR(state: AccountState, error: ResponseErrorType) {
+    LOGOUT_REQUEST_ERROR(state: AccountState, error: ErrorResponseType) {
       state.logoutRequest = {
         status: 'ERROR',
         error,
@@ -148,7 +146,7 @@ const AccountStoreModule: Module<AccountState, any> = {
         result,
       };
     },
-    RESET_PASSWORD_REQUEST_ERROR(state: AccountState, error: ResponseErrorType) {
+    RESET_PASSWORD_REQUEST_ERROR(state: AccountState, error: ErrorResponseType) {
       state.resetPasswordRequest = {
         status: 'ERROR',
         error,
@@ -165,7 +163,7 @@ const AccountStoreModule: Module<AccountState, any> = {
         result,
       };
     },
-    CHANGE_PASSWORD_REQUEST_ERROR(state: AccountState, error: ResponseErrorType) {
+    CHANGE_PASSWORD_REQUEST_ERROR(state: AccountState, error: ErrorResponseType) {
       state.changePasswordRequest = {
         status: 'ERROR',
         error,
@@ -176,16 +174,7 @@ const AccountStoreModule: Module<AccountState, any> = {
     postRegisterUser({ commit }: CommitFunction, input: RegisterUserRequestType) {
       commit('REGISTER_USER_REQUEST_START');
       registerUser(input.firstName, input.lastName, input.username, input.password, input.email)
-        .then((response: Response) => {
-          if (response.data[1] !== StatusCodeEnum.success) {
-            commit('REGISTER_USER_REQUEST_ERROR', {
-              code: response.data[1],
-              msg: response.data[0].msg,
-            });
-            return;
-          }
-          commit('REGISTER_USER_REQUEST_SUCCESS', response.data[0]);
-        })
+        .then((response: RegisterUserResponeType) => commit('REGISTER_USER_REQUEST_SUCCESS', response))
         .catch((error) => {
           commit('REGISTER_USER_REQUEST_ERROR', {
             code: error.toJSON().status,
@@ -196,16 +185,7 @@ const AccountStoreModule: Module<AccountState, any> = {
     postVerifyEmail({ commit }: CommitFunction, input: VerifyEmailRequestType) {
       commit('VERIFY_EMAIL_REQUEST_START');
       verifyEmail(input.code)
-        .then((response: Response) => {
-          if (response.data[1] !== StatusCodeEnum.success) {
-            commit('VERIFY_EMAIL_REQUEST_ERROR', {
-              code: response.data[1],
-              msg: response.data[0].msg,
-            });
-            return;
-          }
-          commit('VERIFY_EMAIL_REQUEST_SUCCESS', response.data[0]);
-        })
+        .then((response: VerifyEmailResponseType) => commit('VERIFY_EMAIL_REQUEST_SUCCESS', response))
         .catch((error) => {
           commit('VERIFY_EMAIL_REQUEST_ERROR', {
             code: error.toJSON().status,
@@ -216,16 +196,7 @@ const AccountStoreModule: Module<AccountState, any> = {
     postLogin({ commit }: CommitFunction, input: LoginRequestType) {
       commit('LOGIN_REQUEST_START');
       login(input.username, input.userTag, input.password)
-        .then((response: Response) => {
-          if (response.data[1] !== StatusCodeEnum.success) {
-            commit('LOGIN_REQUEST_ERROR', {
-              code: response.data[1],
-              msg: response.data[0].msg,
-            });
-            return;
-          }
-          commit('LOGIN_REQUEST_SUCCESS', response.data[0]);
-        })
+        .then((response: LoginResponseType) => commit('LOGIN_REQUEST_SUCCESS', response))
         .catch((error) => {
           commit('LOGIN_REQUEST_ERROR', {
             code: error.toJSON().status,
@@ -236,16 +207,7 @@ const AccountStoreModule: Module<AccountState, any> = {
     postRefresh({ commit }: CommitFunction) {
       commit('REFRESH_REQUEST_START');
       refresh()
-        .then((response: Response) => {
-          if (response.data[1] !== StatusCodeEnum.success) {
-            commit('REFRESH_REQUEST_ERROR', {
-              code: response.data[1],
-              msg: response.data[0].msg,
-            });
-            return;
-          }
-          commit('REFRESH_REQUEST_SUCCESS', response.data[0]);
-        })
+        .then((response: RefreshResponseType) => commit('REFRESH_REQUEST_SUCCESS', response))
         .catch((error) => {
           commit('REFRESH_REQUEST_ERROR', {
             code: error.toJSON().status,
@@ -256,16 +218,7 @@ const AccountStoreModule: Module<AccountState, any> = {
     postLogout({ commit }: CommitFunction) {
       commit('LOGOUT_REQUEST_START');
       logout()
-        .then((response: Response) => {
-          if (response.data[1] !== StatusCodeEnum.success) {
-            commit('LOGOUT_REQUEST_ERROR', {
-              code: response.data[1],
-              msg: response.data[0].msg,
-            });
-            return;
-          }
-          commit('LOGOUT_REQUEST_SUCCESS', response.data[0]);
-        })
+        .then((response: LogoutResponseType) => commit('LOGOUT_REQUEST_SUCCESS', response))
         .catch((error) => {
           commit('LOGOUT_REQUEST_ERROR', {
             code: error.toJSON().status,
@@ -276,16 +229,7 @@ const AccountStoreModule: Module<AccountState, any> = {
     postResetPassword({ commit }: CommitFunction, input: ResetPasswordRequestType) {
       commit('RESET_PASSWORD_REQUEST_START');
       resetPassword(input.username, input.userTag)
-        .then((response: Response) => {
-          if (response.data[1] !== StatusCodeEnum.success) {
-            commit('RESET_PASSWORD_REQUEST_ERROR', {
-              code: response.data[1],
-              msg: response.data[0].msg,
-            });
-            return;
-          }
-          commit('RESET_PASSWORD_REQUEST_SUCCESS', response.data[0]);
-        })
+        .then((response: ResetPasswordResponseType) => commit('RESET_PASSWORD_REQUEST_SUCCESS', response))
         .catch((error) => {
           commit('RESET_PASSWORD_REQUEST_ERROR', {
             code: error.toJSON().status,
@@ -296,16 +240,7 @@ const AccountStoreModule: Module<AccountState, any> = {
     postChangePassword({ commit }: CommitFunction, input: ChangePasswordRequestType) {
       commit('CHANGE_PASSWORD_REQUEST_START');
       changePassword(input.code, input.password)
-        .then((response: Response) => {
-          if (response.data[1] !== StatusCodeEnum.success) {
-            commit('CHANGE_PASSWORD_REQUEST_ERROR', {
-              code: response.data[1],
-              msg: response.data[0].msg,
-            });
-            return;
-          }
-          commit('CHANGE_PASSWORD_REQUEST_SUCCESS', response.data[0]);
-        })
+        .then((response: ChangePasswordResponseType) => commit('CHANGE_PASSWORD_REQUEST_SUCCESS', response))
         .catch((error) => {
           commit('CHANGE_PASSWORD_REQUEST_ERROR', {
             code: error.toJSON().status,

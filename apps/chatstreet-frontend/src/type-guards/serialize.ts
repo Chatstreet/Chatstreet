@@ -1,4 +1,4 @@
-import { ResponseTypesEnums } from '@/services/response.type';
+import { ResponseTypesEnums } from '@/services/types/response.type';
 
 function typeOrNull<T extends ResponseTypesEnums>(value: any, typeName: string): T | null {
   if (value.name === typeName) {
