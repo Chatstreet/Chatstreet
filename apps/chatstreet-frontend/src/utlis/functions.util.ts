@@ -8,4 +8,6 @@ const readImageFile = (file: any, callback: ReadImageFileCallbackType) => {
   reader.readAsBinaryString(file);
 };
 
-export { ReadImageFileCallbackType, readImageFile };
+const kebabize = (name: string) => name.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? '-' : '') + $);
+
+export { ReadImageFileCallbackType, readImageFile, kebabize };
