@@ -1,10 +1,10 @@
-import { ResponseTypesEnums, ResponseErrorType } from '@/services/response.type';
+import { ResponseTypesEnums, ErrorResponseType } from '@/services/types/response.type';
 import { Commit } from 'vuex';
 
 type StoreRequestResultType = {
   status: 'PENDING' | 'SUCCESS' | 'ERROR';
   result?: ResponseTypesEnums;
-  error?: ResponseErrorType;
+  error?: ErrorResponseType;
 };
 
 interface CommitFunction {

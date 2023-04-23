@@ -1,11 +1,12 @@
-enum StatusCodeEnum {
-  success = 200,
-  badRequest = 400,
-}
+type ErrorResponseType = {
+  code: 400 | 401 | 404 | 500;
+  msg: string;
+};
 
 type RegisterUserResponeType = {
   name: 'register-user';
   register: boolean;
+  verification_sent?: boolean;
   user_tag?: number;
   unset_params?: unknown;
   msg?: string;
@@ -134,11 +135,6 @@ type UserMessageResponseType = {
   msg?: string;
 };
 
-type ResponseErrorType = {
-  code: number;
-  msg: string;
-};
-
 type ResponseTypesEnums =
   | RegisterUserResponeType
   | VerifyEmailResponseType
@@ -157,19 +153,8 @@ type ResponseTypesEnums =
   | FetchUserChatResponseType
   | UserMessageResponseType;
 
-interface DataList {
-  0: ResponseTypesEnums;
-  1: StatusCodeEnum;
-}
-
-type Response = {
-  data: DataList;
-};
-
 export {
-  Response,
-  StatusCodeEnum,
-  ResponseErrorType,
+  ErrorResponseType,
   ResponseTypesEnums,
   VerifyEmailResponseType,
   RegisterUserResponeType,
