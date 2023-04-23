@@ -45,7 +45,7 @@ def create_app(env: str):
             sys.exit(0)
 
     app.config.from_object(conf)
-    CORS(app)
+    CORS(app, supports_credentials=True)
 
     jwt = JWTManager(app)
     mail = Mail(app)

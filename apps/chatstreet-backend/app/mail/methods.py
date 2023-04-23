@@ -14,6 +14,7 @@ def send(message: Message) -> bool:
 
 
 def send_verification_mail(recipient: str, verification_code: str) -> bool:
+    from app import conf
     if not is_valid_email(recipient):
         return False
     title: str = 'Verify Your E-Mail'
@@ -25,6 +26,7 @@ def send_verification_mail(recipient: str, verification_code: str) -> bool:
 
 
 def send_password_reset_mail(recipient: str, username: str, reset_code: str) -> bool:
+    from app import conf
     if not is_valid_email(recipient):
         return False
     title: str = 'Reset Your Password'

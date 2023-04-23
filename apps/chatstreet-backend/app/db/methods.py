@@ -68,6 +68,7 @@ def registerUser(first_name: str, last_name: str, password: str, email: str, use
         key_pair: KeyType = encryption.genKey()
         salty_private_key: str = encryption.encrypt(key_pair.private_key)
         salty_public_key: str = encryption.encrypt(key_pair.public_key)
+        salty_password: str = encryption.encrypt(password)
         keys: UserKey = UserKey(salty_private_key, salty_public_key)
         settings: UserSetting = UserSetting(description)
         user_tag: int = get_available_user_tag(username)
@@ -77,7 +78,7 @@ def registerUser(first_name: str, last_name: str, password: str, email: str, use
         db.session.refresh(keys)
         db.session.refresh(settings)
 
-        user: User = User(keys.id, settings.id, first_name, last_name, password, email, username, user_tag,
+        user: User = User(keys.id, settings.id, first_name, last_name, salty_password, email, username, user_tag,
                           verification_code)
 
         db.session.add(user)
@@ -166,7 +167,7 @@ def is_valid_user(user: UserType, password: str) -> bool:
     if user_tuple is None:
         return False
     delete_password_reset_code(user_tuple)
-    return user_tuple.password == password and user_tuple.account_verification_code is None
+    return encryption.decrypt(user_tuple.password) == password and user_tuple.account_verification_code is None
 
 
 def verify_account(code: str) -> True:
