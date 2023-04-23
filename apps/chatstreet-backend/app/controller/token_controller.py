@@ -81,13 +81,12 @@ def login():
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
 
-        return response
-
     except InvalidUserException:
-        return jsonify({
+        response = jsonify({
             "login": False,
             "msg": "The username or password is invalid or you haven't verified your email address yet"
         }, 401)
+    return response
 
 
 @token_controller.route(BASE_ROUTE + 'refresh', methods=['POST'])

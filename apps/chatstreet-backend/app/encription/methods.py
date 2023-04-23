@@ -21,8 +21,6 @@ class Encryption:
         return self.fernet_key.encrypt(bytes(string, encoding='UTF-8')).decode(encoding='UTF-8')
 
     def decrypt(self, string: str) -> str:
-        print(string)
-        # print(bytes_key)
         return self.fernet_key.decrypt(bytes(string, encoding='UTF-8')).decode(encoding='UTF-8')
 
     @staticmethod
