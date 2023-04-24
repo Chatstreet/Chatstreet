@@ -7,3 +7,31 @@
 <template>
   <router-view />
 </template>
+
+<script lang="ts">
+import { defineComponent, onMounted, computed } from 'vue';
+import Playbook from '@/playbook/playbook';
+import { useRoute } from 'vue-router';
+import router from './router';
+
+export default defineComponent({
+  name: 'App',
+  setup(_, context) {
+    const route = useRoute();
+    const routeName = computed(() => window.location.pathname.split('/')[1]);
+    onMounted(() => {
+      // if (routeName.value === 'test') return;
+      Playbook.play('VALIDATE_USER_AUTHENTICATION_STATE').then(
+        (isAuthenticated: boolean | null) => {
+          if (!isAuthenticated) {
+            router.push({ name: 'Login' });
+          } else if (routeName.value === 'login') {
+            router.push({ path: '/' });
+          }
+        },
+      );
+    });
+    return {};
+  },
+});
+</script>

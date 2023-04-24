@@ -29,6 +29,9 @@ import { defineComponent } from 'vue';
 import LoginTemplate from '@/components/templates/LoginTemplate.vue';
 import LoginContainer from '@/components/organisms/LoginContainer.vue';
 import InputButton from '@/components/atoms/InputButton.vue';
+import Playbook from '@/playbook/playbook';
+// eslint-disable-next-line import/no-cycle
+import router from '@/router';
 
 type UserDataType = {
   user: string;
@@ -41,8 +44,17 @@ export default defineComponent({
   setup() {
     // TODO: Add Event Type
     const handleLoginContainerSubmit = (event: UserDataType) => {
-      // TODO: Implement
-      console.log(event);
+      Playbook.play('USER_AUTHENTICATION', {
+        username: event.user.split('#')[0],
+        userTag: event.user.split('#')[1],
+        password: event.password,
+      }).then((errorMessage: string | null) => {
+        if (errorMessage) {
+          // TODO: Display Errors
+          return;
+        }
+        router.push({ path: '/' });
+      });
     };
     const handleResetPasswordClick = () => {
       // TODO: Implement
