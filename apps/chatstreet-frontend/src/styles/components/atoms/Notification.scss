@@ -1,0 +1,62 @@
+@function neg($val) {
+    @return $val * -1
+};
+
+$margin: 4rem;
+$height: 6rem;
+
+.notification {
+    z-index: 100;
+    position: fixed;
+    height: $height;
+    bottom: 0;
+    width: calc(100% - $margin*2);
+    margin: 0rem $margin;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &--open {
+        transition-timing-function: ease-in;
+        transition: all 0.4s;
+        opacity: 1;
+        margin-bottom: 6rem;
+    }
+    &--closed {
+        transition-timing-function: ease-out;
+        transition: all 0.4s;
+        opacity: 0;
+        margin-bottom: neg($height);
+        .notification-text {
+            transition-timing-function: ease-out;
+            transition: all 0.4s;
+            width: 0;
+            font-size: 0;
+        }
+    }
+}
+
+.notification-text {
+    transition-timing-function: ease-in;
+    transition: all 0.4s;
+    font-size: 2rem;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    line-height: $height;
+    border-radius: 0.5rem;
+    background-color: var(--chatstreet-white);
+    &--info {
+        color: var(--chatstreet-black);
+        border: 1px solid var(--chatstreet-gray);
+    }
+    &--error {
+        color: var(--chatstreet-red);
+        border: 1px solid var(--chatstreet-red);
+    }
+    &--success {
+        color: var(--chatstreet-green);
+        border: 1px solid var(--chatstreet-green);
+    }
+}

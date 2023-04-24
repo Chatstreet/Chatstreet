@@ -45,7 +45,7 @@ import InputField from '../molecules/InputField.vue';
 export default defineComponent({
   name: 'LoginContainer',
   components: { InputButton, InputField },
-  emits: ['submit'],
+  emits: ['submit', 'error'],
   setup(_, context) {
     const formValidationErrors = ref({
       userInputError: true,
@@ -59,10 +59,18 @@ export default defineComponent({
         password: passwordInput.value,
       });
     };
+    const error = () => {
+      context.emit(
+        'error',
+        formValidationErrors.value.userInputError
+          ? 'The user input value is invalid'
+          : 'The password input value is invalid',
+      );
+    };
     const formIsValid = () => !formValidationErrors.value.userInputError && !formValidationErrors.value.passwordInputError;
     const handleFormSubmit = () => {
       if (!formIsValid()) {
-        alert('Invalid Inputs');
+        error();
         return;
       }
       submit();

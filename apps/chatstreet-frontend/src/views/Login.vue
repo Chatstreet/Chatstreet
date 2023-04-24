@@ -6,7 +6,11 @@
       <h1>Login</h1>
     </template>
     <template v-slot:main>
-      <login-container class="login-main-container" @submit="handleLoginContainerSubmit" />
+      <login-container
+        class="login-main-container"
+        @submit="handleLoginContainerSubmit"
+        @error="handleLoginContainerError"
+      />
     </template>
     <template v-slot:footer>
       <input-button
@@ -21,14 +25,16 @@
       </input-button>
     </template>
   </login-template>
+  <notification v-model:model-value="showNotification" :value="notificationTitle" mode="error" />
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 
 import LoginTemplate from '@/components/templates/LoginTemplate.vue';
 import LoginContainer from '@/components/organisms/LoginContainer.vue';
 import InputButton from '@/components/atoms/InputButton.vue';
+import Notification from '@/components/atoms/Notification.vue';
 import Playbook from '@/playbook/playbook';
 // eslint-disable-next-line import/no-cycle
 import router from '@/router';
@@ -40,8 +46,18 @@ type UserDataType = {
 
 export default defineComponent({
   name: 'Login',
-  components: { LoginTemplate, LoginContainer, InputButton },
+  components: {
+    LoginTemplate,
+    LoginContainer,
+    InputButton,
+    Notification,
+  },
   setup() {
+    const notificationTitle = ref('');
+    const showNotification = ref(false);
+    const notify = () => {
+      showNotification.value = true;
+    };
     // TODO: Add Event Type
     const handleLoginContainerSubmit = (event: UserDataType) => {
       Playbook.play('USER_AUTHENTICATION', {
@@ -56,13 +72,20 @@ export default defineComponent({
         router.push({ path: '/' });
       });
     };
+    const handleLoginContainerError = (msg: string) => {
+      notificationTitle.value = msg;
+      notify();
+    };
     const handleResetPasswordClick = () => {
       // TODO: Implement
       console.log('reset password');
     };
     return {
       handleLoginContainerSubmit,
+      handleLoginContainerError,
       handleResetPasswordClick,
+      showNotification,
+      notificationTitle,
     };
   },
 });
