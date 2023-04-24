@@ -193,9 +193,9 @@ const AccountStoreModule: Module<AccountState, any> = {
           });
         });
     },
-    postLogin({ commit }: CommitFunction, input: LoginRequestType) {
+    async postLogin({ commit }: CommitFunction, input: LoginRequestType) {
       commit('LOGIN_REQUEST_START');
-      login(input.username, input.userTag, input.password)
+      await login(input.username, input.userTag, input.password)
         .then((response: LoginResponseType) => commit('LOGIN_REQUEST_SUCCESS', response))
         .catch((error) => {
           commit('LOGIN_REQUEST_ERROR', {
@@ -204,9 +204,9 @@ const AccountStoreModule: Module<AccountState, any> = {
           });
         });
     },
-    postRefresh({ commit }: CommitFunction) {
+    async postRefresh({ commit }: CommitFunction) {
       commit('REFRESH_REQUEST_START');
-      refresh()
+      await refresh()
         .then((response: RefreshResponseType) => commit('REFRESH_REQUEST_SUCCESS', response))
         .catch((error) => {
           commit('REFRESH_REQUEST_ERROR', {
