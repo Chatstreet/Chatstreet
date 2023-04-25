@@ -9,7 +9,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, computed } from 'vue';
+import {
+  defineComponent, onMounted, computed, watch,
+} from 'vue';
 import Playbook from '@/playbook/playbook';
 import { useRoute } from 'vue-router';
 import router from './router';
@@ -17,19 +19,33 @@ import router from './router';
 export default defineComponent({
   name: 'App',
   setup() {
-    const route = useRoute();
-    onMounted(() => {
-      if (route.name === 'EmailVerification' || route.name === 'ResetPassword') return;
+    const route = computed(() => useRoute());
+
+    const checkLoginState = (routeName: string) => {
+      if (routeName === 'EmailVerification' || routeName === 'ResetPassword') return;
       Playbook.play('VALIDATE_USER_AUTHENTICATION_STATE').then(
         (isAuthenticated: boolean | null) => {
           if (!isAuthenticated) {
             router.push({ name: 'Login' });
-          } else if (route.name === 'Login') {
-            router.push({ path: '/' });
+          } else if (routeName === 'Login') {
+            router.push({ name: 'Home' });
           }
         },
       );
+    };
+
+    onMounted(() => {
+      if (!route.value.name) return;
+      checkLoginState(route.value.name.toString());
     });
+
+    watch(
+      () => route.value.name,
+      (newRouteName) => {
+        if (!newRouteName) return;
+        checkLoginState(newRouteName.toString());
+      },
+    );
     return {};
   },
 });

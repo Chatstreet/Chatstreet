@@ -1,7 +1,11 @@
 <style lang="scss" src="@/styles/components/atoms/InputButton.scss" scoped></style>
 
 <template>
-  <button class="input-button" :class="buttonModeClassModifier">
+  <button
+    class="input-button"
+    :class="[buttonModeClassModifier, buttonDisabledClassModifier]"
+    :disabled="disabled"
+  >
     <slot name="content"></slot>
   </button>
 </template>
@@ -18,11 +22,17 @@ export default defineComponent({
       type: String as PropType<ButtonModeType>,
       default: 'default',
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
-  setup(props, context) {
+  setup(props) {
     const buttonModeClassModifier = computed(() => `input-button--${props.mode}`);
+    const buttonDisabledClassModifier = computed(() => (props.disabled ? 'input-button--disabled' : ''));
     return {
       buttonModeClassModifier,
+      buttonDisabledClassModifier,
     };
   },
 });

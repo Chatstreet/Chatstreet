@@ -44,8 +44,8 @@ const registerUser = async (
   return result;
 };
 
-const verifyEmail = async (code: string): Promise<VerifyEmailResponseType> => {
-  const result: VerifyEmailResponseType = await post('/account/verification')
+const verifyEmail = async (code: string): Promise<RequestResponseType<VerifyEmailResponseType>> => {
+  const result: RequestResponseType<VerifyEmailResponseType> = await post('/account/verification')
     .request({
       data: {
         code,
