@@ -183,10 +183,19 @@ const AccountStoreModule: Module<AccountState, any> = {
           });
         });
     },
-    postVerifyEmail({ commit }: CommitFunction, input: VerifyEmailRequestType) {
+    async postVerifyEmail({ commit }: CommitFunction, input: VerifyEmailRequestType) {
       commit('VERIFY_EMAIL_REQUEST_START');
-      verifyEmail(input.code)
-        .then((response: VerifyEmailResponseType) => commit('VERIFY_EMAIL_REQUEST_SUCCESS', response))
+      await verifyEmail(input.code)
+        .then((response: RequestResponseType<VerifyEmailResponseType>) => {
+          if (response[1] !== 200) {
+            commit('VERIFY_EMAIL_REQUEST_ERROR', {
+              code: response[1],
+              msg: response[0].msg,
+            });
+          } else {
+            commit('VERIFY_EMAIL_REQUEST_SUCCESS', response);
+          }
+        })
         .catch((error) => {
           commit('VERIFY_EMAIL_REQUEST_ERROR', {
             code: error.toJSON().status,

@@ -11,6 +11,10 @@
         color: var(--chatstreet-white);
         background-color: var(--chatstreet-green);
         border-radius: 0.5rem;
+
+        &.input-button--disabled {
+            background-color: var(--chatstreet-light-gray);
+        }
     }
 
     &--plain {

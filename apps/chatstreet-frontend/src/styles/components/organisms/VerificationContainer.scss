@@ -1,0 +1,63 @@
+.verification-container {
+    width: 100%;
+    height: fit-content;
+    padding: 4rem 6rem 6rem;
+    position: relative;
+
+    background-color: var(--chatstreet-white);
+    border-radius: 0.5rem;
+    box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
+    -webkit-box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
+    -moz-box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 2rem;
+}
+
+.verification-container-icon {
+    height: 6rem;
+}
+
+.verification-container-info {
+    font-size: 2rem;
+    text-align: center;
+}
+
+.verification-container-button {
+    z-index: 1;
+    position: absolute;
+    width: 50%;
+    height: 6rem;
+    left: 50%;
+    bottom: 0%;
+    transform: translate(-50%, 50%);
+
+    box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
+    -webkit-box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
+    -moz-box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
+
+    .button-content {
+        height: 100%;
+        padding: 1rem;
+    }
+}
+
+.icon-loading {
+    animation-name: spin;
+    animation-duration: 1000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear; 
+}
+
+@keyframes spin {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
+}
