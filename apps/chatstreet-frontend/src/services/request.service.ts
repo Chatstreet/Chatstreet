@@ -19,6 +19,7 @@ import {
   UpdateUserDataResponseType,
   UserInviteResponseType,
   InviteResponseResponseType,
+  RequestResponseType,
 } from './types/response.type';
 
 // POST
@@ -58,8 +59,8 @@ const login = async (
   username: string,
   userTag: string,
   password: string,
-): Promise<LoginResponseType> => {
-  const result: LoginResponseType = await post('/token/auth')
+): Promise<RequestResponseType<LoginResponseType>> => {
+  const result: RequestResponseType<LoginResponseType> = await post('/token/auth')
     .request({
       data: {
         username,

@@ -3,6 +3,11 @@ type ErrorResponseType = {
   msg: string;
 };
 
+type RequestResponseType<T> = {
+  0: T;
+  1: 400 | 401 | 404 | 500 | 200;
+};
+
 type RegisterUserResponeType = {
   name: 'register-user';
   register: boolean;
@@ -173,4 +178,5 @@ export {
   FetchUserChatResponseType,
   UserMessageResponseType,
   UserMessageType,
+  RequestResponseType,
 };

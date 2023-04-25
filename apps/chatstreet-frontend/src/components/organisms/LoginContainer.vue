@@ -25,6 +25,9 @@
       type="password"
       required
     />
+    <p class="login-container-error" :class="loginContainerErrorModifierClass">
+      {{ errorMessage }}
+    </p>
     <input-button class="login-container-button" mode="confirm" type="submit">
       <template v-slot:content>
         <div class="button-content">
@@ -36,7 +39,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
+import {
+  computed, defineComponent, ref, watch,
+} from 'vue';
 
 import { validUser } from '@/utlis/functions.util';
 import InputButton from '../atoms/InputButton.vue';
@@ -46,7 +51,13 @@ export default defineComponent({
   name: 'LoginContainer',
   components: { InputButton, InputField },
   emits: ['submit', 'error'],
-  setup(_, context) {
+  props: {
+    errorMessage: {
+      type: String,
+      default: '',
+    },
+  },
+  setup(props, context) {
     const formValidationErrors = ref({
       userInputError: true,
       passwordInputError: true,
@@ -81,6 +92,9 @@ export default defineComponent({
     const setPasswordInput = (value: string) => {
       passwordInput.value = value;
     };
+    const loginContainerErrorModifierClass = computed(
+      (): string => `login-container-error--${props.errorMessage.length > 0 ? 'visible' : 'hide'}`,
+    );
     watch(userInput, (newValue: string) => {
       formValidationErrors.value.userInputError = !validUser(newValue);
     });
@@ -94,6 +108,7 @@ export default defineComponent({
       userInput,
       passwordInput,
       formValidationErrors,
+      loginContainerErrorModifierClass,
     };
   },
 });

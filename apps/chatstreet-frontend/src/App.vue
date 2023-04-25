@@ -16,16 +16,15 @@ import router from './router';
 
 export default defineComponent({
   name: 'App',
-  setup(_, context) {
+  setup() {
     const route = useRoute();
-    const routeName = computed(() => window.location.pathname.split('/')[1]);
     onMounted(() => {
-      // if (routeName.value === 'test') return;
+      if (route.name === 'EmailVerification' || route.name === 'ResetPassword') return;
       Playbook.play('VALIDATE_USER_AUTHENTICATION_STATE').then(
         (isAuthenticated: boolean | null) => {
           if (!isAuthenticated) {
             router.push({ name: 'Login' });
-          } else if (routeName.value === 'login') {
+          } else if (route.name === 'Login') {
             router.push({ path: '/' });
           }
         },
