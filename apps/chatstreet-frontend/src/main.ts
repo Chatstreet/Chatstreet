@@ -7,4 +7,5 @@ import store from './store';
 
 const app = createApp(App);
 app.config.globalProperties.$store = store;
-app.use(store).use(router).use(VueAxios, axios).mount('#app');
+app.use(store).use(router).use(VueAxios, axios);
+router.isReady().then(() => app.mount('#app'));

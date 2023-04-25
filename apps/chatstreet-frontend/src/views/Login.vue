@@ -10,6 +10,7 @@
         class="login-main-container"
         @submit="handleLoginContainerSubmit"
         @error="handleLoginContainerError"
+        :errorMessage="loginError"
       />
     </template>
     <template v-slot:footer>
@@ -53,12 +54,12 @@ export default defineComponent({
     Notification,
   },
   setup() {
+    const loginError = ref('');
     const notificationTitle = ref('');
     const showNotification = ref(false);
     const notify = () => {
       showNotification.value = true;
     };
-    // TODO: Add Event Type
     const handleLoginContainerSubmit = (event: UserDataType) => {
       Playbook.play('USER_AUTHENTICATION', {
         username: event.user.split('#')[0],
@@ -66,7 +67,7 @@ export default defineComponent({
         password: event.password,
       }).then((errorMessage: string | null) => {
         if (errorMessage) {
-          // TODO: Display Errors
+          loginError.value = errorMessage;
           return;
         }
         router.push({ path: '/' });
@@ -86,6 +87,7 @@ export default defineComponent({
       handleResetPasswordClick,
       showNotification,
       notificationTitle,
+      loginError,
     };
   },
 });

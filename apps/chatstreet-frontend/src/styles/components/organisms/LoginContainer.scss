@@ -53,3 +53,14 @@
     -webkit-box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
     -moz-box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
 }
+
+.login-container-error {
+    font-size: 1.5rem;
+    text-align: center;
+    &--visible {
+        color: var(--chatstreet-red);
+    }
+    &--hiden {
+        color: transparent;
+    }
+}

@@ -9,6 +9,7 @@ import {
   LogoutResponseType,
   ResetPasswordResponseType,
   ChangePasswordResponseType,
+  RequestResponseType,
 } from '@/services/types/response.type';
 import {
   registerUser,
@@ -196,7 +197,16 @@ const AccountStoreModule: Module<AccountState, any> = {
     async postLogin({ commit }: CommitFunction, input: LoginRequestType) {
       commit('LOGIN_REQUEST_START');
       await login(input.username, input.userTag, input.password)
-        .then((response: LoginResponseType) => commit('LOGIN_REQUEST_SUCCESS', response))
+        .then((response: RequestResponseType<LoginResponseType>) => {
+          if (response[1] !== 200) {
+            commit('LOGIN_REQUEST_ERROR', {
+              code: response[1],
+              msg: response[0].msg,
+            });
+          } else {
+            commit('LOGIN_REQUEST_SUCCESS', response);
+          }
+        })
         .catch((error) => {
           commit('LOGIN_REQUEST_ERROR', {
             code: error.toJSON().status,
