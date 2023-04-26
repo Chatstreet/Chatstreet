@@ -10,7 +10,9 @@
         class="login-main-container"
         @submit="handleLoginContainerSubmit"
         @error="handleLoginContainerError"
+        @resetPwd="handleResetPasswordEvent"
         :errorMessage="loginError"
+        ref="loginContainerRef"
       />
     </template>
     <template v-slot:footer>
@@ -26,11 +28,15 @@
       </input-button>
     </template>
   </login-template>
-  <notification v-model:model-value="showNotification" :value="notificationTitle" mode="error" />
+  <notification
+    v-model:model-value="showNotification"
+    :value="notificationTitle"
+    :mode="notificationType"
+  />
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, Ref } from 'vue';
 
 import LoginTemplate from '@/components/templates/LoginTemplate.vue';
 import LoginContainer from '@/components/organisms/LoginContainer.vue';
@@ -54,13 +60,17 @@ export default defineComponent({
     Notification,
   },
   setup() {
+    const notificationType: Ref<'error' | 'success' | 'info'> = ref('info');
+    const loginContainerRef = ref();
     const loginError = ref('');
     const notificationTitle = ref('');
     const showNotification = ref(false);
-    const notify = () => {
+    const notify = (type: 'error' | 'success' | 'info' = 'error') => {
+      notificationType.value = type;
       showNotification.value = true;
     };
     const handleLoginContainerSubmit = (event: UserDataType) => {
+      loginError.value = '';
       Playbook.play('USER_AUTHENTICATION', {
         username: event.user.split('#')[0],
         userTag: event.user.split('#')[1],
@@ -78,16 +88,32 @@ export default defineComponent({
       notify();
     };
     const handleResetPasswordClick = () => {
-      // TODO: Implement
-      console.log('reset password');
+      loginContainerRef.value.handleResetPassword();
+    };
+    const handleResetPasswordEvent = (user: string) => {
+      // TODO: Test
+      Playbook.play('ACCOUNT_RESET_PASSWORD', {
+        username: user.split('#')[0],
+        userTag: user.split('#')[1],
+      }).then((errorMessage: string | null) => {
+        if (errorMessage) {
+          notificationTitle.value = errorMessage;
+          notify();
+        }
+        notificationTitle.value = 'Check your email';
+        notify('info');
+      });
     };
     return {
       handleLoginContainerSubmit,
       handleLoginContainerError,
       handleResetPasswordClick,
+      handleResetPasswordEvent,
       showNotification,
       notificationTitle,
       loginError,
+      notificationType,
+      loginContainerRef,
     };
   },
 });

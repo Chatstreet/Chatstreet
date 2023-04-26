@@ -93,8 +93,8 @@ const logout = async (): Promise<LogoutResponseType> => {
 const resetPassword = async (
   username: string,
   user_tag: string,
-): Promise<ResetPasswordResponseType> => {
-  const result: ResetPasswordResponseType = await post('/account/reset/code')
+): Promise<RequestResponseType<ResetPasswordResponseType>> => {
+  const result: RequestResponseType<ResetPasswordResponseType> = await post('/account/reset/code')
     .request({
       data: {
         username,
@@ -108,8 +108,10 @@ const resetPassword = async (
 const changePassword = async (
   code: string,
   password: string,
-): Promise<ChangePasswordResponseType> => {
-  const result: ChangePasswordResponseType = await post('/account/reset/password')
+): Promise<RequestResponseType<ChangePasswordResponseType>> => {
+  const result: RequestResponseType<ChangePasswordResponseType> = await post(
+    '/account/reset/password',
+  )
     .request({
       data: {
         code,

@@ -31,7 +31,8 @@
     <input-button class="login-container-button" mode="confirm" type="submit">
       <template v-slot:content>
         <div class="button-content">
-          <span class="icon-arrow-right" />
+          <spinner v-if="submitIsPending" />
+          <span v-else class="icon-arrow-right" />
         </div>
       </template>
     </input-button>
@@ -46,11 +47,12 @@ import {
 import { validUser } from '@/utlis/functions.util';
 import InputButton from '../atoms/InputButton.vue';
 import InputField from '../molecules/InputField.vue';
+import Spinner from '../atoms/Spinner.vue';
 
 export default defineComponent({
   name: 'LoginContainer',
-  components: { InputButton, InputField },
-  emits: ['submit', 'error'],
+  components: { InputButton, InputField, Spinner },
+  emits: ['submit', 'error', 'resetPwd'],
   props: {
     errorMessage: {
       type: String,
@@ -58,19 +60,23 @@ export default defineComponent({
     },
   },
   setup(props, context) {
+    const submitIsPending = ref(false);
     const formValidationErrors = ref({
       userInputError: true,
       passwordInputError: true,
     });
     const userInput = ref('');
     const passwordInput = ref('');
-    const submit = () => {
+    const submitLogin = () => {
       context.emit('submit', {
         user: userInput.value,
         password: passwordInput.value,
       });
     };
-    const error = () => {
+    const resetPassword = () => {
+      context.emit('resetPwd', userInput.value);
+    };
+    const submitError = () => {
       context.emit(
         'error',
         formValidationErrors.value.userInputError
@@ -78,13 +84,25 @@ export default defineComponent({
           : 'The password input value is invalid',
       );
     };
-    const formIsValid = () => !formValidationErrors.value.userInputError && !formValidationErrors.value.passwordInputError;
+    const resetPasswordError = () => {
+      context.emit('error', 'Please provide a valid user input');
+    };
+    const loginFormIsValid = () => !formValidationErrors.value.userInputError && !formValidationErrors.value.passwordInputError;
+    const resetPasswordFormIsValid = () => !formValidationErrors.value.userInputError;
     const handleFormSubmit = () => {
-      if (!formIsValid()) {
-        error();
+      if (!loginFormIsValid()) {
+        submitError();
         return;
       }
-      submit();
+      submitIsPending.value = true;
+      submitLogin();
+    };
+    const handleResetPassword = () => {
+      if (!resetPasswordFormIsValid()) {
+        resetPasswordError();
+        return;
+      }
+      resetPassword();
     };
     const setUserInput = (value: string) => {
       userInput.value = value;
@@ -101,6 +119,15 @@ export default defineComponent({
     watch(passwordInput, (newValue: string) => {
       formValidationErrors.value.passwordInputError = newValue === '';
     });
+    watch(
+      () => props.errorMessage,
+      (newErrorMessage: string) => {
+        if (newErrorMessage.length > 0) {
+          submitIsPending.value = false;
+        }
+      },
+    );
+    context.expose({ handleResetPassword });
     return {
       handleFormSubmit,
       setUserInput,
@@ -109,6 +136,7 @@ export default defineComponent({
       passwordInput,
       formValidationErrors,
       loginContainerErrorModifierClass,
+      submitIsPending,
     };
   },
 });

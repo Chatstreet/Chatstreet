@@ -20,9 +20,12 @@ export default defineComponent({
   name: 'App',
   setup() {
     const route = computed(() => useRoute());
-
+    const isExcludedRouteName = (routeName: string) => {
+      const excludedRouteNames: string[] = ['EmailVerification', 'ResetPassword'];
+      return excludedRouteNames.includes(routeName);
+    };
     const checkLoginState = (routeName: string) => {
-      if (routeName === 'EmailVerification' || routeName === 'ResetPassword') return;
+      if (isExcludedRouteName(routeName)) return;
       Playbook.play('VALIDATE_USER_AUTHENTICATION_STATE').then(
         (isAuthenticated: boolean | null) => {
           if (!isAuthenticated) {
@@ -33,12 +36,10 @@ export default defineComponent({
         },
       );
     };
-
     onMounted(() => {
       if (!route.value.name) return;
       checkLoginState(route.value.name.toString());
     });
-
     watch(
       () => route.value.name,
       (newRouteName) => {

@@ -245,10 +245,19 @@ const AccountStoreModule: Module<AccountState, any> = {
           });
         });
     },
-    postResetPassword({ commit }: CommitFunction, input: ResetPasswordRequestType) {
+    async postResetPassword({ commit }: CommitFunction, input: ResetPasswordRequestType) {
       commit('RESET_PASSWORD_REQUEST_START');
-      resetPassword(input.username, input.userTag)
-        .then((response: ResetPasswordResponseType) => commit('RESET_PASSWORD_REQUEST_SUCCESS', response))
+      await resetPassword(input.username, input.userTag)
+        .then((response: RequestResponseType<ResetPasswordResponseType>) => {
+          if (response[1] !== 200) {
+            commit('RESET_PASSWORD_REQUEST_ERROR', {
+              code: response[1],
+              msg: response[0].msg,
+            });
+          } else {
+            commit('RESET_PASSWORD_REQUEST_SUCCESS', response);
+          }
+        })
         .catch((error) => {
           commit('RESET_PASSWORD_REQUEST_ERROR', {
             code: error.toJSON().status,
@@ -256,10 +265,19 @@ const AccountStoreModule: Module<AccountState, any> = {
           });
         });
     },
-    postChangePassword({ commit }: CommitFunction, input: ChangePasswordRequestType) {
+    async postChangePassword({ commit }: CommitFunction, input: ChangePasswordRequestType) {
       commit('CHANGE_PASSWORD_REQUEST_START');
-      changePassword(input.code, input.password)
-        .then((response: ChangePasswordResponseType) => commit('CHANGE_PASSWORD_REQUEST_SUCCESS', response))
+      await changePassword(input.code, input.password)
+        .then((response: RequestResponseType<ChangePasswordResponseType>) => {
+          if (response[1] !== 200) {
+            commit('CHANGE_PASSWORD_REQUEST_ERROR', {
+              code: response[1],
+              msg: response[0].msg,
+            });
+          } else {
+            commit('CHANGE_PASSWORD_REQUEST_SUCCESS', response);
+          }
+        })
         .catch((error) => {
           commit('CHANGE_PASSWORD_REQUEST_ERROR', {
             code: error.toJSON().status,
