@@ -5,7 +5,9 @@
     height: 4rem;
 
     &--default {
-        // TODO: Implement
+        border: 1px solid var(--chatstreet-light-gray);
+        border-radius: 2rem;
+        padding-left: 2rem;
     }
 
     &--sharp {

@@ -207,7 +207,7 @@ def reset_password(code: str, password: str) -> bool:
     if user_tuple is None:
         return False
     user_tuple.password_reset_code = None
-    user_tuple.password = password
+    user_tuple.password = encryption.encrypt(password)
     db.session.commit()
     return True
 

@@ -31,7 +31,7 @@ export default defineComponent({
     },
     mode: {
       type: String as PropType<NotificationModeType>,
-      default: 'info',
+      required: true,
     },
   },
   setup(props, context) {

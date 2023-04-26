@@ -2,7 +2,8 @@
 
 <template>
   <form class="verification-container" @submit.prevent="handleFormSubmit">
-    <span class="verification-container-icon" :class="verificationContainerIconClass" />
+    <spinner class="verification-container-icon" v-if="isLoading" />
+    <span class="verification-container-icon" v-else :class="verificationContainerIconClass" />
     <h2 class="verification-container-title">{{ computedTitle }}</h2>
     <p class="verification-container-info">{{ computedInfo }}</p>
     <input-button
@@ -25,6 +26,7 @@ import { defineComponent, PropType, computed } from 'vue';
 
 import router from '@/router';
 import InputButton from '../atoms/InputButton.vue';
+import Spinner from '../atoms/Spinner.vue';
 
 type VerificationContainerDisplay = {
   title: string;
@@ -39,7 +41,7 @@ type VerificationContainerDisplayMap = {
 
 export default defineComponent({
   name: 'VerificationContainer',
-  components: { InputButton },
+  components: { InputButton, Spinner },
   props: {
     state: {
       type: String as PropType<'PENDING' | 'SUCCESS' | 'ERROR' | undefined>,
@@ -60,7 +62,6 @@ export default defineComponent({
     const isFailure = computed(() => props.state === 'ERROR');
 
     const verificationContainerIconClass = computed(() => {
-      if (isLoading.value) return 'icon-loading';
       if (isSuccess.value) return 'icon-success';
       if (isFailure.value) return 'icon-error';
       return '';
