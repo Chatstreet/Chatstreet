@@ -86,7 +86,7 @@ export default defineComponent({
       if (inputValue.value === '') {
         return '';
       }
-      return `input-field--${props.valid ? 'error' : 'valid'}`;
+      return `input-field--${props.valid ? 'valid' : 'error'}`;
     });
     const titleStateClassModifier = computed((): string => (inputFocused.value || inputValue.value.length > 0 ? 'input-field-title--focus' : ''));
     const isPassword = computed(() => props.type === 'password');

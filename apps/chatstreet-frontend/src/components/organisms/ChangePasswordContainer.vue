@@ -14,7 +14,7 @@
     />
     <input-field
       class="change-password-container-input"
-      title="Confirm Password"
+      title="Repeat Password"
       :modelValue="passwordConfirmationInput"
       @update="setPasswordConfirmationInput"
       :valid="isPasswordInputError"

@@ -21,7 +21,12 @@ export default defineComponent({
   setup() {
     const route = computed(() => useRoute());
     const isExcludedRouteName = (routeName: string) => {
-      const excludedRouteNames: string[] = ['EmailVerification', 'ResetPassword'];
+      const excludedRouteNames: string[] = [
+        'EmailVerification',
+        'ResetPassword',
+        'Test',
+        'Register',
+      ];
       return excludedRouteNames.includes(routeName);
     };
     const checkLoginState = (routeName: string) => {

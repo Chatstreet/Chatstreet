@@ -310,6 +310,7 @@ export default defineComponent({
         profileUpdateInput.value = content;
       };
       readImageFile(file, imageCallback);
+      console.log(profileUpdateInput.value);
     };
     const handleUserInvitesClick = () => store.dispatch('user/fetchUserInvites');
     const handleInviteUserClick = () => inviteUser(inviteUserInput.value);

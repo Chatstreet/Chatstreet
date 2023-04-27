@@ -29,8 +29,8 @@ const registerUser = async (
   username: string,
   password: string,
   email: string,
-): Promise<RegisterUserResponeType> => {
-  const result: RegisterUserResponeType = await post('/token/register')
+): Promise<RequestResponseType<RegisterUserResponeType>> => {
+  const result: RequestResponseType<RegisterUserResponeType> = await post('/token/register')
     .request({
       data: {
         first_name: firstName,

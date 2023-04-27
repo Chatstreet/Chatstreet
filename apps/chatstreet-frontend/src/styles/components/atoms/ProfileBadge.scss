@@ -1,0 +1,8 @@
+.profile-badge {
+    padding: 2.5rem;
+    border-radius: 100%;
+    background-color: var(--chatstreet-white);
+    >* {
+        border-radius: 100%;
+    }
+}

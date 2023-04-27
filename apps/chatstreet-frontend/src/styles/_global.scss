@@ -4,10 +4,12 @@
     box-sizing: border-box;
 }
 
-:root {
+#app {
     height: 100vh;
     width: 100vw;
+}
 
+:root {
     --chatstreet-green: #19ac63;
     --chatstreet-light-green: #99ffcc;
     --chatstreet-white: #ffffff;

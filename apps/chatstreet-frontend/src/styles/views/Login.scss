@@ -2,11 +2,12 @@
     margin-top: 20%;
 }
 
-.login-main-button {
+.login-footer-button {
     width: fit-content;
     padding: 2rem;
     .button-content {
         font-size: 2rem;
         color: var(--chatstreet-white);
+        text-decoration: underline;
     }
 }

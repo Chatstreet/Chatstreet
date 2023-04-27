@@ -2,12 +2,14 @@ import UserAuthenticationPlaybook from './lib/user-authentication.playbook';
 import ValidateUserAuthenticationStatePlaybook from './lib/validate-user-authentication-state.playbook';
 import AccountResetPasswordPlaybook from './lib/account-reset-password.playbook';
 import { IPlaybook, PlaybookNamesType, PlaybookReturnType } from './playbook.type';
+import UserRegistrationPlaybook from './lib/user-registration.playbook';
 
 export default class Playbook {
   private static readonly playbooks: IPlaybook<any>[] = [
     new ValidateUserAuthenticationStatePlaybook(),
     new UserAuthenticationPlaybook(),
     new AccountResetPasswordPlaybook(),
+    new UserRegistrationPlaybook(),
   ];
 
   public static async play<T extends PlaybookNamesType>(
