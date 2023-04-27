@@ -2,9 +2,7 @@
 
 <template>
   <form class="login-container" @submit.prevent="handleFormSubmit">
-    <div class="login-container-profile">
-      <span class="icon-profile" />
-    </div>
+    <profile-badge class="login-container-profile" />
     <input-field
       class="login-container-user"
       title="Username#Tag"
@@ -48,10 +46,16 @@ import { validUser } from '@/utlis/functions.util';
 import InputButton from '../atoms/InputButton.vue';
 import InputField from '../molecules/InputField.vue';
 import Spinner from '../atoms/Spinner.vue';
+import ProfileBadge from '../atoms/ProfileBadge.vue';
 
 export default defineComponent({
   name: 'LoginContainer',
-  components: { InputButton, InputField, Spinner },
+  components: {
+    InputButton,
+    InputField,
+    Spinner,
+    ProfileBadge,
+  },
   emits: ['submit', 'error', 'resetPwd'],
   props: {
     errorMessage: {
@@ -62,8 +66,8 @@ export default defineComponent({
   setup(props, context) {
     const submitIsPending = ref(false);
     const formValidationErrors = ref({
-      userInputError: true,
-      passwordInputError: true,
+      userInputError: false,
+      passwordInputError: false,
     });
     const userInput = ref('');
     const passwordInput = ref('');
@@ -80,15 +84,15 @@ export default defineComponent({
       context.emit(
         'error',
         formValidationErrors.value.userInputError
-          ? 'The user input value is invalid'
-          : 'The password input value is invalid',
+          ? 'The password input value is invalid'
+          : 'The user input value is invalid',
       );
     };
     const resetPasswordError = () => {
       context.emit('error', 'Please provide a valid user input');
     };
-    const loginFormIsValid = () => !formValidationErrors.value.userInputError && !formValidationErrors.value.passwordInputError;
-    const resetPasswordFormIsValid = () => !formValidationErrors.value.userInputError;
+    const loginFormIsValid = () => formValidationErrors.value.userInputError && formValidationErrors.value.passwordInputError;
+    const resetPasswordFormIsValid = () => formValidationErrors.value.userInputError;
     const handleFormSubmit = () => {
       if (!loginFormIsValid()) {
         submitError();
@@ -114,10 +118,10 @@ export default defineComponent({
       (): string => `login-container-error--${props.errorMessage.length > 0 ? 'visible' : 'hide'}`,
     );
     watch(userInput, (newValue: string) => {
-      formValidationErrors.value.userInputError = !validUser(newValue);
+      formValidationErrors.value.userInputError = validUser(newValue);
     });
     watch(passwordInput, (newValue: string) => {
-      formValidationErrors.value.passwordInputError = newValue === '';
+      formValidationErrors.value.passwordInputError = newValue !== '';
     });
     watch(
       () => props.errorMessage,

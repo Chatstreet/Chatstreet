@@ -1,22 +1,19 @@
-.login-container {
-    z-index: 0;
+.register-container {
     position: relative;
     width: 100%;
     height: fit-content;
-    padding: 8rem 6rem;
-
+    background-color: var(--chatstreet-white);
+    padding: 8rem 6rem 6rem;
     box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
     -webkit-box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
     -moz-box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
-
     border-radius: 0.5rem;
-
     display: flex;
     flex-direction: column;
     gap: 4rem;
 }
 
-.login-container-button{
+.register-container-button{
     z-index: 1;
     position: absolute;
     width: 50%;
@@ -35,7 +32,7 @@
     }
 }
 
-.login-container-profile{
+.register-container-profile{
     z-index: 1;
     position: absolute;
     left: 50%;
@@ -48,13 +45,14 @@
     -moz-box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
 }
 
-.login-container-error {
+.register-container-error {
+    height: 1.5rem;
     font-size: 1.5rem;
     text-align: center;
     &--visible {
         color: var(--chatstreet-red);
     }
-    &--hiden {
+    &--hidden {
         color: transparent;
     }
 }

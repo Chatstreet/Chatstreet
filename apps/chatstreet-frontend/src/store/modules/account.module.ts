@@ -172,10 +172,25 @@ const AccountStoreModule: Module<AccountState, any> = {
     },
   },
   actions: {
-    postRegisterUser({ commit }: CommitFunction, input: RegisterUserRequestType) {
+    async postRegisterUser({ commit }: CommitFunction, input: RegisterUserRequestType) {
       commit('REGISTER_USER_REQUEST_START');
-      registerUser(input.firstName, input.lastName, input.username, input.password, input.email)
-        .then((response: RegisterUserResponeType) => commit('REGISTER_USER_REQUEST_SUCCESS', response))
+      await registerUser(
+        input.firstName,
+        input.lastName,
+        input.username,
+        input.password,
+        input.email,
+      )
+        .then((response: RequestResponseType<RegisterUserResponeType>) => {
+          if (response[1] !== 200) {
+            commit('REGISTER_USER_REQUEST_ERROR', {
+              code: response[1],
+              msg: response[0].msg,
+            });
+          } else {
+            commit('REGISTER_USER_REQUEST_SUCCESS', response);
+          }
+        })
         .catch((error) => {
           commit('REGISTER_USER_REQUEST_ERROR', {
             code: error.toJSON().status,

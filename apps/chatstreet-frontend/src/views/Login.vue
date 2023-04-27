@@ -17,13 +17,23 @@
     </template>
     <template v-slot:footer>
       <input-button
-        class="login-main-button"
+        class="login-footer-button"
         mode="plain"
         type="button"
         @click="handleResetPasswordClick"
       >
         <template v-slot:content>
           <p class="button-content">Reset Password</p>
+        </template>
+      </input-button>
+      <input-button
+        class="login-footer-button"
+        mode="plain"
+        type="button"
+        @click="handleRegisterClick"
+      >
+        <template v-slot:content>
+          <p class="button-content">Don't have an account yet?</p>
         </template>
       </input-button>
     </template>
@@ -91,7 +101,6 @@ export default defineComponent({
       loginContainerRef.value.handleResetPassword();
     };
     const handleResetPasswordEvent = (user: string) => {
-      // TODO: Test
       Playbook.play('ACCOUNT_RESET_PASSWORD', {
         username: user.split('#')[0],
         userTag: user.split('#')[1],
@@ -104,11 +113,15 @@ export default defineComponent({
         notify('info');
       });
     };
+    const handleRegisterClick = () => {
+      router.push({ name: 'Register' });
+    };
     return {
       handleLoginContainerSubmit,
       handleLoginContainerError,
       handleResetPasswordClick,
       handleResetPasswordEvent,
+      handleRegisterClick,
       showNotification,
       notificationTitle,
       loginError,
