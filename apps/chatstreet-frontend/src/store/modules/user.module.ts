@@ -62,6 +62,7 @@ const UserStoreModule: Module<UserState, any> = {
     getInvitedUsersRequest: (state: UserState) => state.invitedUsersRequest ?? {},
     getInvitedUsersRequestResult: (state: UserState) => state.invitedUsersRequest?.result ?? {},
     getUserFriendsRequest: (state: UserState) => state.userFriendsRequest ?? {},
+    getUserFriendsRequestResult: (state: UserState) => state.userFriendsRequest?.result ?? {},
     getUserChatRequest: (state: UserState) => state.userChatRequest ?? {},
     // user data is mandatory for this call
     getUserChatRequestDecrypted: (state: UserState) => {

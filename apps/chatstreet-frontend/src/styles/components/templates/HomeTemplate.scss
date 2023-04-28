@@ -10,6 +10,7 @@
 }
 
 .home-template-header {
+    z-index: 10;
     position: fixed;
     min-width: 100%;
     top: 0;
@@ -28,6 +29,7 @@
 }
 
 .home-template-footer {
+    z-index: 10;
     position: fixed;
     min-width: 100%;
     bottom: 0;

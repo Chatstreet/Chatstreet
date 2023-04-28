@@ -179,4 +179,5 @@ export {
   UserMessageResponseType,
   UserMessageType,
   RequestResponseType,
+  UserInviteType,
 };
