@@ -10,9 +10,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent, ComputedRef, computed, PropType,
-} from 'vue';
+import { defineComponent, ComputedRef, computed } from 'vue';
 
 export default defineComponent({
   name: 'ProfileBadge',

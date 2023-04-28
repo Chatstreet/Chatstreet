@@ -16,15 +16,19 @@
         <profile-badge
           class="header-profile-badge"
           :file="settingsContainerUserData.profile"
-          @click="handleHomeHeaderProfileClick"
+          @click="handleProfileBadgeClick"
         />
-        <ul v-if="isProfileContextOpen" class="header-profile-context">
+        <ul v-if="isProfileContextOpen" class="header-profile-context" ref="profileContextRef">
           <li class="profile-context-item" @click="handleLogoutClick">Logout</li>
         </ul>
       </div>
     </template>
     <template v-slot:main>
-      <themes-container class="home-main-themes" />
+      <themes-container
+        class="home-main-themes"
+        ref="themesContainerRef"
+        :userFriends="userFriends"
+      />
       <confluence-container
         class="home-main-confluence"
         :class="homeConfluenceTransitionClassModifier"
@@ -69,6 +73,7 @@ import {
   FetchInvitedUsersResponseType,
   FetchUserInvitesResponseType,
 } from '@/services/types/response.type';
+import { useOnClickOutside } from '@/composition';
 
 type SettingsContainerDataType = {
   username: string;
@@ -94,6 +99,8 @@ export default defineComponent({
     const THEMES_HASH = '#themes';
     const SETTINGS_HASH = '#settings';
 
+    const themesContainerRef = ref();
+    const profileContextRef = ref<HTMLElement | null>(null);
     const isProfileContextOpen: Ref<boolean> = ref(false);
     const notificationType: Ref<'error' | 'success' | 'info'> = ref('info');
     const notificationTitle = ref('');
@@ -114,6 +121,7 @@ export default defineComponent({
     );
     const userInvited = computed(() => store.getters['user/getInvitedUsersRequestResult'][0] ?? {});
     const userInvites = computed(() => store.getters['user/getUserInvitesRequestResult'][0] ?? {});
+    const userFriends = computed(() => store.getters['user/getUserFriendsRequestResult'][0] ?? {});
     watch(
       () => isValidHash.value,
       (isValid: boolean) => {
@@ -158,11 +166,13 @@ export default defineComponent({
     const fetchInvited = () => store.dispatch('user/fetchInvitedUsers');
     const fetchInvites = () => store.dispatch('user/fetchUserInvites');
     const fetchUserData = () => store.dispatch('user/fetchUserData');
+    const fetchUserFriends = () => store.dispatch('user/fetchUserFriends');
 
     onMounted(() => {
       fetchInvited();
       fetchInvites();
       fetchUserData();
+      fetchUserFriends();
     });
 
     watch(
@@ -192,6 +202,7 @@ export default defineComponent({
             break;
           }
           case '#themes': {
+            fetchUserFriends();
             break;
           }
           case '#settings': {
@@ -260,19 +271,22 @@ export default defineComponent({
       });
       fetchInvites();
     };
-    const handleHomeHeaderProfileClick = () => {
-      isProfileContextOpen.value = !isProfileContextOpen.value;
+    const handleProfileBadgeClick = () => {
+      isProfileContextOpen.value = true;
     };
     const handleLogoutClick = () => {
       clearAllCookies();
       router.push({ name: 'Login' });
     };
+    useOnClickOutside(profileContextRef, () => {
+      isProfileContextOpen.value = false;
+    });
     return {
       handleSettingsContainerSubmit,
       handleConfluenceContainerSubmit,
       handleConfluenceContainerDeclineInvite,
       handleConfluenceContainerAcceptInvite,
-      handleHomeHeaderProfileClick,
+      handleProfileBadgeClick,
       handleLogoutClick,
       isProfileContextOpen,
       notificationType,
@@ -286,6 +300,8 @@ export default defineComponent({
       settingsContainerUserData,
       userInvited,
       userInvites,
+      userFriends,
+      themesContainerRef,
     };
   },
 });
