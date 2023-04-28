@@ -124,8 +124,8 @@ const changePassword = async (
 
 const updateUserData = async (
   data: UpdateUserDataRequestType,
-): Promise<UpdateUserDataResponseType> => {
-  const result: UpdateUserDataResponseType = await post('/api/user/data')
+): Promise<RequestResponseType<UpdateUserDataResponseType>> => {
+  const result: RequestResponseType<UpdateUserDataResponseType> = await post('/api/user/data')
     .request({
       data,
       headers: {
@@ -136,8 +136,11 @@ const updateUserData = async (
   return result;
 };
 
-const inviteUser = async (username: string, user_tag: number): Promise<UserInviteResponseType> => {
-  const result: UserInviteResponseType = await post('/api/user/invites')
+const inviteUser = async (
+  username: string,
+  user_tag: number,
+): Promise<RequestResponseType<UserInviteResponseType>> => {
+  const result: RequestResponseType<UserInviteResponseType> = await post('/api/user/invites')
     .request({
       data: {
         username,
@@ -155,8 +158,10 @@ const inviteResponse = async (
   contact_username: string,
   contact_user_tag: number,
   response: InviteResponseEnum,
-): Promise<InviteResponseResponseType> => {
-  const result: InviteResponseResponseType = await post('/api/user/invite/respond')
+): Promise<RequestResponseType<InviteResponseResponseType>> => {
+  const result: RequestResponseType<InviteResponseResponseType> = await post(
+    '/api/user/invite/respond',
+  )
     .request({
       data: {
         contact_username,
@@ -195,8 +200,8 @@ const sendMessage = async (
 
 // GET
 
-const userData = async (): Promise<FetchUserDataResponseType> => {
-  const result: FetchUserDataResponseType = await get('/api/user/data')
+const userData = async (): Promise<RequestResponseType<FetchUserDataResponseType>> => {
+  const result: RequestResponseType<FetchUserDataResponseType> = await get('/api/user/data')
     .request({})
     .then((response: AxiosResponse<any, any>) => response.data);
   return result;

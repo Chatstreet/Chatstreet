@@ -1,0 +1,98 @@
+.settings-container {
+    --padding-top: 4rem;
+    --padding-left-right: 4rem;
+    --padding-bottom: 6rem;
+
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+    background-color: var(--chatstreet-light-gray);
+    padding: calc(8rem + var(--padding-top)) var(--padding-left-right) calc(7rem + var(--padding-bottom));
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.settings-container-primary {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 6rem;
+    margin-bottom: 6rem;
+
+    .primary-profile-picture-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+
+        .profile-picture-wrapper-image {
+            min-width: 14rem;
+            height: 14rem;
+        }
+    
+        .profile-picture-wrapper-input {
+            display: none;
+        }
+
+        .profile-picture-wrapper-label {
+            width: 100%;
+            font-size: 2rem;
+            line-break: normal;
+            text-align: center;
+
+            &:hover {
+
+            }
+        }
+    }
+
+    .primary-username-input {
+        margin-top: 4.5rem;
+    }
+}
+
+.settings-container-secondary {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4rem;
+}
+
+.settings-container-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4rem;
+
+    > * {
+        border-top: 1px solid var(--chatstreet-gray);
+        border-bottom: 1px solid var(--chatstreet-gray);
+    }
+
+    .button-content {
+        font-size: 2rem;
+        padding: 2rem;
+    }
+
+    .buttons-delete {
+        position: relative;
+        color: var(--chatstreet-red);
+        border-color: var(--chatstreet-red);
+    }
+
+    .buttons-delete-info {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+}

@@ -3,13 +3,23 @@
     height: fit-content;
     border: none;
 
-    &--default {
-        // TODO: Implement
+    &:disabled {
+        opacity: 50%;
     }
 
     &--confirm {
         color: var(--chatstreet-white);
         background-color: var(--chatstreet-green);
+        border-radius: 0.5rem;
+
+        &.input-button--disabled {
+            background-color: var(--chatstreet-light-gray);
+        }
+    }
+
+    &--decline {
+        color: var(--chatstreet-white);
+        background-color: var(--chatstreet-red);
         border-radius: 0.5rem;
 
         &.input-button--disabled {

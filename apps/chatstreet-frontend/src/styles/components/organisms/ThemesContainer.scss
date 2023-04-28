@@ -1,0 +1,10 @@
+.themes-container {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    overflow-y: scroll;
+    background-color: var(--chatstreet-light-gray);
+    box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
+    -webkit-box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
+    -moz-box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
+}

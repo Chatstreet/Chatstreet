@@ -1,7 +1,19 @@
 .profile-badge {
-    padding: 2.5rem;
     border-radius: 100%;
+}
+
+.profile-badge-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+}
+
+.profile-badge-no-image {
+    width: 100%;
+    height: 100%;
+    padding: 2.5rem;
     background-color: var(--chatstreet-white);
+    border-radius: 100%;
     >* {
         border-radius: 100%;
     }

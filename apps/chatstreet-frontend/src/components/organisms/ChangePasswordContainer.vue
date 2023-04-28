@@ -8,7 +8,7 @@
       title="Password"
       :modelValue="passwordInput"
       @update="setPasswordInput"
-      :valid="hasPasswordInputError"
+      :valid="!hasPasswordInputError"
       type="password"
       required
     />
@@ -17,7 +17,7 @@
       title="Repeat Password"
       :modelValue="passwordConfirmationInput"
       @update="setPasswordConfirmationInput"
-      :valid="isPasswordInputError"
+      :valid="!isPasswordInputError"
       type="password"
       required
     />

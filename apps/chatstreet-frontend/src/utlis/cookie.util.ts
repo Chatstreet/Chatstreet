@@ -7,4 +7,11 @@ const getCookieByName = (cookie: string): string => {
 // TODO: Implement
 const setCookie = (name: string, value: string): boolean => false;
 
-export { getCookieByName, setCookie };
+const clearAllCookies = () => {
+  const Cookies = document.cookie.split(';');
+  for (let i = 0; i < Cookies.length; i += 1) {
+    document.cookie = `${Cookies[i]}=; expires=${new Date(0).toUTCString()}`;
+  }
+};
+
+export { getCookieByName, setCookie, clearAllCookies };

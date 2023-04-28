@@ -14,6 +14,7 @@ import {
   UserMessageResponseType,
   UserMessageType,
   ErrorResponseType,
+  RequestResponseType,
 } from '@/services/types/response.type';
 
 import {
@@ -55,9 +56,11 @@ const UserStoreModule: Module<UserState, any> = {
     getUpdateUserDataRequest: (state: UserState) => state.updateUserDataRequest ?? {},
     getUserDataRequest: (state: UserState) => state.userDataRequest ?? {},
     getUserInvitesRequest: (state: UserState) => state.userInvitesRequest ?? {},
+    getUserInvitesRequestResult: (state: UserState) => state.userInvitesRequest?.result ?? {},
     getUserInviteRequest: (state: UserState) => state.userInviteRequest ?? {},
     getInviteResponseRequest: (state: UserState) => state.inviteResponseRequest ?? {},
     getInvitedUsersRequest: (state: UserState) => state.invitedUsersRequest ?? {},
+    getInvitedUsersRequestResult: (state: UserState) => state.invitedUsersRequest?.result ?? {},
     getUserFriendsRequest: (state: UserState) => state.userFriendsRequest ?? {},
     getUserChatRequest: (state: UserState) => state.userChatRequest ?? {},
     // user data is mandatory for this call
@@ -116,6 +119,7 @@ const UserStoreModule: Module<UserState, any> = {
     USER_DATA_REQUEST_START(state: UserState) {
       state.userDataRequest = {
         status: 'PENDING',
+        ...state.userDataRequest,
       };
     },
     USER_DATA_REQUEST_SUCCESS(state: UserState, result: FetchUserDataResponseType) {
@@ -136,6 +140,7 @@ const UserStoreModule: Module<UserState, any> = {
     USER_INVITES_REQUEST_START(state: UserState) {
       state.userInvitesRequest = {
         status: 'PENDING',
+        ...state.userInvitesRequest,
       };
     },
     USER_INVITES_REQUEST_SUCCESS(state: UserState, result: FetchUserInvitesResponseType) {
@@ -187,6 +192,7 @@ const UserStoreModule: Module<UserState, any> = {
     INVITED_USERS_REQUEST_START(state: UserState) {
       state.invitedUsersRequest = {
         status: 'PENDING',
+        ...state.invitedUsersRequest,
       };
     },
     INVITED_USERS_REQUEST_SUCCESS(state: UserState, result: FetchInvitedUsersResponseType) {
@@ -257,10 +263,19 @@ const UserStoreModule: Module<UserState, any> = {
     },
   },
   actions: {
-    postUpdateUserData({ commit }: CommitFunction, input: UpdateUserDataRequestType) {
+    async postUpdateUserData({ commit }: CommitFunction, input: UpdateUserDataRequestType) {
       commit('UPDATE_USER_DATA_REQUEST_START');
-      updateUserData(input)
-        .then((response: UpdateUserDataResponseType) => commit('UPDATE_USER_DATA_REQUEST_SUCCESS', response))
+      await updateUserData(input)
+        .then((response: RequestResponseType<UpdateUserDataResponseType>) => {
+          if (response[1] !== 200) {
+            commit('UPDATE_USER_DATA_REQUEST_ERROR', {
+              code: response[1],
+              msg: response[0].msg,
+            });
+          } else {
+            commit('UPDATE_USER_DATA_REQUEST_SUCCESS', response[0]);
+          }
+        })
         .catch((error) => {
           commit('UPDATE_USER_DATA_REQUEST_ERROR', {
             code: error.toJSON().status,
@@ -268,10 +283,19 @@ const UserStoreModule: Module<UserState, any> = {
           });
         });
     },
-    fetchUserData({ commit }: CommitFunction) {
+    async fetchUserData({ commit }: CommitFunction) {
       commit('USER_DATA_REQUEST_START');
-      userData()
-        .then((response: FetchUserDataResponseType) => commit('USER_DATA_REQUEST_SUCCESS', response))
+      await userData()
+        .then((response: RequestResponseType<FetchUserDataResponseType>) => {
+          if (response[1] !== 200) {
+            commit('USER_DATA_REQUEST_ERROR', {
+              code: response[1],
+              msg: response[0].msg,
+            });
+          } else {
+            commit('USER_DATA_REQUEST_SUCCESS', response[0]);
+          }
+        })
         .catch((error) => {
           commit('USER_DATA_REQUEST_ERROR', {
             code: error.toJSON().status,
@@ -290,10 +314,19 @@ const UserStoreModule: Module<UserState, any> = {
           });
         });
     },
-    postUserInvite({ commit }: CommitFunction, input: InviteUserRequestType) {
+    async postUserInvite({ commit }: CommitFunction, input: InviteUserRequestType) {
       commit('USER_INVITE_REQUEST_START');
-      inviteUser(input.username, input.userTag)
-        .then((response: UserInviteResponseType) => commit('USER_INVITE_REQUEST_SUCCESS', response))
+      await inviteUser(input.username, input.userTag)
+        .then((response: RequestResponseType<UserInviteResponseType>) => {
+          if (response[1] !== 200) {
+            commit('USER_INVITE_REQUEST_ERROR', {
+              code: response[1],
+              msg: response[0].msg,
+            });
+          } else {
+            commit('USER_INVITE_REQUEST_SUCCESS', response[0]);
+          }
+        })
         .catch((error) => {
           commit('USER_INVITE_REQUEST_ERROR', {
             code: error.toJSON().status,
@@ -301,10 +334,19 @@ const UserStoreModule: Module<UserState, any> = {
           });
         });
     },
-    postInviteResponse({ commit }: CommitFunction, input: InviteResponseRequestType) {
+    async postInviteResponse({ commit }: CommitFunction, input: InviteResponseRequestType) {
       commit('INVITE_RESPONSE_REQUEST_START');
-      inviteResponse(input.username, input.userTag, input.response)
-        .then((response: InviteResponseResponseType) => commit('INVITE_RESPONSE_REQUEST_SUCCESS', response))
+      await inviteResponse(input.username, input.userTag, input.response)
+        .then((response: RequestResponseType<InviteResponseResponseType>) => {
+          if (response[1] !== 200) {
+            commit('INVITE_RESPONSE_REQUEST_ERROR', {
+              code: response[1],
+              msg: response[0].msg,
+            });
+          } else {
+            commit('INVITE_RESPONSE_REQUEST_SUCCESS', response[0]);
+          }
+        })
         .catch((error) => {
           commit('INVITE_RESPONSE_REQUEST_ERROR', {
             code: error.toJSON().status,

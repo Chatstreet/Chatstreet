@@ -1,0 +1,25 @@
+.switcher {
+    height: 100%;
+    width: 100%;
+    background-color: var(--chatstreet-dark-gray);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.switcher-button {
+    height: 100%;
+    border-radius: 0.5rem;
+
+    &--active {
+        background-color: var(--chatstreet-gray);
+    }
+
+    .button-content {
+        color: var(--chatstreet-white);
+    }
+}
