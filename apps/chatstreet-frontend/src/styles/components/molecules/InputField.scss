@@ -5,13 +5,13 @@
     height: 4rem;
 
     &--default {
-        border: 1px solid var(--chatstreet-light-gray);
+        border: 1px solid var(--border-color);
         border-radius: 2rem;
-        padding-left: 2rem;
+        padding: 0rem 2rem;
     }
 
     &--sharp {
-        border-bottom: 1px solid var(--chatstreet-light-gray);
+        border-bottom: 1px solid var(--border-color);
         >.input-field-title {
             left: 0 !important;
             &--focus {
@@ -44,14 +44,14 @@
         transform: translate(0%, 25%);
         font-size: 2rem;
         pointer-events: none;
-        color: var(--chatstreet-light-gray);
+        color: var(--border-color);
 
         &--focus {
             transition: all 0.1s;
             transition-timing-function: ease-in;
             font-size: 1.5rem;
             transform: translate(0%, -50%);
-            background-color: var(--chatstreet-white);
+            background-color: var(--background-color);
             padding: 0rem 1rem;
         }
     }
@@ -62,6 +62,7 @@
         border: none;
         font-size: 2rem;
         line-height: 4rem;
+        background-color: var(--background-color);
         // padding: 0rem 1rem;
 
         &:focus {

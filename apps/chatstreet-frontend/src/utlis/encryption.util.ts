@@ -9,7 +9,6 @@ const encryptText = (text: string, public_key: string): string => {
 const decryptText = (text: string, private_key: string): string => {
   const key_private = new NodeRSA(private_key);
   key_private.setOptions({ encryptionScheme: 'pkcs1' });
-  console.log(text);
   return key_private.decrypt(text);
 };
 

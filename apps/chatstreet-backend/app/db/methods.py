@@ -1,5 +1,6 @@
 import string
 import random
+import base64
 
 from sqlalchemy.exc import IntegrityError
 
@@ -39,7 +40,7 @@ get_user_data_response: dict = {
     "last_name": str,
     "email": str,
     "description": str,
-    "profile": str
+    "profile": bytes
 }
 
 message_type: dict = {
@@ -110,7 +111,7 @@ def update_user_data(body: dict, user: UserType) -> update_user_data_response:
                     user_setting_tuple.description = body['description']
                 case _:
                     unknown_parameter.append(f"'{key}'")
-    except Exception:
+    except Exception as e:
         return {
             "success": False,
             "user": f"{user.username}#{user.tag}",

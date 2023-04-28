@@ -2,7 +2,6 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import Register from '@/views/Register.vue';
 import Login from '@/views/Login.vue';
 import Home from '@/views/Home.vue';
-import Settings from '@/views/Settings.vue';
 import Chat from '@/views/Chat.vue';
 import EmailVerification from '@/views/EmailVerification.vue';
 import ResetPassword from '@/views/ResetPassword.vue';
@@ -25,11 +24,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'Home',
     component: Home,
-  },
-  {
-    path: '/settings',
-    name: 'Settings',
-    component: Settings,
   },
   {
     path: '/chat/:user',

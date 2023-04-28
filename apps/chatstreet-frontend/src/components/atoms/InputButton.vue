@@ -13,14 +13,14 @@
 <script lang="ts">
 import { defineComponent, computed, PropType } from 'vue';
 
-type ButtonModeType = 'default' | 'confirm' | 'plain';
+type ButtonModeType = 'confirm' | 'plain' | 'decline';
 
 export default defineComponent({
   name: 'InputButton',
   props: {
     mode: {
       type: String as PropType<ButtonModeType>,
-      default: 'default',
+      default: 'plain',
     },
     disabled: {
       type: Boolean,

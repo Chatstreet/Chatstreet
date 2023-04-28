@@ -8,6 +8,13 @@ const readImageFile = (file: any, callback: ReadImageFileCallbackType) => {
   reader.readAsBinaryString(file);
 };
 
+const fileToBase64 = (file: File) => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => resolve(reader.result);
+  reader.onerror = reject;
+});
+
 const kebabize = (name: string): string => name.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? '-' : '') + $);
 
 const validUser = (str: string): boolean => /^[A-Za-z]+#\d{4}$/.test(str);
@@ -23,4 +30,5 @@ export {
   validUser,
   validUsername,
   validEmailAddress,
+  fileToBase64,
 };

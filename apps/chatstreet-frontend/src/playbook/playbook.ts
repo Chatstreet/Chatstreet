@@ -3,6 +3,9 @@ import ValidateUserAuthenticationStatePlaybook from './lib/validate-user-authent
 import AccountResetPasswordPlaybook from './lib/account-reset-password.playbook';
 import { IPlaybook, PlaybookNamesType, PlaybookReturnType } from './playbook.type';
 import UserRegistrationPlaybook from './lib/user-registration.playbook';
+import UserDataUpdatePlaybook from './lib/user-data-update.playbook';
+import UserInviteUserPlaybook from './lib/user-invite-user.playbook';
+import UserInvitationResponsePlaybook from './lib/user-invitation-response.playbook';
 
 export default class Playbook {
   private static readonly playbooks: IPlaybook<any>[] = [
@@ -10,6 +13,9 @@ export default class Playbook {
     new UserAuthenticationPlaybook(),
     new AccountResetPasswordPlaybook(),
     new UserRegistrationPlaybook(),
+    new UserDataUpdatePlaybook(),
+    new UserInviteUserPlaybook(),
+    new UserInvitationResponsePlaybook(),
   ];
 
   public static async play<T extends PlaybookNamesType>(

@@ -1,0 +1,91 @@
+.home-main-themes {
+}
+
+.home-main-confluence {
+    box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
+    -webkit-box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
+    -moz-box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
+    
+    &--visible {
+        transition: right 0.2s;
+        right: 0;
+    }
+
+    &--hidden {
+        transition: right 0.2s;
+        right: 100%;
+    }
+}
+
+.home-main-settings {
+    box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
+    -webkit-box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
+    -moz-box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
+    
+    &--visible {
+        transition: left 0.2s;
+        left: 0;
+    }
+
+    &--hidden {
+        transition: left 0.2s;
+        left: 100%; 
+    }
+}
+
+.home-header {
+    position: relative;
+}
+
+.home-header-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.home-header-profile {
+    position: absolute;
+    min-width: 12rem;
+    right: 3rem;
+    top: 1.5rem;
+    bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    .header-profile-badge {
+        width: 5rem;
+        height: 5rem;
+        border: 0.25rem solid var(--chatstreet-gray);
+    }
+
+    .header-profile-context {
+        width: 100%;
+        min-height: 8rem;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+
+        margin-top: 1rem;
+        background-color: var(--chatstreet-white);
+
+        box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
+        -webkit-box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
+        -moz-box-shadow: 0rem 0.5rem 2rem -0.5rem rgba(0,0,0,0.4);
+
+        // border: 1px solid var(--chatstreet-gray);
+        border-radius: 0.5rem;
+
+        .profile-context-item {
+            text-align: center;
+            font-size: 2rem;
+            border-top: 1px solid var(--chatstreet-light-gray);
+            border-bottom: 1px solid var(--chatstreet-light-gray);
+            padding: 0.5rem 1.5rem;
+        }
+    }
+}

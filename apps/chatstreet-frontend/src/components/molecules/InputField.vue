@@ -1,7 +1,11 @@
 <style lang="scss" src="@/styles/components/molecules/InputField.scss" scoped></style>
 
 <template>
-  <div class="input-field" :class="[fieldModeClassModifier, fieldErrorClassModifier]">
+  <div
+    class="input-field"
+    :class="[fieldModeClassModifier, fieldErrorClassModifier]"
+    :style="inputFieldBackgroundColorStyle"
+  >
     <label v-if="hasTitle" class="input-field-title" :class="titleStateClassModifier">{{
       title
     }}</label>
@@ -11,6 +15,7 @@
       :type="innerInputType"
       @focus="setInputFocused(true)"
       @blur="setInputFocused(false)"
+      :disabled="disabled"
       required
     />
     <input-button
@@ -55,7 +60,10 @@ export default defineComponent({
     },
     valid: {
       type: Boolean,
-      required: true,
+    },
+    noValidation: {
+      type: Boolean,
+      default: false,
     },
     mode: {
       type: String as PropType<FieldModeType>,
@@ -65,7 +73,19 @@ export default defineComponent({
       type: String as PropType<InputType>,
       default: 'text',
     },
+    backgroundColor: {
+      type: String,
+      default: '#ffffff',
+    },
+    borderColor: {
+      type: String,
+      default: 'var(--chatstreet-light-gray)',
+    },
     required: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
       type: Boolean,
       default: false,
     },
@@ -83,7 +103,7 @@ export default defineComponent({
     });
     const fieldModeClassModifier = computed((): string => `input-field--${props.mode}`);
     const fieldErrorClassModifier = computed((): string => {
-      if (inputValue.value === '') {
+      if (inputValue.value === '' || props.noValidation) {
         return '';
       }
       return `input-field--${props.valid ? 'valid' : 'error'}`;
@@ -103,6 +123,9 @@ export default defineComponent({
     const setInputFocused = (value: boolean) => {
       inputFocused.value = value;
     };
+    const inputFieldBackgroundColorStyle = computed(
+      () => `--background-color: ${props.backgroundColor};\n--border-color: ${props.borderColor};`,
+    );
     return {
       togglePeekPassword,
       setInputFocused,
@@ -112,6 +135,7 @@ export default defineComponent({
       fieldModeClassModifier,
       fieldErrorClassModifier,
       titleStateClassModifier,
+      inputFieldBackgroundColorStyle,
       inputValue,
       innerInputType,
     };
