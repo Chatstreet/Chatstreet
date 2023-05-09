@@ -49,7 +49,7 @@ def register():
         }, 401)
 
     elif register_result["success"]:
-        email_sent: bool = send_verification_mail(params['email'], register_result["verification_code"])
+        email_sent: bool = send_verification_mail(params['email'], register_result["verification_code"], params["username"], register_result["user_tag"])
         msg = jsonify({
             "register": True,
             "user_tag": register_result['user_tag'],
