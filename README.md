@@ -1,12 +1,12 @@
 # Chatstreet
 
-<div style="border-top: 4px double grey"></div>
-
 Chatstreet is a chating web application written with [Flask](https://flask.palletsprojects.com/en/2.2.x/), [VueJs](https://vuejs.org/) and a [MariaDB](https://mariadb.org/) database. This project has been started for a school project (IT Module 347). The owners are:
 - #### [David Abderhalden](https://github.com/DavidAbderhalden)
 - #### [Loris Syla](https://github.com/lorissyla)
 
 ## Deployment
+
+To deploy the application locally you can use docker-compose. There are already two compose files inside the `./apps` directory.
 
 ### DEV-Environment
 ```shell
@@ -41,7 +41,8 @@ exec git commit --amend
 ```
 _This will allow you to use the GitHub actions_
 
-To push images to GitHub first you will need an access token. Next upset an environment variable with the value of your token and log into GitHub.
+To push images to GitHub first you will need an access token. Next upset an environment variable with the value of your token and log into GitHub. Contact the owners for the access token.
+
 ```shell
 export CR_PAT=<token>
 echo $CR_PAT | docker login ghcr.io -u <username> --password-stdin
@@ -71,5 +72,5 @@ Give the branch a reasonable name separated with hyphens. Locally you can commit
 
 <div style="border-top: 1px solid grey; display: flex; justify-content: space-between; align-items: center;">
 	<p>Last Update:</p>
-	<p>17.03.2023</p>
+	<p>11.05.2023</p>
 </div>
