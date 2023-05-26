@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "build:start": "npm run build && npm run start",
-    "serve": "nodemon --watch src -e ts,ejs --exec npm run build:start",
+    "serve": "set NODE_ENV=development && nodemon --watch src -e ts,ejs --exec npm run build:start",
     "start": "clear && node .",
     "test:e2e": "",
     "test:unit": "",

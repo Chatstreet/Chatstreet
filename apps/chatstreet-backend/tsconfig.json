@@ -1,21 +1,18 @@
 {
-    "compilerOptions": {
-      "resolveJsonModule": true,
-      "baseUrl": "src",
-      "target": "es2016",
-      "module": "commonjs",
-      "outDir": "./dist",
-      "esModuleInterop": true,
-      "forceConsistentCasingInFileNames": true,
-      "strict": true,
-      "skipLibCheck": true,
-      "paths": {
-        "@app/*": [
-          "src/*"
-        ]
-      },
-    },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules"],
-  }
-  
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "baseUrl": "src",
+    "target": "es2016",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@app/*": ["src/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
