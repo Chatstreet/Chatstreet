@@ -5,9 +5,10 @@
   "main": "dist/main.js",
   "type": "commonjs",
   "scripts": {
-    "build": "tsc",
-    "build:start": "npm run build && npm run start",
-    "serve": "set NODE_ENV=development && nodemon --watch src -e ts,ejs --exec npm run build:start",
+    "build:dev": "set NODE_ENV=development && webpack",
+    "build:prod": "set NODE_ENV=production && webpack",
+    "build": "npm run build:prod",
+    "serve": "webpack-dev-server --config ./webpack.config.js",
     "start": "clear && node .",
     "test:e2e": "",
     "test:unit": "",
@@ -45,9 +46,13 @@
     "@typescript-eslint/parser": "^5.59.7",
     "eslint": "^8.41.0",
     "eslint-config-prettier": "^8.8.0",
-    "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
-    "typescript": "^5.0.4"
+    "ts-loader": "^9.4.3",
+    "tsconfig-paths-webpack-plugin": "^4.0.1",
+    "typescript": "^5.0.4",
+    "webpack": "^5.84.1",
+    "webpack-cli": "^5.1.1",
+    "webpack-dev-server": "^4.15.0"
   },
   "dependencies": {
     "cors": "^2.8.5",
