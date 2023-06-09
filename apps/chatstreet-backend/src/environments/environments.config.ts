@@ -7,6 +7,7 @@ export default class EnvironmentsConfig {
   private readonly databaseUser: string;
   private readonly databasePassword: string;
   private readonly databaseName: string;
+  private readonly jwtSecret: string;
   private static instance: EnvironmentsConfig | null = null;
 
   private constructor(environment: string) {
@@ -19,6 +20,7 @@ export default class EnvironmentsConfig {
         this.databaseUser = process.env.DEVELOPMENT_DATABASE_USER ?? '';
         this.databasePassword = process.env.DEVELOPMENT_DATABASE_PASSWORD ?? '';
         this.databaseName = process.env.DEVELOPMENT_DATABASE_NAME ?? '';
+        this.jwtSecret = process.env.DEVELOPMENT_JWT_SECRET ?? '';
         break;
       }
       case 'production': {
@@ -28,6 +30,7 @@ export default class EnvironmentsConfig {
         this.databaseUser = process.env.PRODUCTION_DATABASE_USER ?? '';
         this.databasePassword = process.env.PRODUCTION_DATABASE_PASSWORD ?? '';
         this.databaseName = process.env.PRODUCTION_DATABASE_NAME ?? '';
+        this.jwtSecret = process.env.PRODUCTION_JWT_SECRET ?? '';
         break;
       }
       default: {
@@ -37,6 +40,7 @@ export default class EnvironmentsConfig {
         this.databaseUser = process.env.PRODUCTION_DATABASE_USER ?? '';
         this.databasePassword = process.env.PRODUCTION_DATABASE_PASSWORD ?? '';
         this.databaseName = process.env.PRODUCTION_DATABASE_NAME ?? '';
+        this.jwtSecret = process.env.PRODUCTION_JWT_SECRET ?? '';
         break;
       }
     }
@@ -73,5 +77,9 @@ export default class EnvironmentsConfig {
 
   public getDatabaseName(): string {
     return this.databaseName;
+  }
+
+  public getJwtSecret(): string {
+    return this.jwtSecret;
   }
 }
