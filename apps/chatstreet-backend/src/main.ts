@@ -15,7 +15,7 @@ let server: http.Server | null = null;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/*', requestQueueingMiddleware);
+app.use('*', requestQueueingMiddleware);
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerOutputFile));
 app.use('/api/v1', apiV1Router);
 // default response

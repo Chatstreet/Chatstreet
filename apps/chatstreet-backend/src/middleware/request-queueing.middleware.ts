@@ -1,8 +1,9 @@
 import { RequestQueueingService } from '@app/services/request-queueing.service';
 import { Request, Response, NextFunction } from 'express';
 
-const requestQueueingMiddleware = async (_: Request<unknown>, __: Response<unknown>, next: NextFunction) => {
-  RequestQueueingService.getInstance().addToQueue(next);
+const requestQueueingMiddleware = async (req: Request<unknown>, _: Response<unknown>, next: NextFunction) => {
+  // Implement security for DDOS
+  RequestQueueingService.getInstance().addToQueue(next, req);
 };
 
 export default requestQueueingMiddleware;

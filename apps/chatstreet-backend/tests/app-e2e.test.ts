@@ -1,10 +1,19 @@
 import request, { agent as supertest } from 'supertest';
 import app, { server } from '@app/main';
 import { describe, expect, it, afterAll } from '@jest/globals';
+import logger from 'npmlog';
 
 jest.mock('@app/services/database-operations.service');
 
 describe('Application E2E Tests', () => {
+  const log: Console['log'] = console.log;
+  beforeAll(() => {
+    logger.pause();
+    console.log = () => null;
+  });
+  afterAll(() => {
+    console.log = log;
+  });
   describe('API-V1 /api/v1', () => {
     describe('Secure Endpoints /secure', () => {
       it('should return 401 with missing authorization headers', async () => {
