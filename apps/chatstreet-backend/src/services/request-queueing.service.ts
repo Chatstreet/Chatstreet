@@ -3,7 +3,7 @@ import { Subject, concatMap } from 'rxjs';
 import logger from 'npmlog';
 
 export class RequestQueueingService {
-  private readonly serviceName: string = '[REQUEST-QUEUEING-SERVICE]';
+  private readonly serviceName: string = '[request-queueing-service]';
   private readonly requestQueue$: Subject<NextFunction> = new Subject<NextFunction>();
   private static instance: RequestQueueingService | null = null;
 
