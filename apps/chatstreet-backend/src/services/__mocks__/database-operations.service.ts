@@ -1,3 +1,6 @@
+import { JsonWebTokenUserPayloadType } from '@app/type-guards/libs/jwt/json-web-token-user-payload.type-guard';
+import { AuthenticationRequestType } from '@app/type-guards/libs/token/authentication.request.type-guard';
+
 type ConnectCallbackType = (error?: Error) => void;
 
 interface ConnectionMock {
@@ -7,6 +10,7 @@ interface ConnectionMock {
 interface DatabaseOperationsServiceMock {
   getInstance: jest.Mock<DatabaseOperationsServiceMock>;
   getConnection: jest.Mock<ConnectionMock>;
+  getValidUserInformation: jest.Mock<JsonWebTokenUserPayloadType>;
 }
 
 const databaseOperationsServiceMock: DatabaseOperationsServiceMock = {
@@ -16,6 +20,13 @@ const databaseOperationsServiceMock: DatabaseOperationsServiceMock = {
   getConnection: jest.fn((): ConnectionMock => {
     return {
       connect: (callback: ConnectCallbackType) => callback(),
+    };
+  }),
+  getValidUserInformation: jest.fn((_: AuthenticationRequestType): JsonWebTokenUserPayloadType => {
+    return {
+      username: 'Test',
+      tag: 9999,
+      email: 'test@example.com',
     };
   }),
 };

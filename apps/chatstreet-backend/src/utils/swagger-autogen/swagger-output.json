@@ -6,7 +6,7 @@
     "description": "Micro-Service for the Chatstreet backend application."
   },
   "host": "localhost:3000",
-  "basePath": "/api/v1",
+  "basePath": "/",
   "schemes": ["http", "https"],
   "securityDefinitions": {
     "apiKeyAuth": {
@@ -19,5 +19,20 @@
   },
   "consumes": ["application/json"],
   "produces": ["application/json"],
-  "paths": {}
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/api/v1/token/auth": {
+      "post": {
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    }
+  }
 }

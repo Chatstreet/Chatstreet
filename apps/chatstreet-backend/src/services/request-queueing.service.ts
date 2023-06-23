@@ -1,9 +1,8 @@
 import { NextFunction, Request } from 'express';
 import { Subject, concatMap } from 'rxjs';
-import logger from 'npmlog';
+import LoggerWrapperUtil from '@app/utils/logger-wrapper.util';
 
 export class RequestQueueingService {
-  private readonly serviceName: string = '[request-queueing-service]';
   private readonly requestQueue$: Subject<NextFunction> = new Subject<NextFunction>();
   private static instance: RequestQueueingService | null = null;
 
@@ -28,12 +27,11 @@ export class RequestQueueingService {
   }
 
   public addToQueue(nextFunction: NextFunction, req: Request<unknown>): void {
-    const timestamp = `${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`;
-    logger.info(
-      `${this.serviceName}[${timestamp}]`,
+    LoggerWrapperUtil.info(
       `Host: ${req.ip}, Location: ${req.path}, Params: ${JSON.stringify(req.params)}, Body: ${JSON.stringify(
         req.body
-      )}, Headers: ${JSON.stringify(req.headers)}`
+      )}, Headers: ${JSON.stringify(req.headers)}`,
+      RequestQueueingService
     );
     this.requestQueue$.next(nextFunction);
   }

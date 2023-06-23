@@ -17,7 +17,7 @@ const doc = {
     description: 'Micro-Service for the Chatstreet backend application.',
   },
   host: `${EnvironmentsConfig.getInstance().getHost()}:${EnvironmentsConfig.getInstance().getPort()}`,
-  basePath: '/api/v1',
+  basePath: '/',
   schemes: ['http', 'https'],
   consumes: ['application/json'],
   produces: ['application/json'],

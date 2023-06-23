@@ -9,5 +9,6 @@ export interface TypeGuardValidationSuccess<T> {
 
 export interface TypeGuardValidationFailure {
   name: 'validation-error';
-  error: z.ZodErrorMap;
+  error: z.ZodError;
+  data: unknown;
 }

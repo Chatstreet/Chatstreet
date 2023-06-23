@@ -8,7 +8,7 @@
     "build:dev": "set NODE_ENV=development && npm run gen-swagger && webpack",
     "build:prod": "set NODE_ENV=production && npm run gen-swagger && webpack",
     "build": "npm run build:prod",
-    "serve": "nodemon main.ts",
+    "start:dev": "nodemon main.ts",
     "start": "clear && node .",
     "test:e2e": "jest \"tests/.*\\.test.ts$\"",
     "test:unit": "jest \"src/.*\\.spec.ts$\"",
@@ -42,6 +42,7 @@
   "homepage": "https://github.com/Chatstreet/Chatstreet#readme",
   "devDependencies": {
     "@jest/globals": "^29.5.0",
+    "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
@@ -69,6 +70,7 @@
     "webpack-dev-server": "^4.15.0"
   },
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
