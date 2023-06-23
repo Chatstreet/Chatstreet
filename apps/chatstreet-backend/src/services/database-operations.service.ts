@@ -37,48 +37,44 @@ export default class DatabaseOperationsService {
       parseInt(userData.tag ? userData.tag : '')
     );
     LoggerWrapperUtil.info(`Executing query: "${queryString}"`, DatabaseOperationsService);
-    const databaseResponse: AuthenticationUserDataDatabaseResponse | null = await this.getAuthenticationUserData(
-      queryString
-    )
-      .then((response: AuthenticationUserDataDatabaseResponse) => response)
-      .catch((error: string) => {
-        LoggerWrapperUtil.error(error, DatabaseOperationsService);
-        return null;
-      });
+    const databaseResponse: AuthenticationUserDataDatabaseResponse | null =
+      await this.executeQuery<AuthenticationUserDataDatabaseResponse>(queryString)
+        .then((response: AuthenticationUserDataDatabaseResponse | null) => response)
+        .catch((error: string) => {
+          LoggerWrapperUtil.error(error, DatabaseOperationsService);
+          return null;
+        });
     if (!databaseResponse) {
       return null;
     }
     const passwordIsValid: boolean = await DatabaseEncriptionUtil.compare(
       userData.password ?? '',
-      databaseResponse.RowDataPacket.password
+      databaseResponse.password
     ).then((result: boolean) => result);
     if (passwordIsValid) {
       return {
-        username: databaseResponse.RowDataPacket.username,
-        tag: databaseResponse.RowDataPacket.tag,
-        email: databaseResponse.RowDataPacket.email,
+        username: databaseResponse.username,
+        tag: databaseResponse.tag,
+        email: databaseResponse.email,
       };
     }
     return null;
   }
 
-  private async getAuthenticationUserData(queryString: string): Promise<AuthenticationUserDataDatabaseResponse> {
+  private async executeQuery<T>(queryString: string): Promise<T | null> {
     return new Promise((resolve, reject) => {
-      this.connection.query(
-        queryString,
-        (error: MysqlError | null, results: AuthenticationUserDataDatabaseResponse[]): void => {
-          if (error) {
-            reject(error.message);
-            return;
-          }
-          const databaseResponse: AuthenticationUserDataDatabaseResponse | null = results.pop() ?? null;
-          if (!databaseResponse) {
-            reject('Empty database response');
-            return;
-          }
-          resolve(databaseResponse);
+      this.connection.query(queryString, (error: MysqlError | null, results: T[]): void => {
+        if (error) {
+          reject(error.message);
+          return;
         }
-      );
+        const databaseResponse: T | null = results.pop() ?? null;
+        if (!databaseResponse) {
+          resolve(null);
+          return;
+        }
+        resolve(databaseResponse);
+      });
     });
   }
 

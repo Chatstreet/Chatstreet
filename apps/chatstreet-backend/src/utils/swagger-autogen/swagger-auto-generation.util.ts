@@ -21,7 +21,16 @@ const doc = {
   schemes: ['http', 'https'],
   consumes: ['application/json'],
   produces: ['application/json'],
-  tags: [],
+  tags: [
+    {
+      name: 'Miscellaneous',
+      description: 'Endpoints for any other services.',
+    },
+    {
+      name: 'Authentication',
+      description: 'Endpoints for all of the authentication related actions.',
+    },
+  ],
   securityDefinitions: {
     apiKeyAuth: {
       type: 'apiKey',

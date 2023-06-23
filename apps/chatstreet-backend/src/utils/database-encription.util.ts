@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export default class DatabaseEncriptionUtil {
   private static readonly saltRounts: number = 10;

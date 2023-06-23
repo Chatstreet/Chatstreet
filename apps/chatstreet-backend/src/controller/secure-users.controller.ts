@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 
-const usersController: Router = Router();
+const secureUsersController: Router = Router();
 
 // TODO: Implement
 
-export default usersController;
+export default secureUsersController;

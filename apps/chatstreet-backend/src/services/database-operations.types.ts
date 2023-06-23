@@ -1,10 +1,8 @@
 interface AuthenticationUserDataDatabaseResponse {
-  RowDataPacket: {
-    password: string;
-    email: string;
-    username: string;
-    tag: number;
-  };
+  password: string;
+  email: string;
+  username: string;
+  tag: number;
 }
 
 export { AuthenticationUserDataDatabaseResponse };

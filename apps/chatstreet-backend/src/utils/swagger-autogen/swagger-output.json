@@ -7,6 +7,16 @@
   },
   "host": "localhost:3000",
   "basePath": "/",
+  "tags": [
+    {
+      "name": "Miscellaneous",
+      "description": "Endpoints for any other services."
+    },
+    {
+      "name": "Authentication",
+      "description": "Endpoints for all of the authentication related actions."
+    }
+  ],
   "schemes": ["http", "https"],
   "securityDefinitions": {
     "apiKeyAuth": {
@@ -22,6 +32,7 @@
   "paths": {
     "/api/v1/health": {
       "get": {
+        "tags": ["Miscellaneous"],
         "description": "",
         "parameters": [],
         "responses": {}
@@ -29,8 +40,55 @@
     },
     "/api/v1/token/auth": {
       "post": {
-        "description": "",
-        "parameters": [],
+        "tags": ["Authentication"],
+        "description": "Client authentication via email or username, tag and password.",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "example@example.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password"
+                }
+              }
+            },
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/v1/secure/token/auth": {
+      "post": {
+        "tags": ["Authentication"],
+        "description": "Client authentication via email or username, tag and password.",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "example@example.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password"
+                }
+              }
+            },
+            "required": true
+          }
+        ],
         "responses": {}
       }
     }
