@@ -81,6 +81,33 @@ const doc = {
         health: 'ok',
       },
     },
+    GetAuthResponseSuccess: {
+      name: 'http-success',
+      data: {
+        status: 'success',
+        data: {
+          username: 'NekroQuest',
+          tag: 7331,
+          email: 'nekroquest@gmail.com',
+          iat: 1687638356,
+          exp: 1688243156,
+        },
+      },
+    },
+    GetVerifyResponseSuccessNoToken: {
+      name: 'http-success',
+      data: {
+        status: 'error',
+        error: 'No token provided',
+      },
+    },
+    GetVerifyResponseSuccessInvalidToken: {
+      name: 'http-success',
+      data: {
+        status: 'error',
+        error: 'Token is invalid',
+      },
+    },
     ZodValidationError: {
       issues: [
         {

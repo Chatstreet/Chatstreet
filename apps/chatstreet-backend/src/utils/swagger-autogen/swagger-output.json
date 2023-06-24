@@ -87,6 +87,33 @@
           }
         }
       }
+    },
+    "/api/v1/token/verify": {
+      "get": {
+        "tags": ["Authentication"],
+        "description": "Used to determine wether the user is still authenticated.",
+        "parameters": [],
+        "responses": {
+          "200 - Valid": {
+            "description": "The token provided by the request hearder is valid.",
+            "schema": {
+              "$ref": "#/definitions/GetAuthResponseSuccess"
+            }
+          },
+          "200 - No Token": {
+            "description": "The client does not provide a token in the authorization header.",
+            "schema": {
+              "$ref": "#/definitions/GetVerifyResponseSuccessNoToken"
+            }
+          },
+          "200 - Invalid": {
+            "description": "The token provided by the request header is invalid.",
+            "schema": {
+              "$ref": "#/definitions/GetVerifyResponseSuccessInvalidToken"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -200,6 +227,93 @@
             "health": {
               "type": "string",
               "example": "ok"
+            }
+          }
+        }
+      }
+    },
+    "GetAuthResponseSuccess": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "http-success"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "example": "success"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "example": "NekroQuest"
+                },
+                "tag": {
+                  "type": "number",
+                  "example": 7331
+                },
+                "email": {
+                  "type": "string",
+                  "example": "nekroquest@gmail.com"
+                },
+                "iat": {
+                  "type": "number",
+                  "example": 1687638356
+                },
+                "exp": {
+                  "type": "number",
+                  "example": 1688243156
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "GetVerifyResponseSuccessNoToken": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "http-success"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "example": "error"
+            },
+            "error": {
+              "type": "string",
+              "example": "No token provided"
+            }
+          }
+        }
+      }
+    },
+    "GetVerifyResponseSuccessInvalidToken": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "http-success"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "example": "error"
+            },
+            "error": {
+              "type": "string",
+              "example": "Token is invalid"
             }
           }
         }

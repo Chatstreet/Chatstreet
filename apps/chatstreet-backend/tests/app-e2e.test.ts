@@ -2,6 +2,8 @@ import request, { agent as supertest } from 'supertest';
 import app, { server } from '@app/main';
 import { describe, expect, it, afterAll } from '@jest/globals';
 import logger from 'npmlog';
+import JsonWebTokenOperationsUtil from '@app/utils/json-web-token-operations.util';
+import { TokenValidationResponseType } from '@app/utils/types/token-validation-response.type';
 
 jest.mock('@app/services/database-operations.service');
 
@@ -98,6 +100,57 @@ describe('Application E2E Tests', () => {
           const response: request.Response = await request(app).post(`${apiV1}/token/auth`).send(req);
           expect(response.statusCode).toEqual(400);
           expect(response.body.name).toEqual('validation-error');
+        });
+      });
+      describe('Verification Endpoint /verify', () => {
+        it('should return error when not token provided', async () => {
+          const response: request.Response = await request(app).get(`${apiV1}/token/verify`);
+          expect(response.statusCode).toEqual(200);
+          expect(response.body.name).toEqual('http-success');
+          expect(response.body.data.status).toEqual('error');
+          expect(response.body.data.error).toEqual('No token provided');
+        });
+        it('should return error when not token is invalid, expired', async () => {
+          const response: request.Response = await request(app)
+            .get(`${apiV1}/token/verify`)
+            .set(
+              'Authorization',
+              'Bearer eyZubGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5la3JvUXVlc3QiLCJ0YWciOjczMzEsImVtYWlsIjoibmVrcm9xdWVzdEBnbWFpbC5jb20iLCJpYXQiOjE2ODc2MzgzNTYsImV4cCI6MTY4ODI0MzE1Nn0.Jutz76og272BGpbI78uVKLtBaFU-3HDJVQBdW3LrqHA'
+            )
+            .send();
+          expect(response.statusCode).toEqual(200);
+          expect(response.body.name).toEqual('http-success');
+          expect(response.body.data.status).toEqual('error');
+          expect(response.body.data.error).toEqual('Token is invalid');
+        });
+        it('should return success when token is valid', async () => {
+          const username = 'Test';
+          const tag = 9999;
+          const email = 'example@example.com';
+          const jwtAccessToken: string = JsonWebTokenOperationsUtil.generateAccessToken({
+            username,
+            tag,
+            email,
+          });
+          await JsonWebTokenOperationsUtil.validateToken(jwtAccessToken).then(
+            async (tokenValidationResponse: TokenValidationResponseType) => {
+              if (tokenValidationResponse.name === 'validation-error') {
+                return;
+              }
+              const response: request.Response = await request(app)
+                .get(`${apiV1}/token/verify`)
+                .set('Authorization', `Bearer ${jwtAccessToken}`)
+                .send();
+              expect(response.statusCode).toEqual(200);
+              expect(response.body.name).toEqual('http-success');
+              expect(response.body.data.status).toEqual('success');
+              expect(response.body.data.data.username).toEqual(username);
+              expect(response.body.data.data.tag).toEqual(tag);
+              expect(response.body.data.data.email).toEqual(email);
+              expect(response.body.data.data.iat).toEqual(tokenValidationResponse.data.iat);
+              expect(response.body.data.data.exp).toEqual(tokenValidationResponse.data.exp);
+            }
+          );
         });
       });
     });
