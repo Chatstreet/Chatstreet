@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import secureEndpointsMiddleware from '@app/middleware/secure-endpoints.middleware';
-import { simpleTokenController, secureTokenController } from '@app/controller/token.controller';
+import simpleTokenController from '@app/controller/simple-token.controller';
+import secureTokenController from '@app/controller/secure-token.controller';
 import passwordController from '@app/controller/password.controller';
 import secureUsersController from '@app/controller/secure-users.controller';
 import { AsyncHttpResponseType } from '@app/http/types/async-http-response.type';
@@ -15,9 +16,13 @@ router.use('/secure/token', secureTokenController);
 router.use('/pwd', passwordController);
 router.use('/secure/users', secureUsersController);
 
-// TODO: Implement swagger documentation
 router.get('/health', (_: Request<unknown>, res: Response<AsyncHttpResponseType<HttpHealthResponseType>>): void => {
   // #swagger.tags = ['Miscellaneous']
+  // #swagger.description = 'Check the servers health status.'
+  /* #swagger.responses[200] = {
+        description: 'Healthy response from server.',
+        schema: { $ref: '#/definitions/GetHealthResponseSuccess' },
+      } */
   res.status(200).json({
     name: 'http-success',
     data: {

@@ -24,8 +24,7 @@
       "in": "jwt",
       "name": "JWT",
       "description": "All routes on **/secure/** are secured by the authentication (see authentication)."
-    },
-    "definitions": {}
+    }
   },
   "consumes": ["application/json"],
   "produces": ["application/json"],
@@ -33,9 +32,16 @@
     "/api/v1/health": {
       "get": {
         "tags": ["Miscellaneous"],
-        "description": "",
+        "description": "Check the servers health status.",
         "parameters": [],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "Healthy response from server.",
+            "schema": {
+              "$ref": "#/definitions/GetHealthResponseSuccess"
+            }
+          }
+        }
       }
     },
     "/api/v1/token/auth": {
@@ -44,52 +50,191 @@
         "description": "Client authentication via email or username, tag and password.",
         "parameters": [
           {
-            "name": "Body",
+            "name": "Username & tag authentication",
             "in": "body",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "example": "example@example.com"
-                },
-                "password": {
-                  "type": "string",
-                  "example": "password"
-                }
-              }
-            },
-            "required": true
+              "$ref": "#/definitions/PostAuthRequestUsernameTag"
+            }
+          },
+          {
+            "name": "Email authentiaction",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PostAuthRequestEmail"
+            }
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "Successfully logged in. Client can now access secure endpoints.",
+            "schema": {
+              "$ref": "#/definitions/PostAuthResponseSuccess"
+            }
+          },
+          "400": {
+            "description": "Bad Request, check your json request body.",
+            "schema": {
+              "$ref": "#/definitions/PostAuthResponseBadRequest"
+            }
+          },
+          "401": {
+            "description": "The credentials of your request are unknown to the server.",
+            "schema": {
+              "$ref": "#/definitions/PostAuthResponseUnauthorized"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "PostAuthRequestUsernameTag": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "example": "NekroQuest"
+        },
+        "tag": {
+          "type": "string",
+          "example": "7331"
+        },
+        "password": {
+          "type": "string",
+          "example": "password"
+        }
       }
     },
-    "/api/v1/secure/token/auth": {
-      "post": {
-        "tags": ["Authentication"],
-        "description": "Client authentication via email or username, tag and password.",
-        "parameters": [
-          {
-            "name": "Body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "example": "example@example.com"
-                },
-                "password": {
-                  "type": "string",
-                  "example": "password"
-                }
-              }
-            },
-            "required": true
+    "PostAuthRequestEmail": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "nekroquest@gmail.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "password"
+        }
+      }
+    },
+    "PostAuthResponseSuccess": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "http-success"
+        },
+        "data": {
+          "$ref": "#/definitions/PostAuthResponseDataSuccess"
+        }
+      }
+    },
+    "PostAuthResponseDataSuccess": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "example": "NekroQuest"
+        },
+        "email": {
+          "type": "string",
+          "example": "nekroquest@gmail.com"
+        },
+        "tag": {
+          "type": "number",
+          "example": 7331
+        },
+        "token": {
+          "type": "string",
+          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5la3JvUXVlc3QiLCJ0YWciOjczMzEsImVtYWlsIjoibmVrcm9xdWVzdEBnbWFpbC5jb20iLCJpYXQiOjE2ODc2MjczODksImV4cCI6MTY4ODIzMjE4OX0.mz4MFhQEnzqcxJW6dN7lY2Q9BmFGB1kgcubjnBdwKxM"
+        }
+      }
+    },
+    "PostAuthResponseBadRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "validation-error"
+        },
+        "error": {
+          "$ref": "#/definitions/ZodValidationError"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "example": "nekroquest@gmail.com"
+            }
           }
-        ],
-        "responses": {}
+        }
+      }
+    },
+    "PostAuthResponseUnauthorized": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "http-error"
+        },
+        "error": {
+          "type": "string",
+          "example": "Invalid credentials"
+        }
+      }
+    },
+    "GetHealthResponseSuccess": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "http-success"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "health": {
+              "type": "string",
+              "example": "ok"
+            }
+          }
+        }
+      }
+    },
+    "ZodValidationError": {
+      "type": "object",
+      "properties": {
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "example": "custom"
+              },
+              "path": {
+                "type": "array",
+                "example": ["parameter"],
+                "items": {
+                  "type": "string"
+                }
+              },
+              "message": {
+                "type": "string",
+                "example": "Parameter is mandatory"
+              }
+            }
+          }
+        },
+        "name": {
+          "type": "string",
+          "example": "ZodError"
+        }
       }
     }
   }

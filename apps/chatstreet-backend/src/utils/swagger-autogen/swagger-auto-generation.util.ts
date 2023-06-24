@@ -38,7 +38,59 @@ const doc = {
       name: 'JWT',
       description: 'All routes on **/secure/** are secured by the authentication (see authentication).',
     },
-    definitions: {},
+  },
+  definitions: {
+    PostAuthRequestUsernameTag: {
+      username: 'NekroQuest',
+      tag: '7331',
+      password: 'password',
+    },
+    PostAuthRequestEmail: {
+      email: 'nekroquest@gmail.com',
+      password: 'password',
+    },
+    PostAuthResponseSuccess: {
+      name: 'http-success',
+      data: {
+        $ref: '#/definitions/PostAuthResponseDataSuccess',
+      },
+    },
+    PostAuthResponseDataSuccess: {
+      username: 'NekroQuest',
+      email: 'nekroquest@gmail.com',
+      tag: 7331,
+      token:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5la3JvUXVlc3QiLCJ0YWciOjczMzEsImVtYWlsIjoibmVrcm9xdWVzdEBnbWFpbC5jb20iLCJpYXQiOjE2ODc2MjczODksImV4cCI6MTY4ODIzMjE4OX0.mz4MFhQEnzqcxJW6dN7lY2Q9BmFGB1kgcubjnBdwKxM',
+    },
+    PostAuthResponseBadRequest: {
+      name: 'validation-error',
+      error: {
+        $ref: '#/definitions/ZodValidationError',
+      },
+      data: {
+        email: 'nekroquest@gmail.com',
+      },
+    },
+    PostAuthResponseUnauthorized: {
+      name: 'http-error',
+      error: 'Invalid credentials',
+    },
+    GetHealthResponseSuccess: {
+      name: 'http-success',
+      data: {
+        health: 'ok',
+      },
+    },
+    ZodValidationError: {
+      issues: [
+        {
+          code: 'custom',
+          path: ['parameter'],
+          message: 'Parameter is mandatory',
+        },
+      ],
+      name: 'ZodError',
+    },
   },
 };
 

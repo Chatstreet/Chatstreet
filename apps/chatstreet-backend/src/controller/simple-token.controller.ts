@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-namespace */
-
 import { AsyncHttpResponseType } from '@app/http/types/async-http-response.type';
 import { TypeGuardValidationResult } from '@app/http/types/type-guard-validation-result.type';
 import DatabaseOperationsService from '@app/services/database-operations.service';
@@ -14,31 +12,34 @@ import { TypeGuardValdiationUtil } from '@app/utils/type-guard-validation.util';
 import { Router, Request, Response } from 'express';
 
 const simpleTokenController: Router = Router();
-const secureTokenController: Router = Router();
 
-// TODO: Implement swagger documentation
 simpleTokenController.post(
   '/auth',
   async (req: Request<unknown>, res: Response<AsyncHttpResponseType<AuthenticationResponseType>>): Promise<void> => {
     // #swagger.tags = ['Authentication']
     // #swagger.description = 'Client authentication via email or username, tag and password.'
-    /* #swagger.parameters['Body'] = {
-         in: 'body',
-         schema: { 
-           email: 'example@example.com',
-           password: 'password'
-         },
-         required: 'true'
-     } */
-    /* #swagger.parameters['Body'] = {
-         in: 'body',
-         schema: { 
-           username: 'Example',
-           tag: '1234'
-           password: 'password'
-         },
-         required: 'true'
-     } */
+    /* #swagger.parameters['Username & tag authentication'] = {
+          in: 'body',
+          required: true,
+          schema: { $ref: '#/definitions/PostAuthRequestUsernameTag' },
+        }, */
+    /* #swagger.parameters['Email authentiaction'] = {
+          in: 'body',
+          required: true,
+          schema: { $ref: '#/definitions/PostAuthRequestEmail' },
+        }, */
+    /* #swagger.responses[200] = {
+          description: 'Successfully logged in. Client can now access secure endpoints.',
+          schema: { $ref: '#/definitions/PostAuthResponseSuccess' },
+        } */
+    /* #swagger.responses[400] = {
+          description: 'Bad Request, check your json request body.',
+          schema: { $ref: '#/definitions/PostAuthResponseBadRequest' },
+        } */
+    /* #swagger.responses[401] = {
+          description: 'The credentials of your request are unknown to the server.',
+          schema: { $ref: '#/definitions/PostAuthResponseUnauthorized' },
+        } */
     const validationResponse: TypeGuardValidationResult<AuthenticationRequestType> =
       TypeGuardValdiationUtil.validate<AuthenticationRequestType>(AuthenticationRequestTypeGuard, req.body);
     if (validationResponse.name === 'validation-error') {
@@ -68,8 +69,5 @@ simpleTokenController.post(
 );
 
 // validate
-// --------
-// refresh
-// logout
 
-export { simpleTokenController, secureTokenController };
+export default simpleTokenController;
