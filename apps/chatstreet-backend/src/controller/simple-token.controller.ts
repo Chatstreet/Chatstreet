@@ -9,6 +9,11 @@ import {
   AuthenticationRequestTypeGuard,
 } from '@app/type-guards/libs/token/authentication.request.type-guard';
 import { AuthenticationResponseType } from '@app/type-guards/libs/token/authenticaton.response.type-guard';
+import {
+  RegistrationRequestType,
+  RegistrationRequestTypeGuard,
+} from '@app/type-guards/libs/token/registration.request.type-guard';
+import { RegistrationResponseType } from '@app/type-guards/libs/token/registration.response.type-guard';
 import { VerificationResponseType } from '@app/type-guards/libs/token/verification.response.type-guard';
 import JsonWebTokenOperationsUtil from '@app/utils/json-web-token-operations.util';
 import { TypeGuardValdiationUtil } from '@app/utils/type-guard-validation.util';
@@ -47,7 +52,11 @@ simpleTokenController.post(
     const validationResponse: TypeGuardValidationResult<AuthenticationRequestType> =
       TypeGuardValdiationUtil.validate<AuthenticationRequestType>(AuthenticationRequestTypeGuard, req.body);
     if (validationResponse.name === 'validation-error') {
-      res.status(400).json(validationResponse);
+      res.status(400).json({
+        name: 'validation-error',
+        error: validationResponse.error,
+        data: validationResponse.data,
+      });
       return;
     }
     const validUserInformation: JsonWebTokenUserPayloadType | null =
@@ -127,6 +136,52 @@ simpleTokenController.get(
   }
 );
 
-// register
+simpleTokenController.post(
+  '/register',
+  async (req: Request<unknown>, res: Response<AsyncHttpResponseType<RegistrationResponseType>>): Promise<void> => {
+    // #swagger.tags = ['Authentication']
+    // #swagger.description = 'Used to create a new account for a user.'
+    /* #swagger.parameters['Registration'] = {
+          in: 'body',
+          required: true,
+          schema: { $ref: '#/definitions/PostRegisterRequest' },
+        }, */
+    /* #swagger.responses[200] = {
+          description: '',
+          schema: { $ref: '#/definitions/PostRegisterResponseSuccess' },
+        } */
+    /* #swagger.responses[400] = {
+          description: '',
+          schema: { $ref: '#/definitions/PostRegisterResponseBadRequest' },
+        } */
+    /* #swagger.responses[500] = {
+          description: '',
+          schema: { $ref: '#/definitions/PostRegisterResponseInternalServerError' },
+        } */
+    const validationResponse: TypeGuardValidationResult<RegistrationRequestType> =
+      TypeGuardValdiationUtil.validate<RegistrationRequestType>(RegistrationRequestTypeGuard, req.body);
+    if (validationResponse.name === 'validation-error') {
+      res.status(400).json({
+        name: 'validation-error',
+        error: validationResponse.error,
+        data: validationResponse.data,
+      });
+      return;
+    }
+    const userRegistrationResponseData: RegistrationResponseType | string =
+      await DatabaseOperationsService.getInstance().registerUser(validationResponse.data);
+    if (typeof userRegistrationResponseData === 'string') {
+      res.status(500).json({
+        name: 'http-error',
+        error: userRegistrationResponseData,
+      });
+      return;
+    }
+    res.status(200).json({
+      name: 'http-success',
+      data: userRegistrationResponseData,
+    });
+  }
+);
 
 export default simpleTokenController;

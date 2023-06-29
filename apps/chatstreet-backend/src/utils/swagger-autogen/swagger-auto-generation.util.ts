@@ -49,6 +49,16 @@ const doc = {
       email: 'nekroquest@gmail.com',
       password: 'password',
     },
+    PostRegisterRequest: {
+      username: 'NekroQuest',
+      firstName: 'David',
+      lastName: 'Abderhalden',
+      email: 'nekroquest@gmail.com',
+      recoveryEmail: 'nikolaus@hispeed.ch',
+      phoneNumber: '+41791001010',
+      birthdate: '4/18/04',
+      password: 'password',
+    },
     PostAuthResponseSuccess: {
       name: 'http-success',
       data: {
@@ -107,6 +117,36 @@ const doc = {
         status: 'error',
         error: 'Token is invalid',
       },
+    },
+    PostRegisterResponseSuccess: {
+      name: 'http-success',
+      data: {
+        username: 'Example',
+        tag: 8099,
+        firstName: 'Example',
+        lastName: 'Example',
+        email: 'example@example.ch',
+        phoneNumber: '+41791001010',
+        birthdate: '2004-04-17T22:00:00.000Z',
+      },
+    },
+    PostRegisterResponseBadRequest: {
+      name: 'validation-error',
+      error: {
+        $ref: '#/definitions/ZodValidationError',
+      },
+      data: {
+        username: 'Example',
+        firstName: 'Example',
+        lastName: 'Example',
+        email: 'example@example.ch',
+        phoneNumber: '+417941001010',
+        birthdate: '4/18/04',
+      },
+    },
+    PostRegisterResponseInternalServerError: {
+      name: 'http-error',
+      error: "ER_DUP_ENTRY: Duplicate entry 'example@example.ch' for key 'email'",
     },
     ZodValidationError: {
       issues: [

@@ -4,6 +4,7 @@ import { describe, expect, it, afterAll } from '@jest/globals';
 import logger from 'npmlog';
 import JsonWebTokenOperationsUtil from '@app/utils/json-web-token-operations.util';
 import { TokenValidationResponseType } from '@app/utils/types/token-validation-response.type';
+import { AsyncHttpResponseType } from '@app/http/types/async-http-response.type';
 
 jest.mock('@app/services/database-operations.service');
 
@@ -151,6 +152,45 @@ describe('Application E2E Tests', () => {
               expect(response.body.data.data.exp).toEqual(tokenValidationResponse.data.exp);
             }
           );
+        });
+      });
+      describe('Registration Endpoint /register', () => {
+        it('should register a new user with all valid parameters', async () => {
+          const req: object = {
+            username: 'Test',
+            firstName: 'Test',
+            lastName: 'Test',
+            email: 'test@example.ch',
+            recoveryEmail: 'example@example.ch',
+            phoneNumber: '+41791001010',
+            birthdate: '4/18/04',
+            password: 'password',
+          };
+          const response: request.Response = await request(app).post(`${apiV1}/token/register`).send(req);
+          expect(response.statusCode).toEqual(200);
+          expect(response.body.name).toEqual('http-success');
+        });
+        it('should register a new user with only the mandatory parameters', async () => {
+          const req: object = {
+            username: 'Test',
+            firstName: 'Test',
+            lastName: 'Test',
+            email: 'test@example.ch',
+            password: 'password',
+          };
+          const response: request.Response = await request(app).post(`${apiV1}/token/register`).send(req);
+          expect(response.statusCode).toEqual(200);
+          expect(response.body.name).toEqual('http-success');
+        });
+        it('should not be able to validate with missing required parameters', async () => {
+          const req: object = {
+            username: 'Test',
+            lastName: 'Test',
+            email: 'test@example.ch',
+          };
+          const response: request.Response = await request(app).post(`${apiV1}/token/register`).send(req);
+          expect(response.statusCode).toEqual(400);
+          expect(response.body.name).toEqual('validation-error');
         });
       });
     });

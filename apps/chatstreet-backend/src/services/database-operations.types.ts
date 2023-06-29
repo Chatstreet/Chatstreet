@@ -5,4 +5,8 @@ interface AuthenticationUserDataDatabaseResponse {
   tag: number;
 }
 
-export { AuthenticationUserDataDatabaseResponse };
+interface AvailableTagDatabaseResponse {
+  tag: number;
+}
+
+export { AuthenticationUserDataDatabaseResponse, AvailableTagDatabaseResponse };

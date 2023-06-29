@@ -114,6 +114,42 @@
           }
         }
       }
+    },
+    "/api/v1/token/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "description": "Used to create a new account for a user.",
+        "parameters": [
+          {
+            "name": "Registration",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PostRegisterRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/PostRegisterResponseSuccess"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/PostRegisterResponseBadRequest"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/PostRegisterResponseInternalServerError"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -140,6 +176,43 @@
         "email": {
           "type": "string",
           "example": "nekroquest@gmail.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "password"
+        }
+      }
+    },
+    "PostRegisterRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "example": "NekroQuest"
+        },
+        "firstName": {
+          "type": "string",
+          "example": "David"
+        },
+        "lastName": {
+          "type": "string",
+          "example": "Abderhalden"
+        },
+        "email": {
+          "type": "string",
+          "example": "nekroquest@gmail.com"
+        },
+        "recoveryEmail": {
+          "type": "string",
+          "example": "nikolaus@hispeed.ch"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "example": "+41791001010"
+        },
+        "birthdate": {
+          "type": "string",
+          "example": "4/18/04"
         },
         "password": {
           "type": "string",
@@ -316,6 +389,102 @@
               "example": "Token is invalid"
             }
           }
+        }
+      }
+    },
+    "PostRegisterResponseSuccess": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "http-success"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string",
+              "example": "Example"
+            },
+            "tag": {
+              "type": "number",
+              "example": 8099
+            },
+            "firstName": {
+              "type": "string",
+              "example": "Example"
+            },
+            "lastName": {
+              "type": "string",
+              "example": "Example"
+            },
+            "email": {
+              "type": "string",
+              "example": "example@example.ch"
+            },
+            "phoneNumber": {
+              "type": "string",
+              "example": "+41791001010"
+            },
+            "birthdate": {
+              "type": "string",
+              "example": "2004-04-17T22:00:00.000Z"
+            }
+          }
+        }
+      }
+    },
+    "PostRegisterResponseBadRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "validation-error"
+        },
+        "error": {
+          "$ref": "#/definitions/ZodValidationError"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string",
+              "example": "Example"
+            },
+            "firstName": {
+              "type": "string",
+              "example": "Example"
+            },
+            "lastName": {
+              "type": "string",
+              "example": "Example"
+            },
+            "email": {
+              "type": "string",
+              "example": "example@example.ch"
+            },
+            "phoneNumber": {
+              "type": "string",
+              "example": "+417941001010"
+            },
+            "birthdate": {
+              "type": "string",
+              "example": "4/18/04"
+            }
+          }
+        }
+      }
+    },
+    "PostRegisterResponseInternalServerError": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "http-error"
+        },
+        "error": {
+          "type": "string",
+          "example": "ER_DUP_ENTRY: Duplicate entry 'example@example.ch' for key 'email'"
         }
       }
     },
