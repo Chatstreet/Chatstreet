@@ -9,16 +9,15 @@ const secureEndpointsMiddleware = async (
   res: Response<HttpResponseType<unknown>>,
   next: NextFunction
 ): Promise<void> => {
-  const authHeader: string | null = req.headers['authorization'] ?? null;
-  const token: string | null = authHeader && authHeader?.split(' ')[1];
-  if (!token) {
+  const accessToken: string | null = JsonWebTokenOperationsUtil.getAccessTokenFromRequest(req);
+  if (!accessToken) {
     res.status(401).json({
       name: 'http-error',
       error: 'Unauthorized, missing authorization headers',
     });
     return;
   }
-  await JsonWebTokenOperationsUtil.validateToken(token).then(
+  await JsonWebTokenOperationsUtil.validateAccessToken(accessToken).then(
     (tokenValidationResponse: TokenValidationResponseType): Response<HttpResponseFailure> | void => {
       if (tokenValidationResponse.name === 'validation-error') {
         return res.status(401).json({

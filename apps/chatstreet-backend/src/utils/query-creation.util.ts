@@ -8,7 +8,7 @@ export default class QueryCreationUtil {
     tag: number | null
   ): string {
     return (
-      'SELECT password, email, username, tag FROM chatstreet.users WHERE ' +
+      'SELECT password, email, username, tag, role FROM chatstreet.users WHERE ' +
       `${[
         `${email ? `email = ${mysql.escape(email)}` : ''}`,
         `${username ? `username = ${mysql.escape(username)}` : ''}`,

@@ -30,6 +30,7 @@ const databaseOperationsServiceMock: DatabaseOperationsServiceMock = {
       username: 'Test',
       tag: 9999,
       email: 'test@example.com',
+      role: 'USER',
     };
   }),
   registerUser: jest.fn((_: RegistrationRequestType): RegistrationResponseType => {

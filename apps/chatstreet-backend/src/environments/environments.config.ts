@@ -7,7 +7,8 @@ export default class EnvironmentsConfig {
   private readonly databaseUser: string;
   private readonly databasePassword: string;
   private readonly databaseName: string;
-  private readonly jwtSecret: string;
+  private readonly jwtAccessTokenSecret: string;
+  private readonly jwtRefreshTokenSecret: string;
   private static instance: EnvironmentsConfig | null = null;
 
   private constructor(environment: string) {
@@ -20,7 +21,8 @@ export default class EnvironmentsConfig {
         this.databaseUser = process.env.DEVELOPMENT_DATABASE_USER ?? '';
         this.databasePassword = process.env.DEVELOPMENT_DATABASE_PASSWORD ?? '';
         this.databaseName = process.env.DEVELOPMENT_DATABASE_NAME ?? '';
-        this.jwtSecret = process.env.DEVELOPMENT_JWT_SECRET ?? '';
+        this.jwtAccessTokenSecret = process.env.DEVELOPMENT_JWT_ACCESS_TOKEN_SECRET ?? '';
+        this.jwtRefreshTokenSecret = process.env.DEVELOPMENT_JWT_REFRESH_TOKEN_SECRET ?? '';
         break;
       }
       case 'production': {
@@ -30,7 +32,8 @@ export default class EnvironmentsConfig {
         this.databaseUser = process.env.PRODUCTION_DATABASE_USER ?? '';
         this.databasePassword = process.env.PRODUCTION_DATABASE_PASSWORD ?? '';
         this.databaseName = process.env.PRODUCTION_DATABASE_NAME ?? '';
-        this.jwtSecret = process.env.PRODUCTION_JWT_SECRET ?? '';
+        this.jwtAccessTokenSecret = process.env.PRODUCTION_JWT_ACCESS_TOKEN_SECRET ?? '';
+        this.jwtRefreshTokenSecret = process.env.PRODUCTION_JWT_REFRESH_TOKEN_SECRET ?? '';
         break;
       }
       default: {
@@ -40,7 +43,8 @@ export default class EnvironmentsConfig {
         this.databaseUser = process.env.PRODUCTION_DATABASE_USER ?? '';
         this.databasePassword = process.env.PRODUCTION_DATABASE_PASSWORD ?? '';
         this.databaseName = process.env.PRODUCTION_DATABASE_NAME ?? '';
-        this.jwtSecret = process.env.PRODUCTION_JWT_SECRET ?? '';
+        this.jwtAccessTokenSecret = process.env.PRODUCTION_JWT_ACCESS_TOKEN_SECRET ?? '';
+        this.jwtRefreshTokenSecret = process.env.PRODUCTION_JWT_REFRESH_TOKEN_SECRET ?? '';
         break;
       }
     }
@@ -79,7 +83,11 @@ export default class EnvironmentsConfig {
     return this.databaseName;
   }
 
-  public getJwtSecret(): string {
-    return this.jwtSecret;
+  public getJwtRefreshTokenSecret(): string {
+    return this.jwtAccessTokenSecret;
+  }
+
+  public getJwtAccessTokenSecret(): string {
+    return this.jwtRefreshTokenSecret;
   }
 }

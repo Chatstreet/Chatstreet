@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS chatstreet.`users` (
   `birthdate` DATE NULL,
   `registration_timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `password` VARCHAR(512) NOT NULL,
+  `role` ENUM("USER", "ADMIN", "SUPER_ADMIN") NOT NULL,
   PRIMARY KEY(`user_id`),
   UNIQUE INDEX(`user_id`),
   UNIQUE INDEX(`email`),

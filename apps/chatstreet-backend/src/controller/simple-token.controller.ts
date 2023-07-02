@@ -49,6 +49,8 @@ simpleTokenController.post(
           description: 'The credentials of your request are unknown to the server.',
           schema: { $ref: '#/definitions/PostAuthResponseUnauthorized' },
         } */
+    const ONE_WEEK = 604800000;
+    const FIFTEEN_MINUTES = 900000;
     const validationResponse: TypeGuardValidationResult<AuthenticationRequestType> =
       TypeGuardValdiationUtil.validate<AuthenticationRequestType>(AuthenticationRequestTypeGuard, req.body);
     if (validationResponse.name === 'validation-error') {
@@ -68,16 +70,29 @@ simpleTokenController.post(
       });
       return;
     }
-    const jwtAccessToken: string = JsonWebTokenOperationsUtil.generateAccessToken(validUserInformation);
-    res.status(200).json({
-      name: 'http-success',
-      data: {
-        username: validUserInformation.username,
-        email: validUserInformation.email,
-        tag: validUserInformation.tag,
-        token: jwtAccessToken,
-      },
-    });
+    const jwtTokens: string[] = JsonWebTokenOperationsUtil.generateTokens(validUserInformation);
+    res
+      .status(200)
+      .cookie('refreshToken', jwtTokens[1], {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        maxAge: ONE_WEEK,
+      })
+      .cookie('accessToken', jwtTokens[0], {
+        httpOnly: false,
+        secure: false,
+        sameSite: 'strict',
+        maxAge: FIFTEEN_MINUTES,
+      })
+      .json({
+        name: 'http-success',
+        data: {
+          username: validUserInformation.username,
+          email: validUserInformation.email,
+          tag: validUserInformation.tag,
+        },
+      });
   }
 );
 
@@ -101,9 +116,8 @@ simpleTokenController.get(
           description: 'The token provided by the request header is invalid.',
           schema: { $ref: '#/definitions/GetVerifyResponseSuccessInvalidToken' },
         } */
-    const authHeader: string | null = req.headers['authorization'] ?? null;
-    const token: string | null = authHeader && authHeader?.split(' ')[1];
-    if (!token) {
+    const accessToken: string | null = JsonWebTokenOperationsUtil.getAccessTokenFromRequest(req);
+    if (!accessToken) {
       res.status(200).json({
         name: 'http-success',
         data: {
@@ -113,7 +127,7 @@ simpleTokenController.get(
       });
       return;
     }
-    await JsonWebTokenOperationsUtil.validateToken(token).then(
+    await JsonWebTokenOperationsUtil.validateAccessToken(accessToken).then(
       (tokenValidationResponse: TokenValidationResponseType): Response<HttpResponseFailure> => {
         if (tokenValidationResponse.name === 'validation-error') {
           return res.status(200).json({

@@ -59,6 +59,7 @@ export default class DatabaseOperationsService {
         username: databaseResponse.username,
         tag: databaseResponse.tag,
         email: databaseResponse.email,
+        role: databaseResponse.role,
       };
     }
     return null;

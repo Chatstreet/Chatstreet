@@ -4,7 +4,6 @@ import { describe, expect, it, afterAll } from '@jest/globals';
 import logger from 'npmlog';
 import JsonWebTokenOperationsUtil from '@app/utils/json-web-token-operations.util';
 import { TokenValidationResponseType } from '@app/utils/types/token-validation-response.type';
-import { AsyncHttpResponseType } from '@app/http/types/async-http-response.type';
 
 jest.mock('@app/services/database-operations.service');
 
@@ -27,12 +26,12 @@ describe('Application E2E Tests', () => {
         expect(response.body.error).toEqual('Unauthorized, missing authorization headers');
       });
       it('should return 401 with invalid token', async () => {
-        const agent = supertest(app);
-        agent.auth(
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5la3JvUXVlc3QiLCJ0YWciOjczMzEsImVtYWlsIjoibmVrcm9xdWVzdEBnbWFpbC5jb20iLCJpYXQiOjE2ODYzMzg2ODEsImV4cCI6MTY4Njk0MzQ4MX0.sfTdpqCCeaBStQ28ZWtvUMFPrTBxMbP29zwSNupx2Q',
-          { type: 'bearer' }
-        );
-        const response: request.Response = await agent.get(`${apiV1}/secure/*`);
+        const response: request.Response = await request(app)
+          .get(`${apiV1}/secure/*`)
+          .set(
+            'Authorization',
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5la3JvUXVlc3QiLCJ0YWciOjczMzEsImVtYWlsIjoibmVrcm9xdWVzdEBnbWFpbC5jb20iLCJpYXQiOjE2ODYzMzg2ODEsImV4cCI6MTY4Njk0MzQ4MX0.sfTdpqCCeaBStQ28ZWtvUMFPrTBxMbP29zwSNupx2Q'
+          );
         expect(response.statusCode).toEqual(401);
         expect(response.body.name).toEqual('http-error');
         expect(response.body.error).toEqual('Unauthorized, invalid token');
@@ -128,12 +127,14 @@ describe('Application E2E Tests', () => {
           const username = 'Test';
           const tag = 9999;
           const email = 'example@example.com';
-          const jwtAccessToken: string = JsonWebTokenOperationsUtil.generateAccessToken({
+          const role = 'USER';
+          const jwtAccessToken: string = JsonWebTokenOperationsUtil.generateTokens({
             username,
             tag,
             email,
-          });
-          await JsonWebTokenOperationsUtil.validateToken(jwtAccessToken).then(
+            role,
+          })[0];
+          await JsonWebTokenOperationsUtil.validateAccessToken(jwtAccessToken).then(
             async (tokenValidationResponse: TokenValidationResponseType) => {
               if (tokenValidationResponse.name === 'validation-error') {
                 return;

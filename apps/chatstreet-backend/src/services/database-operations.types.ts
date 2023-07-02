@@ -3,6 +3,7 @@ interface AuthenticationUserDataDatabaseResponse {
   email: string;
   username: string;
   tag: number;
+  role: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
 }
 
 interface AvailableTagDatabaseResponse {
