@@ -4,6 +4,7 @@ import { describe, expect, it, afterAll } from '@jest/globals';
 import logger from 'npmlog';
 import JsonWebTokenOperationsUtil from '@app/utils/json-web-token-operations.util';
 import { TokenValidationResponseType } from '@app/utils/types/token-validation-response.type';
+import { JsonWebTokenUserPayloadType } from '@app/type-guards/libs/jwt/json-web-token-user-payload.type-guard';
 
 jest.mock('@app/services/database-operations.service');
 
@@ -135,7 +136,7 @@ describe('Application E2E Tests', () => {
             role,
           })[0];
           await JsonWebTokenOperationsUtil.validateAccessToken(jwtAccessToken).then(
-            async (tokenValidationResponse: TokenValidationResponseType) => {
+            async (tokenValidationResponse: TokenValidationResponseType<JsonWebTokenUserPayloadType>) => {
               if (tokenValidationResponse.name === 'validation-error') {
                 return;
               }
@@ -192,6 +193,41 @@ describe('Application E2E Tests', () => {
           const response: request.Response = await request(app).post(`${apiV1}/token/register`).send(req);
           expect(response.statusCode).toEqual(400);
           expect(response.body.name).toEqual('validation-error');
+        });
+      });
+      describe('Refresh Endpoint /refresh', () => {
+        it('should refresh access token with valid refresh token', async () => {
+          const validRefreshToken: string = JsonWebTokenOperationsUtil.generateTokens({
+            username: 'Test',
+            email: 'test@example.ch',
+            tag: 9999,
+            role: 'USER',
+          })[1];
+          const response: request.Response = await request(app)
+            .get(`${apiV1}/token/refresh`)
+            .set('Cookie', `refreshToken=${validRefreshToken}`)
+            .send();
+          expect(response.statusCode).toEqual(200);
+          expect(response.body.name).toEqual('http-success');
+          expect(response.headers['set-cookie'][0].startsWith('accessToken')).toEqual(true);
+        });
+        it('should be unauthorized with invalid refresh token', async () => {
+          const response: request.Response = await request(app)
+            .get(`${apiV1}/token/refresh`)
+            .set(
+              'Cookie',
+              'refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRlc3QiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jaCIsInRhZyI6OTk5OSwicm9sZSI6IlVTRVIiLCJpYXQiOjE2ODg3MjkxNzksImV4cCI6MTY4ODczMDA3OX0.Dkk_rHZeWSSsQzVP_xpd9sGNZg14HMNBrYGzr9Cp3IM'
+            )
+            .send();
+          expect(response.statusCode).toEqual(401);
+          expect(response.body.name).toEqual('http-error');
+          expect(response.body.error).toEqual('Invalid refresh token');
+        });
+        it('should be bad request with missing cookies header', async () => {
+          const response: request.Response = await request(app).get(`${apiV1}/token/refresh`).send();
+          expect(response.statusCode).toEqual(400);
+          expect(response.body.name).toEqual('http-error');
+          expect(response.body.error).toEqual('No refresh token provided');
         });
       });
     });

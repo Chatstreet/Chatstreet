@@ -97,6 +97,7 @@ const doc = {
           username: 'NekroQuest',
           tag: 7331,
           email: 'nekroquest@gmail.com',
+          role: 'USER',
           iat: 1687638356,
           exp: 1688243156,
         },
@@ -145,6 +146,23 @@ const doc = {
     PostRegisterResponseInternalServerError: {
       name: 'http-error',
       error: "ER_DUP_ENTRY: Duplicate entry 'example@example.ch' for key 'email'",
+    },
+    GetRefreshResponseSuccess: {
+      name: 'http-success',
+      data: {
+        username: 'NekroQuest',
+        tag: 7331,
+        email: 'nekroquest@gmail.com',
+        role: 'USER',
+      },
+    },
+    GetRefreshResponseBadRequest: {
+      name: 'http-error',
+      error: 'No refresh token provided',
+    },
+    GetRefreshResponseUnauthorized: {
+      name: 'http-error',
+      error: 'Invalid refresh token',
     },
     ZodValidationError: {
       issues: [

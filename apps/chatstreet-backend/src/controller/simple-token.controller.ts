@@ -9,6 +9,7 @@ import {
   AuthenticationRequestTypeGuard,
 } from '@app/type-guards/libs/token/authentication.request.type-guard';
 import { AuthenticationResponseType } from '@app/type-guards/libs/token/authenticaton.response.type-guard';
+import { RefreshResponseType } from '@app/type-guards/libs/token/refresh.response.type-guard';
 import {
   RegistrationRequestType,
   RegistrationRequestTypeGuard,
@@ -21,6 +22,8 @@ import { TokenValidationResponseType } from '@app/utils/types/token-validation-r
 import { Router, Request, Response } from 'express';
 
 const simpleTokenController: Router = Router();
+
+// FIXME: ONLY SAFE UNIQUE IDENTIFIER IN TOKENS. ADDAPT DATABASE
 
 simpleTokenController.post(
   '/auth',
@@ -49,8 +52,6 @@ simpleTokenController.post(
           description: 'The credentials of your request are unknown to the server.',
           schema: { $ref: '#/definitions/PostAuthResponseUnauthorized' },
         } */
-    const ONE_WEEK = 604800000;
-    const FIFTEEN_MINUTES = 900000;
     const validationResponse: TypeGuardValidationResult<AuthenticationRequestType> =
       TypeGuardValdiationUtil.validate<AuthenticationRequestType>(AuthenticationRequestTypeGuard, req.body);
     if (validationResponse.name === 'validation-error') {
@@ -73,25 +74,11 @@ simpleTokenController.post(
     const jwtTokens: string[] = JsonWebTokenOperationsUtil.generateTokens(validUserInformation);
     res
       .status(200)
-      .cookie('refreshToken', jwtTokens[1], {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
-        maxAge: ONE_WEEK,
-      })
-      .cookie('accessToken', jwtTokens[0], {
-        httpOnly: false,
-        secure: false,
-        sameSite: 'strict',
-        maxAge: FIFTEEN_MINUTES,
-      })
+      .cookie('refreshToken', jwtTokens[1], JsonWebTokenOperationsUtil.getRefreshTokenCookieOptions())
+      .cookie('accessToken', jwtTokens[0], JsonWebTokenOperationsUtil.getAccessTokenCookieOptions())
       .json({
         name: 'http-success',
-        data: {
-          username: validUserInformation.username,
-          email: validUserInformation.email,
-          tag: validUserInformation.tag,
-        },
+        data: validUserInformation,
       });
   }
 );
@@ -128,7 +115,9 @@ simpleTokenController.get(
       return;
     }
     await JsonWebTokenOperationsUtil.validateAccessToken(accessToken).then(
-      (tokenValidationResponse: TokenValidationResponseType): Response<HttpResponseFailure> => {
+      (
+        tokenValidationResponse: TokenValidationResponseType<JsonWebTokenUserPayloadType>
+      ): Response<HttpResponseFailure> => {
         if (tokenValidationResponse.name === 'validation-error') {
           return res.status(200).json({
             name: 'http-success',
@@ -161,15 +150,15 @@ simpleTokenController.post(
           schema: { $ref: '#/definitions/PostRegisterRequest' },
         }, */
     /* #swagger.responses[200] = {
-          description: '',
+          description: 'Successfully registered a new user.',
           schema: { $ref: '#/definitions/PostRegisterResponseSuccess' },
         } */
     /* #swagger.responses[400] = {
-          description: '',
+          description: 'Bad Request, check your json request body.',
           schema: { $ref: '#/definitions/PostRegisterResponseBadRequest' },
         } */
     /* #swagger.responses[500] = {
-          description: '',
+          description: 'The user already exists.',
           schema: { $ref: '#/definitions/PostRegisterResponseInternalServerError' },
         } */
     const validationResponse: TypeGuardValidationResult<RegistrationRequestType> =
@@ -195,6 +184,65 @@ simpleTokenController.post(
       name: 'http-success',
       data: userRegistrationResponseData,
     });
+  }
+);
+
+simpleTokenController.get(
+  '/refresh',
+  async (req: Request<unknown>, res: Response<AsyncHttpResponseType<RefreshResponseType>>): Promise<void> => {
+    // #swagger.tags = ['Authentication']
+    // #swagger.description = 'Used to refresh the access token.'
+    /* #swagger.parameters['Refresh'] = {
+          in: 'header',
+          name: 'Cookies'
+          description: 'Valid "refreshToken" cookie needs to be provided',
+        }, */
+    /* #swagger.responses[200] = {
+          description: 'The access token has been refreshed.',
+          schema: { $ref: '#/definitions/GetRefreshResponseSuccess' },
+        } */
+    /* #swagger.responses[400] = {
+          description: 'Bad Request, check your json request body.',
+          schema: { $ref: '#/definitions/GetRefreshResponseBadRequest' },
+        } */
+    /* #swagger.responses[401] = {
+          description: 'The refresh token is invalid. Authentication is required.',
+          schema: { $ref: '#/definitions/GetRefreshResponseUnauthorized' },
+        } */
+    const refreshToken: string | null = JsonWebTokenOperationsUtil.getRefreshTokenFromRequest(req);
+    if (!refreshToken) {
+      res.status(400).json({
+        name: 'http-error',
+        error: 'No refresh token provided',
+      });
+      return;
+    }
+    await JsonWebTokenOperationsUtil.validateRefreshToken(refreshToken).then(
+      (tokenValidationResponse: TokenValidationResponseType<JsonWebTokenUserPayloadType>) => {
+        if (tokenValidationResponse.name === 'validation-error') {
+          res.status(401).json({
+            name: 'http-error',
+            error: 'Invalid refresh token',
+          });
+          return;
+        }
+        const user: JsonWebTokenUserPayloadType = tokenValidationResponse.data;
+        const requiredUserData: JsonWebTokenUserPayloadType = {
+          username: user.username,
+          email: user.email,
+          tag: user.tag,
+          role: user.role,
+        };
+        const newAccessToken: string = JsonWebTokenOperationsUtil.generateAccessToken(requiredUserData);
+        res
+          .status(200)
+          .cookie('accessToken', newAccessToken, JsonWebTokenOperationsUtil.getAccessTokenCookieOptions())
+          .json({
+            name: 'http-success',
+            data: requiredUserData,
+          });
+      }
+    );
   }
 );
 

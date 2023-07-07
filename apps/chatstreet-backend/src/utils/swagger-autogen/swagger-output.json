@@ -131,21 +131,48 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Successfully registered a new user.",
             "schema": {
               "$ref": "#/definitions/PostRegisterResponseSuccess"
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad Request, check your json request body.",
             "schema": {
               "$ref": "#/definitions/PostRegisterResponseBadRequest"
             }
           },
           "500": {
-            "description": "Internal Server Error",
+            "description": "The user already exists.",
             "schema": {
               "$ref": "#/definitions/PostRegisterResponseInternalServerError"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/token/refresh": {
+      "get": {
+        "tags": ["Authentication"],
+        "description": "Used to refresh the access token.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The access token has been refreshed.",
+            "schema": {
+              "$ref": "#/definitions/GetRefreshResponseSuccess"
+            }
+          },
+          "400": {
+            "description": "Bad Request, check your json request body.",
+            "schema": {
+              "$ref": "#/definitions/GetRefreshResponseBadRequest"
+            }
+          },
+          "401": {
+            "description": "The refresh token is invalid. Authentication is required.",
+            "schema": {
+              "$ref": "#/definitions/GetRefreshResponseUnauthorized"
             }
           }
         }
@@ -330,6 +357,10 @@
                   "type": "string",
                   "example": "nekroquest@gmail.com"
                 },
+                "role": {
+                  "type": "string",
+                  "example": "USER"
+                },
                 "iat": {
                   "type": "number",
                   "example": 1687638356
@@ -481,6 +512,62 @@
         "error": {
           "type": "string",
           "example": "ER_DUP_ENTRY: Duplicate entry 'example@example.ch' for key 'email'"
+        }
+      }
+    },
+    "GetRefreshResponseSuccess": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "http-success"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string",
+              "example": "NekroQuest"
+            },
+            "tag": {
+              "type": "number",
+              "example": 7331
+            },
+            "email": {
+              "type": "string",
+              "example": "nekroquest@gmail.com"
+            },
+            "role": {
+              "type": "string",
+              "example": "USER"
+            }
+          }
+        }
+      }
+    },
+    "GetRefreshResponseBadRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "http-error"
+        },
+        "error": {
+          "type": "string",
+          "example": "No refresh token provided"
+        }
+      }
+    },
+    "GetRefreshResponseUnauthorized": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "http-error"
+        },
+        "error": {
+          "type": "string",
+          "example": "Invalid refresh token"
         }
       }
     },

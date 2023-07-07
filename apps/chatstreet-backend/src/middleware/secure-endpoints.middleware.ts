@@ -1,11 +1,11 @@
 import { HttpResponseFailure, HttpResponseType } from '@app/http/types/http-response.type';
-import { AuthenticatedBodyType } from '@app/http/types/libs/authenticated-body.type';
+import { JsonWebTokenUserPayloadType } from '@app/type-guards/libs/jwt/json-web-token-user-payload.type-guard';
 import JsonWebTokenOperationsUtil from '@app/utils/json-web-token-operations.util';
 import { TokenValidationResponseType } from '@app/utils/types/token-validation-response.type';
 import { NextFunction, Request, Response } from 'express';
 
 const secureEndpointsMiddleware = async (
-  req: Request<unknown, unknown, AuthenticatedBodyType>,
+  req: Request<unknown>,
   res: Response<HttpResponseType<unknown>>,
   next: NextFunction
 ): Promise<void> => {
@@ -18,7 +18,9 @@ const secureEndpointsMiddleware = async (
     return;
   }
   await JsonWebTokenOperationsUtil.validateAccessToken(accessToken).then(
-    (tokenValidationResponse: TokenValidationResponseType): Response<HttpResponseFailure> | void => {
+    (
+      tokenValidationResponse: TokenValidationResponseType<JsonWebTokenUserPayloadType>
+    ): Response<HttpResponseFailure> | void => {
       if (tokenValidationResponse.name === 'validation-error') {
         return res.status(401).json({
           name: 'http-error',
