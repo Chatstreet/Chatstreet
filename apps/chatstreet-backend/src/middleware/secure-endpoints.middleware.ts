@@ -1,5 +1,5 @@
 import { HttpResponseFailure, HttpResponseType } from '@app/http/types/http-response.type';
-import { JsonWebTokenUserPayloadType } from '@app/type-guards/libs/jwt/json-web-token-user-payload.type-guard';
+import { JsonWebTokenPayloadType } from '@app/type-guards/libs/jwt/json-web-token-user-payload.type-guard';
 import JsonWebTokenOperationsUtil from '@app/utils/json-web-token-operations.util';
 import { TokenValidationResponseType } from '@app/utils/types/token-validation-response.type';
 import { NextFunction, Request, Response } from 'express';
@@ -19,7 +19,7 @@ const secureEndpointsMiddleware = async (
   }
   await JsonWebTokenOperationsUtil.validateAccessToken(accessToken).then(
     (
-      tokenValidationResponse: TokenValidationResponseType<JsonWebTokenUserPayloadType>
+      tokenValidationResponse: TokenValidationResponseType<JsonWebTokenPayloadType>
     ): Response<HttpResponseFailure> | void => {
       if (tokenValidationResponse.name === 'validation-error') {
         return res.status(401).json({

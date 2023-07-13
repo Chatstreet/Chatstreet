@@ -1,29 +1,25 @@
 import { AsyncHttpResponseType } from '@app/http/types/async-http-response.type';
-import { HttpResponseFailure } from '@app/http/types/http-response.type';
 import { AuthenticatedBodyType } from '@app/http/types/libs/authenticated-body.type';
 import { TypeGuardValidationResult } from '@app/http/types/type-guard-validation-result.type';
 import DatabaseOperationsService from '@app/services/database-operations.service';
-import { JsonWebTokenUserPayloadType } from '@app/type-guards/libs/jwt/json-web-token-user-payload.type-guard';
+import { JsonWebTokenPayloadType } from '@app/type-guards/libs/jwt/json-web-token-user-payload.type-guard';
 import {
   AuthenticationRequestType,
   AuthenticationRequestTypeGuard,
 } from '@app/type-guards/libs/token/authentication.request.type-guard';
 import { AuthenticationResponseType } from '@app/type-guards/libs/token/authenticaton.response.type-guard';
-import { RefreshResponseType } from '@app/type-guards/libs/token/refresh.response.type-guard';
 import {
   RegistrationRequestType,
   RegistrationRequestTypeGuard,
 } from '@app/type-guards/libs/token/registration.request.type-guard';
 import { RegistrationResponseType } from '@app/type-guards/libs/token/registration.response.type-guard';
 import { VerificationResponseType } from '@app/type-guards/libs/token/verification.response.type-guard';
-import JsonWebTokenOperationsUtil from '@app/utils/json-web-token-operations.util';
+import JsonWebTokenOperationsUtil, { GeneratedJsonWebTokens } from '@app/utils/json-web-token-operations.util';
 import { TypeGuardValdiationUtil } from '@app/utils/type-guard-validation.util';
 import { TokenValidationResponseType } from '@app/utils/types/token-validation-response.type';
 import { Router, Request, Response } from 'express';
 
 const simpleTokenController: Router = Router();
-
-// FIXME: ONLY SAFE UNIQUE IDENTIFIER IN TOKENS. ADDAPT DATABASE
 
 simpleTokenController.post(
   '/auth',
@@ -52,6 +48,10 @@ simpleTokenController.post(
           description: 'The credentials of your request are unknown to the server.',
           schema: { $ref: '#/definitions/PostAuthResponseUnauthorized' },
         } */
+    /* #swagger.responses[500] = {
+          description: 'Internal server error (normally doesn\'t occure)',
+          schema: { $ref: '#/definitions/PostAuthResponseInternalServerError' },
+        } */
     const validationResponse: TypeGuardValidationResult<AuthenticationRequestType> =
       TypeGuardValdiationUtil.validate<AuthenticationRequestType>(AuthenticationRequestTypeGuard, req.body);
     if (validationResponse.name === 'validation-error') {
@@ -62,23 +62,43 @@ simpleTokenController.post(
       });
       return;
     }
-    const validUserInformation: JsonWebTokenUserPayloadType | null =
-      await DatabaseOperationsService.getInstance().getValidUserInformation(validationResponse.data);
-    if (!validUserInformation) {
+    const isUserAuthenticated: boolean = await DatabaseOperationsService.getInstance().validateUserCredentials(
+      validationResponse.data
+    );
+    if (!isUserAuthenticated) {
       res.status(401).json({
         name: 'http-error',
         error: 'Invalid credentials',
       });
       return;
     }
-    const jwtTokens: string[] = JsonWebTokenOperationsUtil.generateTokens(validUserInformation);
+    const jwtHash: string | null = await DatabaseOperationsService.getInstance().getJsonWebTokenHash(
+      validationResponse.data
+    );
+    if (!jwtHash) {
+      res.status(500).json({
+        name: 'http-error',
+        error: 'An unexpected server error occured.',
+      });
+      return;
+    }
+    const jwtTokens: GeneratedJsonWebTokens = JsonWebTokenOperationsUtil.generateTokens(jwtHash);
+    const userInformation: AuthenticationResponseType | null =
+      await DatabaseOperationsService.getInstance().getUserInformationFromJwtHash(jwtHash);
+    if (!userInformation) {
+      res.status(500).json({
+        name: 'http-error',
+        error: 'An unexpected server error occured.',
+      });
+      return;
+    }
     res
       .status(200)
-      .cookie('refreshToken', jwtTokens[1], JsonWebTokenOperationsUtil.getRefreshTokenCookieOptions())
-      .cookie('accessToken', jwtTokens[0], JsonWebTokenOperationsUtil.getAccessTokenCookieOptions())
+      .cookie('refreshToken', jwtTokens.refreshToken, JsonWebTokenOperationsUtil.getRefreshTokenCookieOptions())
+      .cookie('accessToken', jwtTokens.accessToken, JsonWebTokenOperationsUtil.getAccessTokenCookieOptions())
       .json({
         name: 'http-success',
-        data: validUserInformation,
+        data: userInformation,
       });
   }
 );
@@ -93,7 +113,7 @@ simpleTokenController.get(
     // #swagger.description = 'Used to determine wether the user is still authenticated.'
     /* #swagger.responses[200 - Valid] = {
           description: 'The token provided by the request hearder is valid.',
-          schema: { $ref: '#/definitions/GetAuthResponseSuccess' },
+          schema: { $ref: '#/definitions/GetVerifyResponseSuccess' },
         } */
     /* #swagger.responses[200 - No Token] = {
           description: 'The client does not provide a token in the authorization header.',
@@ -102,6 +122,10 @@ simpleTokenController.get(
     /* #swagger.responses[200 - Invalid] = {
           description: 'The token provided by the request header is invalid.',
           schema: { $ref: '#/definitions/GetVerifyResponseSuccessInvalidToken' },
+        } */
+    /* #swagger.responses[500] = {
+          description: 'Internal server error (normally doesn\'t occure)',
+          schema: { $ref: '#/definitions/GetVerifyResponseInternalServerError' },
         } */
     const accessToken: string | null = JsonWebTokenOperationsUtil.getAccessTokenFromRequest(req);
     if (!accessToken) {
@@ -114,28 +138,42 @@ simpleTokenController.get(
       });
       return;
     }
-    await JsonWebTokenOperationsUtil.validateAccessToken(accessToken).then(
-      (
-        tokenValidationResponse: TokenValidationResponseType<JsonWebTokenUserPayloadType>
-      ): Response<HttpResponseFailure> => {
-        if (tokenValidationResponse.name === 'validation-error') {
-          return res.status(200).json({
-            name: 'http-success',
-            data: {
-              status: 'error',
-              error: 'Token is invalid',
-            },
-          });
-        }
-        return res.status(200).json({
-          name: 'http-success',
-          data: {
-            status: 'success',
-            data: tokenValidationResponse.data,
-          },
-        });
-      }
-    );
+    const tokenValidationResponse: TokenValidationResponseType<JsonWebTokenPayloadType> =
+      await JsonWebTokenOperationsUtil.validateAccessToken(accessToken).then(
+        (tokenValidationResponse: TokenValidationResponseType<JsonWebTokenPayloadType>) => tokenValidationResponse
+      );
+    if (tokenValidationResponse.name === 'validation-error') {
+      res.status(200).json({
+        name: 'http-success',
+        data: {
+          status: 'error',
+          error: 'Token is invalid',
+        },
+      });
+      return;
+    }
+    const jwtPayload: JsonWebTokenPayloadType = tokenValidationResponse.data;
+    const userInformation: AuthenticationResponseType | null =
+      await DatabaseOperationsService.getInstance().getUserInformationFromJwtHash(jwtPayload.jwtHash);
+    if (!userInformation) {
+      res.status(500).json({
+        name: 'http-error',
+        error: 'An unexpected server error occured.',
+      });
+      return;
+    }
+    res.status(200).json({
+      name: 'http-success',
+      data: {
+        status: 'success',
+        data: {
+          ...userInformation,
+          exp: jwtPayload.exp,
+          iat: jwtPayload.iat,
+        },
+      },
+    });
+    return;
   }
 );
 
@@ -189,14 +227,9 @@ simpleTokenController.post(
 
 simpleTokenController.get(
   '/refresh',
-  async (req: Request<unknown>, res: Response<AsyncHttpResponseType<RefreshResponseType>>): Promise<void> => {
+  async (req: Request<unknown>, res: Response<AsyncHttpResponseType<AuthenticationResponseType>>): Promise<void> => {
     // #swagger.tags = ['Authentication']
     // #swagger.description = 'Used to refresh the access token.'
-    /* #swagger.parameters['Refresh'] = {
-          in: 'header',
-          name: 'Cookies'
-          description: 'Valid "refreshToken" cookie needs to be provided',
-        }, */
     /* #swagger.responses[200] = {
           description: 'The access token has been refreshed.',
           schema: { $ref: '#/definitions/GetRefreshResponseSuccess' },
@@ -209,6 +242,10 @@ simpleTokenController.get(
           description: 'The refresh token is invalid. Authentication is required.',
           schema: { $ref: '#/definitions/GetRefreshResponseUnauthorized' },
         } */
+    /* #swagger.responses[500] = {
+          description: 'Internal server error (normally doesn\'t occure)',
+          schema: { $ref: '#/definitions/GetRefreshResponseInternalServerError' },
+        } */
     const refreshToken: string | null = JsonWebTokenOperationsUtil.getRefreshTokenFromRequest(req);
     if (!refreshToken) {
       res.status(400).json({
@@ -217,32 +254,33 @@ simpleTokenController.get(
       });
       return;
     }
-    await JsonWebTokenOperationsUtil.validateRefreshToken(refreshToken).then(
-      (tokenValidationResponse: TokenValidationResponseType<JsonWebTokenUserPayloadType>) => {
-        if (tokenValidationResponse.name === 'validation-error') {
-          res.status(401).json({
-            name: 'http-error',
-            error: 'Invalid refresh token',
-          });
-          return;
-        }
-        const user: JsonWebTokenUserPayloadType = tokenValidationResponse.data;
-        const requiredUserData: JsonWebTokenUserPayloadType = {
-          username: user.username,
-          email: user.email,
-          tag: user.tag,
-          role: user.role,
-        };
-        const newAccessToken: string = JsonWebTokenOperationsUtil.generateAccessToken(requiredUserData);
-        res
-          .status(200)
-          .cookie('accessToken', newAccessToken, JsonWebTokenOperationsUtil.getAccessTokenCookieOptions())
-          .json({
-            name: 'http-success',
-            data: requiredUserData,
-          });
-      }
-    );
+    const tokenValidationResponse: TokenValidationResponseType<JsonWebTokenPayloadType> =
+      await JsonWebTokenOperationsUtil.validateRefreshToken(refreshToken);
+    if (tokenValidationResponse.name === 'validation-error') {
+      res.status(401).json({
+        name: 'http-error',
+        error: 'Invalid refresh token',
+      });
+      return;
+    }
+    const jwtPayload: JsonWebTokenPayloadType = tokenValidationResponse.data;
+    const newAccessToken: string = JsonWebTokenOperationsUtil.generateAccessToken(jwtPayload.jwtHash);
+    const userInformation: AuthenticationResponseType | null =
+      await DatabaseOperationsService.getInstance().getUserInformationFromJwtHash(jwtPayload.jwtHash);
+    if (!userInformation) {
+      res.status(500).json({
+        name: 'http-error',
+        error: 'An unexpected server error occured.',
+      });
+      return;
+    }
+    res
+      .status(200)
+      .cookie('accessToken', newAccessToken, JsonWebTokenOperationsUtil.getAccessTokenCookieOptions())
+      .json({
+        name: 'http-success',
+        data: userInformation,
+      });
   }
 );
 

@@ -84,6 +84,12 @@
             "schema": {
               "$ref": "#/definitions/PostAuthResponseUnauthorized"
             }
+          },
+          "500": {
+            "description": "Internal server error (normally doesn't occure)",
+            "schema": {
+              "$ref": "#/definitions/PostAuthResponseInternalServerError"
+            }
           }
         }
       }
@@ -94,10 +100,16 @@
         "description": "Used to determine wether the user is still authenticated.",
         "parameters": [],
         "responses": {
+          "500": {
+            "description": "Internal server error (normally doesn't occure)",
+            "schema": {
+              "$ref": "#/definitions/GetVerifyResponseInternalServerError"
+            }
+          },
           "200 - Valid": {
             "description": "The token provided by the request hearder is valid.",
             "schema": {
-              "$ref": "#/definitions/GetAuthResponseSuccess"
+              "$ref": "#/definitions/GetVerifyResponseSuccess"
             }
           },
           "200 - No Token": {
@@ -174,12 +186,36 @@
             "schema": {
               "$ref": "#/definitions/GetRefreshResponseUnauthorized"
             }
+          },
+          "500": {
+            "description": "Internal server error (normally doesn't occure)",
+            "schema": {
+              "$ref": "#/definitions/GetRefreshResponseInternalServerError"
+            }
           }
         }
       }
     }
   },
   "definitions": {
+    "GetHealthResponseSuccess": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "http-success"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "health": {
+              "type": "string",
+              "example": "ok"
+            }
+          }
+        }
+      }
+    },
     "PostAuthRequestUsernameTag": {
       "type": "object",
       "properties": {
@@ -266,13 +302,17 @@
           "type": "string",
           "example": "NekroQuest"
         },
+        "tag": {
+          "type": "number",
+          "example": 7331
+        },
         "email": {
           "type": "string",
           "example": "nekroquest@gmail.com"
         },
-        "tag": {
-          "type": "number",
-          "example": 7331
+        "role": {
+          "type": "string",
+          "example": "USER"
         }
       }
     },
@@ -310,25 +350,20 @@
         }
       }
     },
-    "GetHealthResponseSuccess": {
+    "PostAuthResponseInternalServerError": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "example": "http-success"
+          "example": "http-error"
         },
-        "data": {
-          "type": "object",
-          "properties": {
-            "health": {
-              "type": "string",
-              "example": "ok"
-            }
-          }
+        "error": {
+          "type": "string",
+          "example": "An unexpected server error occured."
         }
       }
     },
-    "GetAuthResponseSuccess": {
+    "GetVerifyResponseSuccess": {
       "type": "object",
       "properties": {
         "name": {
@@ -336,42 +371,36 @@
           "example": "http-success"
         },
         "data": {
-          "type": "object",
-          "properties": {
-            "status": {
-              "type": "string",
-              "example": "success"
-            },
-            "data": {
-              "type": "object",
-              "properties": {
-                "username": {
-                  "type": "string",
-                  "example": "NekroQuest"
-                },
-                "tag": {
-                  "type": "number",
-                  "example": 7331
-                },
-                "email": {
-                  "type": "string",
-                  "example": "nekroquest@gmail.com"
-                },
-                "role": {
-                  "type": "string",
-                  "example": "USER"
-                },
-                "iat": {
-                  "type": "number",
-                  "example": 1687638356
-                },
-                "exp": {
-                  "type": "number",
-                  "example": 1688243156
-                }
-              }
-            }
-          }
+          "$ref": "#/definitions/GetVerifyResponseDataSuccess"
+        }
+      }
+    },
+    "GetVerifyResponseDataSuccess": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "example": "NekroQuest"
+        },
+        "tag": {
+          "type": "number",
+          "example": 7331
+        },
+        "email": {
+          "type": "string",
+          "example": "nekroquest@gmail.com"
+        },
+        "role": {
+          "type": "string",
+          "example": "USER"
+        },
+        "exp": {
+          "type": "number",
+          "example": 1689596690
+        },
+        "iat": {
+          "type": "number",
+          "example": 1689595790
         }
       }
     },
@@ -416,6 +445,19 @@
               "example": "Token is invalid"
             }
           }
+        }
+      }
+    },
+    "GetVerifyResponseInternalServerError": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "http-error"
+        },
+        "error": {
+          "type": "string",
+          "example": "An unexpected server error occured."
         }
       }
     },
@@ -568,6 +610,19 @@
         "error": {
           "type": "string",
           "example": "Invalid refresh token"
+        }
+      }
+    },
+    "GetRefreshResponseInternalServerError": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "http-error"
+        },
+        "error": {
+          "type": "string",
+          "example": "An unexpected server error occured."
         }
       }
     },

@@ -40,6 +40,12 @@ const doc = {
     },
   },
   definitions: {
+    GetHealthResponseSuccess: {
+      name: 'http-success',
+      data: {
+        health: 'ok',
+      },
+    },
     PostAuthRequestUsernameTag: {
       username: 'NekroQuest',
       tag: '7331',
@@ -67,8 +73,9 @@ const doc = {
     },
     PostAuthResponseDataSuccess: {
       username: 'NekroQuest',
-      email: 'nekroquest@gmail.com',
       tag: 7331,
+      email: 'nekroquest@gmail.com',
+      role: 'USER',
     },
     PostAuthResponseBadRequest: {
       name: 'validation-error',
@@ -83,25 +90,23 @@ const doc = {
       name: 'http-error',
       error: 'Invalid credentials',
     },
-    GetHealthResponseSuccess: {
+    PostAuthResponseInternalServerError: {
+      name: 'http-error',
+      error: 'An unexpected server error occured.',
+    },
+    GetVerifyResponseSuccess: {
       name: 'http-success',
       data: {
-        health: 'ok',
+        $ref: '#/definitions/GetVerifyResponseDataSuccess',
       },
     },
-    GetAuthResponseSuccess: {
-      name: 'http-success',
-      data: {
-        status: 'success',
-        data: {
-          username: 'NekroQuest',
-          tag: 7331,
-          email: 'nekroquest@gmail.com',
-          role: 'USER',
-          iat: 1687638356,
-          exp: 1688243156,
-        },
-      },
+    GetVerifyResponseDataSuccess: {
+      username: 'NekroQuest',
+      tag: 7331,
+      email: 'nekroquest@gmail.com',
+      role: 'USER',
+      exp: 1689596690,
+      iat: 1689595790,
     },
     GetVerifyResponseSuccessNoToken: {
       name: 'http-success',
@@ -116,6 +121,10 @@ const doc = {
         status: 'error',
         error: 'Token is invalid',
       },
+    },
+    GetVerifyResponseInternalServerError: {
+      name: 'http-error',
+      error: 'An unexpected server error occured.',
     },
     PostRegisterResponseSuccess: {
       name: 'http-success',
@@ -163,6 +172,10 @@ const doc = {
     GetRefreshResponseUnauthorized: {
       name: 'http-error',
       error: 'Invalid refresh token',
+    },
+    GetRefreshResponseInternalServerError: {
+      name: 'http-error',
+      error: 'An unexpected server error occured.',
     },
     ZodValidationError: {
       issues: [

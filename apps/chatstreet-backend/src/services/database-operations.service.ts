@@ -1,13 +1,19 @@
 import EnvironmentsConfig from '@app/environments/environments.config';
-import { JsonWebTokenUserPayloadType } from '@app/type-guards/libs/jwt/json-web-token-user-payload.type-guard';
 import { AuthenticationRequestType } from '@app/type-guards/libs/token/authentication.request.type-guard';
 import LoggerWrapperUtil from '@app/utils/logger-wrapper.util';
 import mysql, { Connection, MysqlError } from 'mysql';
-import { AuthenticationUserDataDatabaseResponse, AvailableTagDatabaseResponse } from './database-operations.types';
+import {
+  AuthenticationUserDataDatabaseResponse,
+  AvailableTagDatabaseResponse,
+  RemovalDatabaseResponse,
+  UserIdDatabaseResponse,
+} from './database-operations.types';
 import DatabaseEncriptionUtil from '@app/utils/database-encription.util';
 import QueryCreationUtil from '@app/utils/query-creation.util';
 import { RegistrationRequestType } from '@app/type-guards/libs/token/registration.request.type-guard';
 import { RegistrationResponseType } from '@app/type-guards/libs/token/registration.response.type-guard';
+import { v4 as uuid } from 'uuid';
+import { AuthenticationResponseType } from '@app/type-guards/libs/token/authenticaton.response.type-guard';
 
 // REMEMBER TO UPATE MOCK ON IMPLEMENTATION OF NEW PUBLIC METHODS
 export default class DatabaseOperationsService {
@@ -30,9 +36,7 @@ export default class DatabaseOperationsService {
     return this.instance;
   }
 
-  public async getValidUserInformation(
-    userData: AuthenticationRequestType
-  ): Promise<JsonWebTokenUserPayloadType | null> {
+  public async validateUserCredentials(userData: AuthenticationRequestType): Promise<boolean> {
     const queryString: string = QueryCreationUtil.createAuthenticationUserDataSelectionQuery(
       userData.email ?? null,
       userData.username ?? null,
@@ -48,21 +52,13 @@ export default class DatabaseOperationsService {
         return null;
       });
     if (!databaseResponse) {
-      return null;
+      return false;
     }
     const passwordIsValid: boolean = await DatabaseEncriptionUtil.compare(
       userData.password ?? '',
       databaseResponse.password
     ).then((result: boolean) => result);
-    if (passwordIsValid) {
-      return {
-        username: databaseResponse.username,
-        tag: databaseResponse.tag,
-        email: databaseResponse.email,
-        role: databaseResponse.role,
-      };
-    }
-    return null;
+    return passwordIsValid;
   }
 
   public async registerUser(userData: RegistrationRequestType): Promise<RegistrationResponseType | string> {
@@ -82,6 +78,7 @@ export default class DatabaseOperationsService {
       userData.birthdate ?? null,
       spicyPassword
     );
+    LoggerWrapperUtil.info(`Executing query: "${queryString}"`, DatabaseOperationsService);
     const databaseResponse: string | unknown = await this.executeQuery<unknown>(queryString)
       .then((response: unknown) => response)
       .catch((error: string) => {
@@ -101,6 +98,37 @@ export default class DatabaseOperationsService {
       phoneNumber: userData.phoneNumber,
       birthdate: userData.birthdate,
     };
+  }
+
+  public async getJsonWebTokenHash(userData: AuthenticationRequestType): Promise<string | null> {
+    const userId: number | null = await this.getUserId(userData);
+    if (!userId) {
+      return null;
+    }
+    await this.removeJsonWebToken(userId);
+    const jsonWebTokenHash: string = uuid();
+    const queryString: string = QueryCreationUtil.createJsonWebTokenHashInsertionQuery(userId, jsonWebTokenHash);
+    LoggerWrapperUtil.info(`Executing query: "${queryString}"`, DatabaseOperationsService);
+    const databaseResponse: string | unknown = await this.executeQuery<unknown>(queryString)
+      .then((response: unknown) => response)
+      .catch((error: string) => {
+        LoggerWrapperUtil.error(error, DatabaseOperationsService);
+        return error;
+      });
+    if (typeof databaseResponse === 'string') {
+      return null;
+    }
+    return jsonWebTokenHash;
+  }
+
+  public async getUserInformationFromJwtHash(jwtHash: string): Promise<AuthenticationResponseType | null> {
+    const queryString: string = QueryCreationUtil.createUserInformationFromJwtHashSelectionQuery(jwtHash);
+    return await this.executeQuery<AuthenticationResponseType[] | null>(queryString)
+      .then((response: AuthenticationResponseType[] | null) => (response ? response[0] : null))
+      .catch((error: string) => {
+        LoggerWrapperUtil.error(error, DatabaseOperationsService);
+        return null;
+      });
   }
 
   private async getGeneratedTag(username: string): Promise<number | null> {
@@ -128,11 +156,37 @@ export default class DatabaseOperationsService {
 
   private async getAvailableTag(username: string): Promise<AvailableTagDatabaseResponse[] | null> {
     const queryString: string = QueryCreationUtil.createAvailableTagSelectionQuery(username);
+    LoggerWrapperUtil.info(`Executing query: "${queryString}"`, DatabaseOperationsService);
     return await this.executeQuery<AvailableTagDatabaseResponse[]>(queryString)
       .then((response: AvailableTagDatabaseResponse[] | null) => response)
       .catch((error: string) => {
         LoggerWrapperUtil.error(error, DatabaseOperationsService);
         return null;
+      });
+  }
+
+  private async getUserId(userData: AuthenticationRequestType): Promise<number | null> {
+    const queryString: string = QueryCreationUtil.createUserIdSelectionQuery(
+      userData.username ?? null,
+      parseInt(userData.tag ? userData.tag : ''),
+      userData.email ?? null
+    );
+    LoggerWrapperUtil.info(`Executing query: "${queryString}"`, DatabaseOperationsService);
+    return await this.executeQuery<UserIdDatabaseResponse[]>(queryString)
+      .then((response: UserIdDatabaseResponse[] | null) => (response ? response[0].user_id : null))
+      .catch((error: string) => {
+        LoggerWrapperUtil.error(error, DatabaseOperationsService);
+        return null;
+      });
+  }
+
+  private async removeJsonWebToken(userId: number): Promise<boolean> {
+    const queryString: string = QueryCreationUtil.createJsonWebTokenRemovalQuery(userId);
+    return await this.executeQuery<RemovalDatabaseResponse>(queryString)
+      .then((response: RemovalDatabaseResponse | null) => (response ? response.affectedRows > 0 : false))
+      .catch((error: string) => {
+        LoggerWrapperUtil.error(error, DatabaseOperationsService);
+        return false;
       });
   }
 

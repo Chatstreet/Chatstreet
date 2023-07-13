@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS chatstreet.`users` (
   `recovery_email` VARCHAR(45) NULL COMMENT 'Optional',
   `phone_number` VARCHAR(45) NULL COMMENT 'Optional',
   `birthdate` DATE NULL,
-  `registration_timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `registration_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `password` VARCHAR(512) NOT NULL,
   `role` ENUM("USER", "ADMIN", "SUPER_ADMIN") NOT NULL,
   PRIMARY KEY(`user_id`),
@@ -120,11 +120,24 @@ CREATE TABLE IF NOT EXISTS chatstreet.`messages` (
   `contacts_lookup_id_fk_2` INT NOT NULL,
   `user_content` LONGTEXT NOT NULL COMMENT 'copy of the contact_content just encrypted with the users own public key.',
   `contact_content` LONGTEXT NOT NULL COMMENT 'message encrypted with the contacts public key.',
-  `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY(`contacts_lookup_id_fk_1`, `contacts_lookup_id_fk_2`),
   CONSTRAINT `fk_messages_contacts_lookup1`
     FOREIGN KEY(`contacts_lookup_id_fk_1` , `contacts_lookup_id_fk_2`)
     REFERENCES chatstreet.`contacts_lookup`(`user_id_fk_1` , `contact_id_fk_2`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+-- json_web_token table
+CREATE TABLE IF NOT EXISTS chatstreet.`json_web_token` (
+  `json_web_token_id` VARCHAR(45) NOT NULL,
+  `user_id_fk` INT NOT NULL,
+  `creation_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`json_web_token_id`),
+  CONSTRAINT `fk_json_web_token_users1`
+    FOREIGN KEY(`user_id_fk`)
+    REFERENCES chatstreet.`users`(`user_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );

@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import { JsonWebTokenUserPayloadTypeGuard } from '../jwt/json-web-token-user-payload.type-guard';
+import { AuthenticationResponseTypeGuard } from './authenticaton.response.type-guard';
 
 export const VerificationResponseTypeGuard = z.discriminatedUnion('status', [
-  z.object({ status: z.literal('success'), data: JsonWebTokenUserPayloadTypeGuard }),
+  z.object({ status: z.literal('success'), data: AuthenticationResponseTypeGuard }),
   z.object({ status: z.literal('error'), error: z.string() }),
 ]);
 

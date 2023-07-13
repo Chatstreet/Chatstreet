@@ -1,7 +1,8 @@
-import { JsonWebTokenUserPayloadType } from '@app/type-guards/libs/jwt/json-web-token-user-payload.type-guard';
 import { AuthenticationRequestType } from '@app/type-guards/libs/token/authentication.request.type-guard';
+import { AuthenticationResponseType } from '@app/type-guards/libs/token/authenticaton.response.type-guard';
 import { RegistrationRequestType } from '@app/type-guards/libs/token/registration.request.type-guard';
 import { RegistrationResponseType } from '@app/type-guards/libs/token/registration.response.type-guard';
+import { v4 as uuid } from 'uuid';
 
 type ConnectCallbackType = (error?: Error) => void;
 
@@ -11,27 +12,20 @@ interface ConnectionMock {
 
 interface DatabaseOperationsServiceMock {
   getInstance: jest.Mock<DatabaseOperationsServiceMock>;
-  getConnection: jest.Mock<ConnectionMock>;
-  getValidUserInformation: jest.Mock<JsonWebTokenUserPayloadType>;
+  validateUserCredentials: jest.Mock<boolean>;
   registerUser: jest.Mock<RegistrationResponseType>;
+  getJsonWebTokenHash: jest.Mock<string>;
+  getUserInformationFromJwtHash: jest.Mock<AuthenticationResponseType>;
+  getConnection: jest.Mock<ConnectionMock>;
 }
 
 const databaseOperationsServiceMock: DatabaseOperationsServiceMock = {
   getInstance: jest.fn((): DatabaseOperationsServiceMock => {
     return databaseOperationsServiceMock;
   }),
-  getConnection: jest.fn((): ConnectionMock => {
-    return {
-      connect: (callback: ConnectCallbackType) => callback(),
-    };
-  }),
-  getValidUserInformation: jest.fn((_: AuthenticationRequestType): JsonWebTokenUserPayloadType => {
-    return {
-      username: 'Test',
-      tag: 9999,
-      email: 'test@example.com',
-      role: 'USER',
-    };
+  validateUserCredentials: jest.fn((userData: AuthenticationRequestType): boolean => {
+    // custom responses based on request type
+    return !!userData;
   }),
   registerUser: jest.fn((_: RegistrationRequestType): RegistrationResponseType => {
     return {
@@ -40,6 +34,22 @@ const databaseOperationsServiceMock: DatabaseOperationsServiceMock = {
       email: 'example@example.com',
       firstName: 'Test',
       lastName: 'Test',
+    };
+  }),
+  getJsonWebTokenHash: jest.fn((_: AuthenticationRequestType): string => {
+    return uuid();
+  }),
+  getUserInformationFromJwtHash: jest.fn((_: string): AuthenticationResponseType => {
+    return {
+      username: 'Test',
+      tag: 9999,
+      email: 'example@example.com',
+      role: 'USER',
+    };
+  }),
+  getConnection: jest.fn((): ConnectionMock => {
+    return {
+      connect: (callback: ConnectCallbackType) => callback(),
     };
   }),
 };

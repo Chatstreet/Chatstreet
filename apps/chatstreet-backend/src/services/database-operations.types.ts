@@ -1,13 +1,22 @@
 interface AuthenticationUserDataDatabaseResponse {
   password: string;
-  email: string;
-  username: string;
-  tag: number;
-  role: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
 }
 
 interface AvailableTagDatabaseResponse {
   tag: number;
 }
 
-export { AuthenticationUserDataDatabaseResponse, AvailableTagDatabaseResponse };
+interface UserIdDatabaseResponse {
+  user_id: number;
+}
+
+interface RemovalDatabaseResponse {
+  affectedRows: number;
+}
+
+export {
+  AuthenticationUserDataDatabaseResponse,
+  AvailableTagDatabaseResponse,
+  UserIdDatabaseResponse,
+  RemovalDatabaseResponse,
+};

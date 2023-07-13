@@ -1,10 +1,11 @@
-import request, { agent as supertest } from 'supertest';
+import request from 'supertest';
 import app, { server } from '@app/main';
 import { describe, expect, it, afterAll } from '@jest/globals';
 import logger from 'npmlog';
 import JsonWebTokenOperationsUtil from '@app/utils/json-web-token-operations.util';
 import { TokenValidationResponseType } from '@app/utils/types/token-validation-response.type';
-import { JsonWebTokenUserPayloadType } from '@app/type-guards/libs/jwt/json-web-token-user-payload.type-guard';
+import { JsonWebTokenPayloadType } from '@app/type-guards/libs/jwt/json-web-token-user-payload.type-guard';
+import { v4 as uuid } from 'uuid';
 
 jest.mock('@app/services/database-operations.service');
 
@@ -129,14 +130,10 @@ describe('Application E2E Tests', () => {
           const tag = 9999;
           const email = 'example@example.com';
           const role = 'USER';
-          const jwtAccessToken: string = JsonWebTokenOperationsUtil.generateTokens({
-            username,
-            tag,
-            email,
-            role,
-          })[0];
+          const jwtHash: string = uuid();
+          const jwtAccessToken: string = JsonWebTokenOperationsUtil.generateTokens(jwtHash).accessToken;
           await JsonWebTokenOperationsUtil.validateAccessToken(jwtAccessToken).then(
-            async (tokenValidationResponse: TokenValidationResponseType<JsonWebTokenUserPayloadType>) => {
+            async (tokenValidationResponse: TokenValidationResponseType<JsonWebTokenPayloadType>) => {
               if (tokenValidationResponse.name === 'validation-error') {
                 return;
               }
@@ -150,8 +147,7 @@ describe('Application E2E Tests', () => {
               expect(response.body.data.data.username).toEqual(username);
               expect(response.body.data.data.tag).toEqual(tag);
               expect(response.body.data.data.email).toEqual(email);
-              expect(response.body.data.data.iat).toEqual(tokenValidationResponse.data.iat);
-              expect(response.body.data.data.exp).toEqual(tokenValidationResponse.data.exp);
+              expect(response.body.data.data.role).toEqual(role);
             }
           );
         });
@@ -197,12 +193,8 @@ describe('Application E2E Tests', () => {
       });
       describe('Refresh Endpoint /refresh', () => {
         it('should refresh access token with valid refresh token', async () => {
-          const validRefreshToken: string = JsonWebTokenOperationsUtil.generateTokens({
-            username: 'Test',
-            email: 'test@example.ch',
-            tag: 9999,
-            role: 'USER',
-          })[1];
+          const jwtHash: string = uuid();
+          const validRefreshToken: string = JsonWebTokenOperationsUtil.generateTokens(jwtHash).refreshToken;
           const response: request.Response = await request(app)
             .get(`${apiV1}/token/refresh`)
             .set('Cookie', `refreshToken=${validRefreshToken}`)

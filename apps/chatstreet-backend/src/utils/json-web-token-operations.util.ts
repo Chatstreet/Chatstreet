@@ -1,20 +1,23 @@
 import EnvironmentsConfig from '@app/environments/environments.config';
-import { JsonWebTokenUserPayloadType } from '@app/type-guards/libs/jwt/json-web-token-user-payload.type-guard';
+import { JsonWebTokenPayloadType } from '@app/type-guards/libs/jwt/json-web-token-user-payload.type-guard';
 import jwt, { SignOptions, VerifyErrors } from 'jsonwebtoken';
 import { TokenValidationResponseType } from './types/token-validation-response.type';
 import { CookieOptions, Request } from 'express';
 
-const FIFTEEN_MINUTES_IN_MINUTES: number = 60 * 15;
-const FIFTEEN_MINUTES_IN_MILLIS = FIFTEEN_MINUTES_IN_MINUTES * 1000;
-const ONE_WEEK_IN_MINUTES: number = 60 * 60 * 24 * 7;
-const ONE_WEEK_IN_MILLIS = ONE_WEEK_IN_MINUTES * 1000;
+const FIFTEEN_MINUTES_IN_MILLIS = 60 * 15 * 1000;
+const ONE_WEEK_IN_MILLIS = 60 * 60 * 24 * 7 * 1000;
+
+export interface GeneratedJsonWebTokens {
+  accessToken: string;
+  refreshToken: string;
+}
 
 export default class JsonWebTokenOperationsUtil {
   private static accessTokenSignOptions: SignOptions = {
-    expiresIn: FIFTEEN_MINUTES_IN_MINUTES,
+    expiresIn: '15m',
   };
   private static refreshTokenSignOptions: SignOptions = {
-    expiresIn: ONE_WEEK_IN_MINUTES,
+    expiresIn: '7d',
   };
   private static accessTokenCookieOptions: CookieOptions = {
     httpOnly: false,
@@ -29,24 +32,35 @@ export default class JsonWebTokenOperationsUtil {
     maxAge: ONE_WEEK_IN_MILLIS,
   };
 
-  public static generateTokens(user: JsonWebTokenUserPayloadType): string[] {
-    const jwtAccessToken: string = this.generateAccessToken(user);
-    const jwtRefreshToken: string = this.generateRefreshToken(user);
-    return [jwtAccessToken, jwtRefreshToken];
+  public static generateTokens(jwtHash: string): GeneratedJsonWebTokens {
+    const jwtAccessToken: string = this.generateAccessToken(jwtHash);
+    const jwtRefreshToken: string = this.generateRefreshToken(jwtHash);
+    return {
+      accessToken: jwtAccessToken,
+      refreshToken: jwtRefreshToken,
+    };
   }
 
-  public static generateAccessToken(user: JsonWebTokenUserPayloadType): string {
-    return jwt.sign(user, EnvironmentsConfig.getInstance().getJwtAccessTokenSecret(), this.accessTokenSignOptions);
+  public static generateAccessToken(jwtHash: string): string {
+    return jwt.sign(
+      { jwtHash },
+      EnvironmentsConfig.getInstance().getJwtAccessTokenSecret(),
+      this.accessTokenSignOptions
+    );
   }
 
-  private static generateRefreshToken(user: JsonWebTokenUserPayloadType): string {
-    return jwt.sign(user, EnvironmentsConfig.getInstance().getJwtRefreshTokenSecret(), this.refreshTokenSignOptions);
+  private static generateRefreshToken(jwtHash: string): string {
+    return jwt.sign(
+      { jwtHash },
+      EnvironmentsConfig.getInstance().getJwtRefreshTokenSecret(),
+      this.refreshTokenSignOptions
+    );
   }
 
   public static async validateAccessToken(
     accessToken: string
-  ): Promise<TokenValidationResponseType<JsonWebTokenUserPayloadType>> {
-    return this.validateToken<JsonWebTokenUserPayloadType>(
+  ): Promise<TokenValidationResponseType<JsonWebTokenPayloadType>> {
+    return this.validateToken<JsonWebTokenPayloadType>(
       accessToken,
       EnvironmentsConfig.getInstance().getJwtAccessTokenSecret()
     );
@@ -54,8 +68,8 @@ export default class JsonWebTokenOperationsUtil {
 
   public static async validateRefreshToken(
     refreshToken: string
-  ): Promise<TokenValidationResponseType<JsonWebTokenUserPayloadType>> {
-    return this.validateToken<JsonWebTokenUserPayloadType>(
+  ): Promise<TokenValidationResponseType<JsonWebTokenPayloadType>> {
+    return this.validateToken<JsonWebTokenPayloadType>(
       refreshToken,
       EnvironmentsConfig.getInstance().getJwtRefreshTokenSecret()
     );
