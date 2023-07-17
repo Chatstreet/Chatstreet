@@ -79,7 +79,7 @@ export default class QueryCreationUtil {
 
   public static createJsonWebTokenRemovalQuery(userId: number): string {
     // doesn't need escaping (no direct user input)
-    return `DELETE FROM ${this.tableMap.USERS_TABLE} WHERE user_id_fk = ${userId}`;
+    return `DELETE FROM ${this.tableMap.JSON_WEB_TOKEN_TABLE} WHERE user_id_fk = ${userId}`;
   }
 
   public static createUserInformationFromJwtHashSelectionQuery(jwtHash: string): string {

@@ -42,7 +42,7 @@ export default class DatabaseOperationsService {
       userData.username ?? null,
       parseInt(userData.tag ? userData.tag : '')
     );
-    LoggerWrapperUtil.info(`Executing query: "${queryString}"`, DatabaseOperationsService);
+    LoggerWrapperUtil.debugg(`Executing query: "${queryString}"`, DatabaseOperationsService);
     const databaseResponse: AuthenticationUserDataDatabaseResponse | null = await this.executeQuery<
       AuthenticationUserDataDatabaseResponse[]
     >(queryString)
@@ -78,7 +78,7 @@ export default class DatabaseOperationsService {
       userData.birthdate ?? null,
       spicyPassword
     );
-    LoggerWrapperUtil.info(`Executing query: "${queryString}"`, DatabaseOperationsService);
+    LoggerWrapperUtil.debugg(`Executing query: "${queryString}"`, DatabaseOperationsService);
     const databaseResponse: string | unknown = await this.executeQuery<unknown>(queryString)
       .then((response: unknown) => response)
       .catch((error: string) => {
@@ -108,7 +108,7 @@ export default class DatabaseOperationsService {
     await this.removeJsonWebToken(userId);
     const jsonWebTokenHash: string = uuid();
     const queryString: string = QueryCreationUtil.createJsonWebTokenHashInsertionQuery(userId, jsonWebTokenHash);
-    LoggerWrapperUtil.info(`Executing query: "${queryString}"`, DatabaseOperationsService);
+    LoggerWrapperUtil.debugg(`Executing query: "${queryString}"`, DatabaseOperationsService);
     const databaseResponse: string | unknown = await this.executeQuery<unknown>(queryString)
       .then((response: unknown) => response)
       .catch((error: string) => {
@@ -156,7 +156,7 @@ export default class DatabaseOperationsService {
 
   private async getAvailableTag(username: string): Promise<AvailableTagDatabaseResponse[] | null> {
     const queryString: string = QueryCreationUtil.createAvailableTagSelectionQuery(username);
-    LoggerWrapperUtil.info(`Executing query: "${queryString}"`, DatabaseOperationsService);
+    LoggerWrapperUtil.debugg(`Executing query: "${queryString}"`, DatabaseOperationsService);
     return await this.executeQuery<AvailableTagDatabaseResponse[]>(queryString)
       .then((response: AvailableTagDatabaseResponse[] | null) => response)
       .catch((error: string) => {
@@ -171,7 +171,7 @@ export default class DatabaseOperationsService {
       parseInt(userData.tag ? userData.tag : ''),
       userData.email ?? null
     );
-    LoggerWrapperUtil.info(`Executing query: "${queryString}"`, DatabaseOperationsService);
+    LoggerWrapperUtil.debugg(`Executing query: "${queryString}"`, DatabaseOperationsService);
     return await this.executeQuery<UserIdDatabaseResponse[]>(queryString)
       .then((response: UserIdDatabaseResponse[] | null) => (response ? response[0].user_id : null))
       .catch((error: string) => {
@@ -182,6 +182,7 @@ export default class DatabaseOperationsService {
 
   private async removeJsonWebToken(userId: number): Promise<boolean> {
     const queryString: string = QueryCreationUtil.createJsonWebTokenRemovalQuery(userId);
+    LoggerWrapperUtil.debugg(`Executing query: "${queryString}"`, DatabaseOperationsService);
     return await this.executeQuery<RemovalDatabaseResponse>(queryString)
       .then((response: RemovalDatabaseResponse | null) => (response ? response.affectedRows > 0 : false))
       .catch((error: string) => {

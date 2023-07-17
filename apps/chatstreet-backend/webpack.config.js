@@ -28,6 +28,9 @@ module.exports = {
   node: {
     __dirname: false,
   },
+  optimization: {
+    minimize: false,
+  },
   plugins: [
     new CopyWebpackPlugin({
       patterns: [

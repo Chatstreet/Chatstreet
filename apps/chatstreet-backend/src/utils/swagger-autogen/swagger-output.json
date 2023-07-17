@@ -5,7 +5,7 @@
     "title": "Chatstreet-Backend-MiSe",
     "description": "Micro-Service for the Chatstreet backend application."
   },
-  "host": "localhost:3000",
+  "host": "chatstreet-backend:80",
   "basePath": "/",
   "tags": [
     {

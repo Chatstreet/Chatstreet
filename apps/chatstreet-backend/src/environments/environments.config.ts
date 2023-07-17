@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 
 export default class EnvironmentsConfig {
+  private readonly environment: string;
   private readonly port: string;
   private readonly host: string;
   private readonly databaseHost: string;
@@ -12,6 +13,7 @@ export default class EnvironmentsConfig {
   private static instance: EnvironmentsConfig | null = null;
 
   private constructor(environment: string) {
+    this.environment = environment;
     dotenv.config();
     switch (environment) {
       case 'development': {
@@ -59,6 +61,10 @@ export default class EnvironmentsConfig {
   }
 
   // Getters
+  public getEnvironment(): string {
+    return this.environment;
+  }
+
   public getPort(): string {
     return this.port;
   }
