@@ -1,5 +1,5 @@
 import { z, SafeParseReturnType } from 'zod';
-import { TypeGuardValidationResult } from '@app/http/types/type-guard-validation-result.type';
+import { TypeGuardValidationResult } from './type-guard-validation-result.type';
 
 export class TypeGuardValdiationUtil {
   public static validate<responseType>(typeGuard: z.Schema, input: unknown): TypeGuardValidationResult<responseType> {

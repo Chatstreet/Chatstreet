@@ -1,9 +1,9 @@
 import { Router, Request, Response } from 'express';
-import secureEndpointsMiddleware from '@app/middleware/secure-endpoints.middleware';
-import simpleTokenController from '@app/controller/simple-token.controller';
-import secureTokenController from '@app/controller/secure-token.controller';
-import passwordController from '@app/controller/password.controller';
-import secureUsersController from '@app/controller/secure-users.controller';
+import secureEndpointsMiddleware from '@app/middleware/secure-endpoints/secure-endpoints.middleware';
+import simpleTokenController from '@app/controller/token/simple-token.controller';
+import secureTokenController from '@app/controller/token/secure-token.controller';
+import passwordController from '@app/controller/password/password.controller';
+import secureUsersController from '@app/controller/users/secure-users.controller';
 import { AsyncHttpResponseType } from '@app/http/types/async-http-response.type';
 import { HttpHealthResponseType } from './api-router.types';
 

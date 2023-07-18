@@ -1,13 +1,13 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
-import apiV1Router from '@app/router/api-router';
+import apiV1Router from '@app/router/api-v1/api-router';
 import EnvironmentsConfig from '@app/environments/environments.config';
-import DatabaseOperationsService from './services/database-operations.service';
+import DatabaseOperationsService from './services/database-operations/database-operations.service';
 import { HttpResponseFailure } from './http/types/http-response.type';
 import * as http from 'http';
 import swaggerUi from 'swagger-ui-express';
 import swaggerOutputFile from '@app/utils/swagger-autogen/swagger-output.json';
-import requestQueueingMiddleware from './middleware/request-queueing.middleware';
+import requestQueueingMiddleware from './middleware/request-queueing/request-queueing.middleware';
 
 const app: Express = express();
 let server: http.Server | null = null;

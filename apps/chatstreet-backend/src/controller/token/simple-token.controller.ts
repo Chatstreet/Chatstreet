@@ -1,8 +1,8 @@
 import { AsyncHttpResponseType } from '@app/http/types/async-http-response.type';
-import { AuthenticatedBodyType } from '@app/http/types/libs/authenticated-body.type';
-import { TypeGuardValidationResult } from '@app/http/types/type-guard-validation-result.type';
-import DatabaseOperationsService from '@app/services/database-operations.service';
-import { JsonWebTokenPayloadType } from '@app/type-guards/libs/jwt/json-web-token-user-payload.type-guard';
+import { AuthenticatedBodyType } from '@app/http/types/libs/request-body/authenticated-body.type';
+import { TypeGuardValidationResult } from '@app/utils/type-guards-validation/type-guard-validation-result.type';
+import DatabaseOperationsService from '@app/services/database-operations/database-operations.service';
+import { JsonWebTokenPayloadType } from '@app/type-guards/libs/json-web-token/json-web-token-user-payload.type-guard';
 import {
   AuthenticationRequestType,
   AuthenticationRequestTypeGuard,
@@ -14,9 +14,11 @@ import {
 } from '@app/type-guards/libs/token/registration.request.type-guard';
 import { RegistrationResponseType } from '@app/type-guards/libs/token/registration.response.type-guard';
 import { VerificationResponseType } from '@app/type-guards/libs/token/verification.response.type-guard';
-import JsonWebTokenOperationsUtil, { GeneratedJsonWebTokens } from '@app/utils/json-web-token-operations.util';
-import { TypeGuardValdiationUtil } from '@app/utils/type-guard-validation.util';
-import { TokenValidationResponseType } from '@app/utils/types/token-validation-response.type';
+import JsonWebTokenOperationsUtil, {
+  GeneratedJsonWebTokens,
+} from '@app/utils/json-web-token-operations/json-web-token-operations.util';
+import { TypeGuardValdiationUtil } from '@app/utils/type-guards-validation/type-guard-validation.util';
+import { TokenValidationResponseType } from '@app/utils/json-web-token-operations/token-validation-response.type';
 import { Router, Request, Response } from 'express';
 
 const simpleTokenController: Router = Router();

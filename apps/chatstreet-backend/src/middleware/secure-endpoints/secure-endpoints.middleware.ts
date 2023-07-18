@@ -1,7 +1,7 @@
 import { HttpResponseFailure, HttpResponseType } from '@app/http/types/http-response.type';
-import { JsonWebTokenPayloadType } from '@app/type-guards/libs/jwt/json-web-token-user-payload.type-guard';
-import JsonWebTokenOperationsUtil from '@app/utils/json-web-token-operations.util';
-import { TokenValidationResponseType } from '@app/utils/types/token-validation-response.type';
+import { JsonWebTokenPayloadType } from '@app/type-guards/libs/json-web-token/json-web-token-user-payload.type-guard';
+import JsonWebTokenOperationsUtil from '@app/utils/json-web-token-operations/json-web-token-operations.util';
+import { TokenValidationResponseType } from '@app/utils/json-web-token-operations/token-validation-response.type';
 import { NextFunction, Request, Response } from 'express';
 
 const secureEndpointsMiddleware = async (
@@ -27,7 +27,7 @@ const secureEndpointsMiddleware = async (
           error: 'Unauthorized, invalid token',
         });
       }
-      req.body.user = tokenValidationResponse.data;
+      req.body.jwtHash = tokenValidationResponse.data.jwtHash;
       return next();
     }
   );

@@ -1,6 +1,6 @@
 import EnvironmentsConfig from '@app/environments/environments.config';
 import { AuthenticationRequestType } from '@app/type-guards/libs/token/authentication.request.type-guard';
-import LoggerWrapperUtil from '@app/utils/logger-wrapper.util';
+import LoggerWrapperUtil from '@app/utils/logger-wrapper/logger-wrapper.util';
 import mysql, { Connection, MysqlError } from 'mysql';
 import {
   AuthenticationUserDataDatabaseResponse,
@@ -8,8 +8,8 @@ import {
   RemovalDatabaseResponse,
   UserIdDatabaseResponse,
 } from './database-operations.types';
-import DatabaseEncriptionUtil from '@app/utils/database-encription.util';
-import QueryCreationUtil from '@app/utils/query-creation.util';
+import DatabaseEncriptionUtil from '@app/utils/database-encription/database-encription.util';
+import QueryCreationUtil from '@app/utils/query-creation/query-creation.util';
 import { RegistrationRequestType } from '@app/type-guards/libs/token/registration.request.type-guard';
 import { RegistrationResponseType } from '@app/type-guards/libs/token/registration.response.type-guard';
 import { v4 as uuid } from 'uuid';

@@ -5,7 +5,7 @@
     "title": "Chatstreet-Backend-MiSe",
     "description": "Micro-Service for the Chatstreet backend application."
   },
-  "host": "chatstreet-backend:80",
+  "host": "localhost:3000",
   "basePath": "/",
   "tags": [
     {
@@ -17,7 +17,10 @@
       "description": "Endpoints for all of the authentication related actions."
     }
   ],
-  "schemes": ["http", "https"],
+  "schemes": [
+    "http",
+    "https"
+  ],
   "securityDefinitions": {
     "apiKeyAuth": {
       "type": "apiKey",
@@ -26,12 +29,18 @@
       "description": "All routes on **/secure/** are secured by the authentication (see authentication)."
     }
   },
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
   "paths": {
     "/api/v1/health": {
       "get": {
-        "tags": ["Miscellaneous"],
+        "tags": [
+          "Miscellaneous"
+        ],
         "description": "Check the servers health status.",
         "parameters": [],
         "responses": {
@@ -46,7 +55,9 @@
     },
     "/api/v1/token/auth": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "Client authentication via email or username, tag and password.",
         "parameters": [
           {
@@ -96,7 +107,9 @@
     },
     "/api/v1/token/verify": {
       "get": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "Used to determine wether the user is still authenticated.",
         "parameters": [],
         "responses": {
@@ -129,7 +142,9 @@
     },
     "/api/v1/token/register": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "Used to create a new account for a user.",
         "parameters": [
           {
@@ -165,7 +180,9 @@
     },
     "/api/v1/token/refresh": {
       "get": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "description": "Used to refresh the access token.",
         "parameters": [],
         "responses": {
@@ -640,7 +657,9 @@
               },
               "path": {
                 "type": "array",
-                "example": ["parameter"],
+                "example": [
+                  "parameter"
+                ],
                 "items": {
                   "type": "string"
                 }

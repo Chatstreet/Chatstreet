@@ -1,6 +1,6 @@
 import { NextFunction, Request } from 'express';
 import { Subject, concatMap } from 'rxjs';
-import LoggerWrapperUtil from '@app/utils/logger-wrapper.util';
+import LoggerWrapperUtil from '@app/utils/logger-wrapper/logger-wrapper.util';
 
 export class RequestQueueingService {
   private readonly requestQueue$: Subject<NextFunction> = new Subject<NextFunction>();

@@ -1,7 +1,7 @@
 import EnvironmentsConfig from '@app/environments/environments.config';
-import { JsonWebTokenPayloadType } from '@app/type-guards/libs/jwt/json-web-token-user-payload.type-guard';
+import { JsonWebTokenPayloadType } from '@app/type-guards/libs/json-web-token/json-web-token-user-payload.type-guard';
 import jwt, { SignOptions, VerifyErrors } from 'jsonwebtoken';
-import { TokenValidationResponseType } from './types/token-validation-response.type';
+import { TokenValidationResponseType } from './token-validation-response.type';
 import { CookieOptions, Request } from 'express';
 
 const FIFTEEN_MINUTES_IN_MILLIS = 60 * 15 * 1000;
