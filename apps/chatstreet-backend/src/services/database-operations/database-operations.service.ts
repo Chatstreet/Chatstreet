@@ -37,11 +37,14 @@ export default class DatabaseOperationsService {
   }
 
   public async validateUserCredentials(userData: AuthenticationRequestType): Promise<boolean> {
-    const queryString: string = QueryCreationUtil.createAuthenticationUserDataSelectionQuery(
-      userData.email ?? null,
-      userData.username ?? null,
-      parseInt(userData.tag ? userData.tag : '')
-    );
+    const queryString: string | null = QueryCreationUtil.createAuthenticationUserDataSelectionQuery({
+      email: userData.email ?? null,
+      username: userData.username ?? null,
+      tag: parseInt(userData.tag ? userData.tag : ''),
+    });
+    if (!queryString) {
+      return false;
+    }
     LoggerWrapperUtil.debugg(`Executing query: "${queryString}"`, DatabaseOperationsService);
     const databaseResponse: AuthenticationUserDataDatabaseResponse | null = await this.executeQuery<
       AuthenticationUserDataDatabaseResponse[]
@@ -67,17 +70,14 @@ export default class DatabaseOperationsService {
     if (!availableTag) {
       return 'Username limit reached';
     }
-    const queryString: string = QueryCreationUtil.createRegistrationUserDataInsertionQuery(
-      userData.username,
-      availableTag,
-      userData.firstName,
-      userData.lastName,
-      userData.email,
-      userData.recoveryEmail ?? null,
-      userData.phoneNumber ?? null,
-      userData.birthdate ?? null,
-      spicyPassword
-    );
+    const queryString: string = QueryCreationUtil.createRegistrationUserDataInsertionQuery({
+      ...userData,
+      recoveryEmail: userData.recoveryEmail ?? null,
+      phoneNumber: userData.phoneNumber ?? null,
+      birthdate: userData.birthdate ?? null,
+      tag: availableTag,
+      spicyPassword,
+    });
     LoggerWrapperUtil.debugg(`Executing query: "${queryString}"`, DatabaseOperationsService);
     const databaseResponse: string | unknown = await this.executeQuery<unknown>(queryString)
       .then((response: unknown) => response)
@@ -107,7 +107,7 @@ export default class DatabaseOperationsService {
     }
     await this.removeJsonWebToken(userId);
     const jsonWebTokenHash: string = uuid();
-    const queryString: string = QueryCreationUtil.createJsonWebTokenHashInsertionQuery(userId, jsonWebTokenHash);
+    const queryString: string = QueryCreationUtil.createJsonWebTokenHashInsertionQuery({ userId, jsonWebTokenHash });
     LoggerWrapperUtil.debugg(`Executing query: "${queryString}"`, DatabaseOperationsService);
     const databaseResponse: string | unknown = await this.executeQuery<unknown>(queryString)
       .then((response: unknown) => response)
@@ -166,11 +166,14 @@ export default class DatabaseOperationsService {
   }
 
   private async getUserId(userData: AuthenticationRequestType): Promise<number | null> {
-    const queryString: string = QueryCreationUtil.createUserIdSelectionQuery(
-      userData.username ?? null,
-      parseInt(userData.tag ? userData.tag : ''),
-      userData.email ?? null
-    );
+    const queryString: string | null = QueryCreationUtil.createUserIdSelectionQuery({
+      username: userData.username ?? null,
+      tag: parseInt(userData.tag ? userData.tag : ''),
+      email: userData.email ?? null,
+    });
+    if (!queryString) {
+      return null;
+    }
     LoggerWrapperUtil.debugg(`Executing query: "${queryString}"`, DatabaseOperationsService);
     return await this.executeQuery<UserIdDatabaseResponse[]>(queryString)
       .then((response: UserIdDatabaseResponse[] | null) => (response ? response[0].user_id : null))
