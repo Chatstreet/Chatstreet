@@ -1,15 +1,28 @@
 {
+  "root": true,
   "env": {
-    "browser": true,
     "commonjs": true,
-    "es2021": true
+    "es2021": true,
+    "node": true
   },
-  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
-  "overrides": [],
-  "parser": "@typescript-eslint/parser",
+  // For JS Files
+  "extends": ["eslint:recommended", "prettier"],
   "parserOptions": {
     "ecmaVersion": "latest"
   },
-  "plugins": ["@typescript-eslint"],
-  "rules": {}
+  "rules": {
+    "no-unused-vars": "warn"
+  },
+  // For TS Files
+  "overrides": [
+    {
+      "files": ["**/*.ts", "**/*.tsx"],
+      "plugins": ["@typescript-eslint"],
+      "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "project": ["./tsconfig.json"]
+      }
+    }
+  ]
 }

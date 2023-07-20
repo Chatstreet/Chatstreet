@@ -146,3 +146,4 @@ dist
 .eslintrc.json
 package-lock.json
 package.json
+scripts/
